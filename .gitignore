@@ -381,3 +381,4 @@ node_modules
 /myenv/*
 /NIOZ/myenv/*
 /NIOZ/.venv/*   
+/myenv
