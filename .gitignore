@@ -10,8 +10,7 @@
 *.userosscache
 *.sln.docstates
 desktop.ini
-/NIOZ/myenv/*
-/.venv/
+myenv/*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
