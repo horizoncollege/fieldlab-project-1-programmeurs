@@ -16,3 +16,7 @@
 .menu-button:hover {
     background-color: #303030;
 }
+
+.bars {
+    border: darkgray;
+}
