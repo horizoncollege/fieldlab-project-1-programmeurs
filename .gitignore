@@ -378,7 +378,11 @@ node_modules
 
 # local env files
 .env.local
+<<<<<<< Updated upstream
 .env.*.local
 
 /myenv
 /NIOZ
+=======
+.env.*.local
+>>>>>>> Stashed changes
