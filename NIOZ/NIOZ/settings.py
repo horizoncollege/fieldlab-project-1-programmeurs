@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'LoginSysteem',
     'adminMenu',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
