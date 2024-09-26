@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'NIOZ.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'nioz',  # De naam van je database
+        'USER': 'root',  # De MySQL-gebruiker
+        'PASSWORD': '',  # Het wachtwoord voor de MySQL-gebruiker
+        'HOST': 'localhost',  # Of het IP-adres van je MySQL-server
+        'PORT': '3307',  # De standaardpoort voor MySQL
     }
 }
 
@@ -108,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'nl'
 
 TIME_ZONE = 'UTC'
 
@@ -127,3 +131,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Authentication settings
+LOGIN_URL = 'login'
+
