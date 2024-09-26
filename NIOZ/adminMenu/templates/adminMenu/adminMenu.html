@@ -1,0 +1,122 @@
+{% load static %}
+<html>
+
+<head>
+    <!-- StartPage FISH SERVER-->
+    <title>MEE - FISH</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta name="author" content="Frans Eijgenraam (ESS)">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+
+<body bgcolor="#FDFDFD" cz-shortcut-listen="true">
+    <center>
+        <center>
+            <table width="100%" bgcolor="#f5f5f5" class="text" style="border:1px solid; border-collapse:collapse;">
+                <tbody>
+                    <tr>
+                        <td align="center">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>MEE - FISH - v2.05</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table cellpadding="1" class="text">
+                <tbody>
+                    <tr>
+                        <td>menu:&nbsp;
+                            <a class="menu-button" href="procfish.php?cmd=9000"
+                                class="but11">&nbsp;Administrator&nbsp;</a>
+                            &nbsp;
+                            &nbsp;
+                            <a class="menu-button" href="procfish.php?cmd=2000" class="but11">&nbsp;Fyke&nbsp;</a>
+                            &nbsp;
+                            &nbsp;
+                            <a class="menu-button" href="procfish.php?cmd=7000"
+                                class="but11">&nbsp;Maintenance&nbsp;</a>
+                            &nbsp;
+                            &nbsp;
+                            <a class="menu-button" href="procfish.php?cmd=9100" class="but11">&nbsp;Options&nbsp;</a>
+                            &nbsp;
+                            &nbsp;
+                            <a class="menu-button" href="procfish.php?cmd=3000" class="but11">&nbsp;Help&nbsp;</a>
+                            &nbsp;
+                            &nbsp;
+                            <a class="menu-button" href="procfish.php?cmd=1002" class="but11">&nbsp;Logout&nbsp;</a>
+                            &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table cellpadding="1" class="text">
+                <tbody>
+                    <tr>
+                        <td>
+                            admin menu:&nbsp;
+                            <a class="menu-button" href="procfish.php?cmd=9000" class="but11">&nbsp;Users&nbsp;</a>
+                            &nbsp;
+                            &nbsp;
+                            <a class="menu-button" href="procfish.php?cmd=9010" class="but11">&nbsp;New user&nbsp;</a>
+                            &nbsp;
+                            &nbsp;
+                            <a class="menu-button" href="procfish.php?cmd=9999" class="but11">&nbsp;phpinfo&nbsp;</a>
+                            &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table bgcolor="#FDFDFD" class="text">
+                <tbody>
+                    <tr>
+                        <td>
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="CENTER" bgcolor="#F0F0F0">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>Users</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table border="1" cellpadding="2" class="text" style="border:1px solid; border-collapse:collapse;" bgcolor="#fcfcfc">
+                                <tbody>
+                                    <tr class="bars" bgcolor="#e0e0e0">
+                                        <th>Username</th>
+                                        <th>Active</th>
+                                        <th>real name</th>
+                                        <th>access to<br>collectlocation</th>
+                                        <th>access from<br>year</th>
+                                        <th>access until<br>year</th>
+                                    </tr>
+
+                                    {% for person in people %}
+                                    <tr class="bars">
+                                        <td>{{ person.Username }}</td>
+                                        <td><input checked type="checkbox"></td>
+                                        <td>{{ person.realName }}</td>
+                                        <td>{{ person.collectlocation }}</td>
+                                        <td>{{ person.yearFrom }}</td>
+                                        <td>{{ person.yearUntil }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </center>
+    </center>
+</body>
+</html>
