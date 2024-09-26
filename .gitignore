@@ -10,8 +10,7 @@
 *.userosscache
 *.sln.docstates
 desktop.ini
-/NIOZ/myenv/*
-/.venv/
+myenv/*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -386,3 +385,6 @@ node_modules
 =======
 .env.*.local
 >>>>>>> Stashed changes
+/myenv
+/myenv
+/myenv
