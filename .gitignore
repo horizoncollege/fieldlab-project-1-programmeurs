@@ -379,3 +379,7 @@ node_modules
 .env.local
 .env.*.local
 
+/myenv/*
+/NIOZ/myenv/*
+/NIOZ/.venv/*   
+/myenv
