@@ -380,11 +380,7 @@ node_modules
 <<<<<<< Updated upstream
 .env.*.local
 
-/myenv
-/NIOZ
-=======
-.env.*.local
->>>>>>> Stashed changes
-/myenv
-/myenv
+/myenv/*
+/NIOZ/myenv/*
+/NIOZ/.venv/*   
 /myenv
