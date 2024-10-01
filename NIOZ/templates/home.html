@@ -1,80 +1,33 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Home</title>
-</head>
-<body>
-    <center>
-        <center>
-            <table width="100%" bgcolor="#f5f5f5" class="text" style="border:1px solid; border-collapse:collapse;">
-                <tbody>
-                    <tr>
-                        <td align="center">
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <th>MEE - FISH - v2.05</th>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <table cellpadding="1" class="text">
-                <tbody>
-                    <tr>
-                        <td>menu:&nbsp;
-                            <a class="menu-button" href="procfish.php?cmd=9000"
-                                class="but11">&nbsp;Administrator&nbsp;</a>
-                            &nbsp;
-                            &nbsp;
-                            <a class="menu-button" href="procfish.php?cmd=2000" class="but11">&nbsp;Fyke&nbsp;</a>
-                            &nbsp;
-                            &nbsp;
-                            <a class="menu-button" href="procfish.php?cmd=7000"
-                                class="but11">&nbsp;Maintenance&nbsp;</a>
-                            &nbsp;
-                            &nbsp;
-                            <a class="menu-button" href="procfish.php?cmd=9100" class="but11">&nbsp;Options&nbsp;</a>
-                            &nbsp;
-                            &nbsp;
-                            <a class="menu-button" href="procfish.php?cmd=3000" class="but11">&nbsp;Help&nbsp;</a>
-                            &nbsp;
-                            &nbsp;
-                            <a class="menu-button" href="procfish.php?cmd=1002" class="but11">&nbsp;Logout&nbsp;</a>
-                            &nbsp;
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <table cellpadding="1" class="text">
-                <tbody>
-                    <tr>
-                        <td>
-                            admin menu:&nbsp;
-                            <a class="menu-button" href="procfish.php?cmd=9000" class="but11">&nbsp;Users&nbsp;</a>
-                            &nbsp;
-                            &nbsp;
-                            <a class="menu-button" href="procfish.php?cmd=9010" class="but11">&nbsp;New user&nbsp;</a>
-                            &nbsp;
-                            &nbsp;
-                            <a class="menu-button" href="procfish.php?cmd=9999" class="but11">&nbsp;phpinfo&nbsp;</a>
-                            &nbsp;
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </center>
-    </center>
-
-    <h2>Welkom{% if user.is_authenticated %}, {{ user.username }}{% else %}, Gast{% endif %}!</h2>
-    
-    {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}">Uitloggen</a>
-    {% else %}
-        <a href="{% url 'login' %}">Inloggin</a>
-    {% endif %}
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MEE - FISH - v3.0</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'nioz/css/style.css' %}" />
+  </head>
+  <body>
+    <nav>
+      <div class="navbar-header">
+        <strong>MEE - FISH - v3.0</strong>
+      </div>
+      <div class="navbar-menu">
+        <ul>
+          <li><a href="#">Administrator</a></li>
+          <li><a href="#">Fyke</a></li>
+          <li><a href="#">Maintenance</a></li>
+          <li><a href="#">Options</a></li>
+          <li><a href="#">Help</a></li>
+          <li>
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}">Uitloggen</a>
+            {% else %}
+            <a href="{% url 'login' %}">Inloggin</a>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </body>
 </html>
-
