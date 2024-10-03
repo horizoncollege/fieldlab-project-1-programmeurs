@@ -7,7 +7,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <meta name="author" content="Frans Eijgenraam (ESS)">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 
@@ -100,7 +99,7 @@
                                         <th>access until<br>year</th>
                                     </tr>
                                     <tr class="bars">
-                                        <td class="user">{{ user.username }}</td>
+                                        <td class="user">{{ person.username }}</td>
                                         <td><input checked type="checkbox"></td>
                                         <td>{{ person.realName }}</td>
                                         <td>{{ person.collectlocation }}</td>
