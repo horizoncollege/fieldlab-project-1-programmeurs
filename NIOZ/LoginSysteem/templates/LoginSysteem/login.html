@@ -1,33 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <table width="100%" bgcolor="#f5f5f5" class="text" style="border:1px solid; border-collapse:collapse;">
-        <tbody>
-            <tr>
-                <td align="center">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <th>MEE - FISH - v2.05</th>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <h1>Login on the MEE-FISH server</h1>
-    <form method="post" action="{% url 'login' %}">
+{% extends 'home.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="content1">
+    <h1>Login</h1>
+    <form method="post" action="{% url 'login' %}" class="form-container">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Inloggen</button>
+        
+        <!-- Gebruikersnaam veld -->
+        <div class="form-group">
+            <label>{{ form.username.label_tag }}</label>
+            <div class="input-icon-container">
+                {{ form.username }}
+            </div>
+        </div>
+
+        <!-- Wachtwoord veld -->
+        <div class="form-group">
+            <label>{{ form.password.label_tag }}</label>
+            <div class="input-icon-container">
+                {{ form.password }}
+            </div>
+        </div>
+
+        <button type="submit" class="submit-button">Inloggen</button>
     </form>
     <p>Heb je nog geen account? <a href="{% url 'signup' %}">Aanmelden</a></p>
-</body>
-</html>
+</div>
+{% endblock %}
