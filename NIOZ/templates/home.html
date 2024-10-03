@@ -1,15 +1,44 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Home</title>
-</head>
-<body>
-    <h2>Welkom{% if user.is_authenticated %}, {{ user.username }}{% else %}, Gast{% endif %}!</h2>
-    
-    {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}">Uitloggen</a>
-    {% else %}
-        <a href="{% url 'login' %}">Inloggin</a>
-    {% endif %}
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}MEE FISH v3.0{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'nioz/css/style.css' %}" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <div class="navbar-header">
+        <strong>MEE - FISH - v3.0</strong>
+      </div>
+
+      <div class="navbar-menu">
+        <ul>
+          {% if user.is_authenticated %}
+          <li><a href="#">Administrator</a></li>
+          <li><a href="#">Fyke</a></li>
+          <li><a href="#">Maintenance</a></li>
+          <li><a href="#">Options</a></li>
+          <li><a href="#">Help</a></li>
+          <li><a href="{% url 'logout' %}">Uitloggen</a></li>
+          {% else %}
+          <li><a href="{% url 'login' %}">Inloggen</a></li>
+          {% endif %}
+        </ul>
+
+        {% block submenu %}
+        {% comment %} Secondary navbar here {% endcomment %}
+        {% endblock %}
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+      {% block content %}
+      <!-- Content will go here -->
+      {% endblock %}
+    </div>
+  </body>
 </html>
