@@ -10,7 +10,7 @@
 *.userosscache
 *.sln.docstates
 desktop.ini
-/NIOZ/myenv/*
+myenv/*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -377,6 +377,7 @@ node_modules
 
 # local env files
 .env.local
+<<<<<<< Updated upstream
 .env.*.local
 
 /myenv/*
