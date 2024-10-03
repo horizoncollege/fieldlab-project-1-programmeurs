@@ -92,24 +92,21 @@
                             <table border="1" cellpadding="2" class="text" style="border:1px solid; border-collapse:collapse;" bgcolor="#fcfcfc">
                                 <tbody>
                                     <tr class="bars" bgcolor="#e0e0e0">
-                                        <th>Username</th>
+                                        <th>username</th>
                                         <th>Active</th>
                                         <th>real name</th>
                                         <th>access to<br>collectlocation</th>
                                         <th>access from<br>year</th>
                                         <th>access until<br>year</th>
                                     </tr>
-
-                                    {% for person in people %}
                                     <tr class="bars">
-                                        <td>{{ person.Username }}</td>
+                                        <td class="user">{{ user.username }}</td>
                                         <td><input checked type="checkbox"></td>
                                         <td>{{ person.realName }}</td>
                                         <td>{{ person.collectlocation }}</td>
                                         <td>{{ person.yearFrom }}</td>
                                         <td>{{ person.yearUntil }}</td>
                                     </tr>
-                                    {% endfor %}
                                 </tbody>
                             </table>
                         </td>
@@ -120,3 +117,4 @@
     </center>
 </body>
 </html>
+

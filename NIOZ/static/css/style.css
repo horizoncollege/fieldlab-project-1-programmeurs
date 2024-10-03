@@ -4,7 +4,7 @@
 
 .menu-button {
     background-color: #F3BD3C;
-            color: white;
+            color: black;
             padding: 1px 5px;
             font-size: 12px;
             border: none;
@@ -15,8 +15,26 @@
 
 .menu-button:hover {
     background-color: #303030;
+    color: white;
 }
 
 .bars {
     border: darkgray;
+}
+
+.user {
+    background-color: #D0D0D0;
+            padding: 1px 5px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;          
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin-left: 5px;
+            margin-top: 3px;
+}
+
+.user:hover {
+    background-color: #303030;
+    color: white;
 }
