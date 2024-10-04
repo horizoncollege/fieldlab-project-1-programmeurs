@@ -1,4 +1,4 @@
 from django.shortcuts import render
 
-def options_view(request):
-    return render(request, 'OptionsApp.html')
+def index(request):
+    return render(request, 'optionsApp/index.html')
