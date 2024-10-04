@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'LoginSysteem',
     'adminMenu',
+    'fyke',
+    'maintenance',
 ]
 
 MIDDLEWARE = [
