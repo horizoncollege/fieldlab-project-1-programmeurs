@@ -22,10 +22,10 @@
         <strong>MEE - FISH - v3.0</strong>
       </div>
 
+      <!-- Deze 'tag' laat de navbar alleen zien als je ingelogd bent -->
+      {% if user.is_authenticated %} 
       <div class="navbar-menu">
         <ul>
-          {% if user.is_authenticated %}
-
           <li><a href="/adminMenu">Administrator</a></li>
           <li><a href="/fyke">Fyke</a></li>
           <li><a href="/maintenance">Maintenance</a></li>
@@ -34,25 +34,18 @@
 
           <!--De volgende code met dank aan Nils   -Marijn -->
           <li><a href="{% url 'logout' %}" onclick="return confirm('Weet u zeker dat u wilt uitloggen?')">Uitloggen</a></li>
-
-          {% endif %}
         </ul>
 
-        {% block submenu %}
-
-          {% comment %} Secondary navbar here {% endcomment %}
-
-        {% endblock %}
+        <!-- Hier wordt een submenu dynamish geladen -->
+        {% block submenu %}{% endblock %}
       </div>
+      {% endif %}
     </nav>
 
     <!-- Content -->
     <div class="content">
-      {% block content %}
-
-        <!-- Content will go here -->
-
-      {% endblock %}
+       <!-- Hier word de content dynamisch geladen-->
+      {% block content %}{% endblock %}
     </div>
   </body>
 </html>
