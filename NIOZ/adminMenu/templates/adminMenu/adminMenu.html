@@ -98,14 +98,16 @@
                                         <th>access from<br>year</th>
                                         <th>access until<br>year</th>
                                     </tr>
+                                    {% for person in persons %}
                                     <tr class="bars">
-                                        <td class="user">{{ person.username }}</td>
+                                        <td><button class="user">{{ person.username }}</button></td>
                                         <td><input checked type="checkbox"></td>
                                         <td>{{ person.realName }}</td>
                                         <td>{{ person.collectlocation }}</td>
                                         <td>{{ person.yearFrom }}</td>
                                         <td>{{ person.yearUntil }}</td>
                                     </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </td>

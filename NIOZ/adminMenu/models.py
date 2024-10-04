@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 
 class Person(models.Model):
     username = models.CharField(max_length=50)
-    active = models.CharField(max_length=1, validators=[RegexValidator(r'^[01]$', 'Only "0" or "1" are allowed.')])
+    active = models.BooleanField(default=True)
     realName = models.CharField(max_length=50)
     collectlocation = models.CharField(max_length=50)
     yearFrom = models.CharField(max_length=10, validators=[RegexValidator(r'^\d+$', 'Only numeric characters are allowed.')])
