@@ -37,3 +37,8 @@
     background-color: #303030;
     color: white;
 }
+
+.spacing {
+    margin-top: 2rem;
+    background-color: #FDFDFD;
+}
