@@ -1,12 +1,19 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}MEE FISH v3.0{% endblock %}</title>
-    {% load static %}
+
+    <title>{% block title %} - MEE FISH v3.0{% endblock %}</title>
+
+    <!-- Standard css -->
     <link rel="stylesheet" href="{% static 'nioz/css/style.css' %}" />
+
+    <!-- Page specific css-->
     <link rel="stylesheet" href="{% static 'nioz/css/LoginSysteem.css' %}" />
+
   </head>
   <body>
     <!-- Navbar -->
@@ -15,31 +22,30 @@
         <strong>MEE - FISH - v3.0</strong>
       </div>
 
+      <!-- Deze 'tag' laat de navbar alleen zien als je ingelogd bent -->
+      {% if user.is_authenticated %} 
       <div class="navbar-menu">
         <ul>
-          {% if user.is_authenticated %}
           <li><a href="/adminMenu">Administrator</a></li>
-          <li><a href="#">Fyke</a></li>
-          <li><a href="#">Maintenance</a></li>
-          <li><a href="#">Options</a></li>
-          <li><a href="#">Help</a></li>
-          <li><a href="{% url 'logout' %}">Uitloggen</a></li>
-          {% else %}
-          <li><a href="{% url 'login' %}">Inloggen</a></li>
-          {% endif %}
+          <li><a href="/fyke">Fyke</a></li>
+          <li><a href="/maintenance">Maintenance</a></li>
+          <li><a href="/options">Options</a></li>
+          <li><a href="/help">Help</a></li>
+
+          <!--De volgende code met dank aan Nils   -Marijn -->
+          <li><a href="{% url 'logout' %}" onclick="return confirm('Weet u zeker dat u wilt uitloggen?')">Uitloggen</a></li>
         </ul>
 
-        {% block submenu %}
-        {% comment %} Secondary navbar here {% endcomment %}
-        {% endblock %}
+        <!-- Hier wordt een submenu dynamish geladen -->
+        {% block submenu %}{% endblock %}
       </div>
+      {% endif %}
     </nav>
 
     <!-- Content -->
     <div class="content">
-      {% block content %}
-      <!-- Content will go here -->
-      {% endblock %}
+       <!-- Hier word de content dynamisch geladen-->
+      {% block content %}{% endblock %}
     </div>
   </body>
 </html>
