@@ -1,0 +1,121 @@
+{% extends 'index.html' %} {% block content %}
+<form method="POST" class="datacollection-form">
+  {% csrf_token %}
+  <span>Datacollection record (new)</span>
+  <table>
+    <tbody>
+      <tr>
+        <td>Date:</td>
+        <td>{{ form.date }}</td>
+      </tr>
+      <tr>
+        <td>Time:</td>
+        <td>{{ form.time }} (HH:MM[:SS])</td>
+      </tr>
+      <tr>
+        <td>Observer:</td>
+        <td>{{ form.observer }}</td>
+      </tr>
+      <tr>
+        <td>Fyke:</td>
+        <td>
+          <select name="fyke" required>
+            <option value="" selected disabled>Select Fyke</option>
+            <option value="NA">--NA--</option>
+            <option value="Onbekend">--Onbekend--</option>
+            <option value="Stuifdijk">Stuifdijk</option>
+            <option value="Afsluitdijk">Afsluitdijk</option>
+            <option value="Schanserwaard">Schanserwaard</option>
+            <option value="Pakeerplaats NIOZ achter">
+              Pakeerplaats NIOZ achter
+            </option>
+            <option value="Parkeerplaats haven">Parkeerplaats haven</option>
+            <option value="Texelstroom">Texelstroom</option>
+            <option value="NIOZ dam">NIOZ dam</option>
+            <option value="Navicula">Navicula</option>
+            <option value="Wierbalg">Wierbalg</option>
+            <option value="WMR-NIOZ otoliths project">
+              WMR-NIOZ otoliths project
+            </option>
+            <option value="Gat v Stier">Gat v Stier</option>
+            <option value="HW-prog">HW-prog</option>
+            <option value="IJhaven Amsterdam">IJhaven Amsterdam</option>
+            <option value="NIOZ_Harbour">NIOZ_Harbour</option>
+            <option value="North Sea">North Sea</option>
+            <option value="Terschelling">Terschelling</option>
+            <option value="Texelstroom">Texelstroom</option>
+            <option value="WaddenSea">WaddenSea</option>
+            <option value="Texel beach">Texel beach</option>
+            <option value="Fyke Sieme">Fyke Sieme</option>
+            <option value="Eems">Eems</option>
+            <option value="Dooie Hond">Dooie Hond</option>
+            <option value="Eerste hoofd">Eerste hoofd</option>
+            <option value="Veerhaven">Veerhaven</option>
+            <option value="Hors">Hors</option>
+            <option value="Schanderwaard">Schanderwaard</option>
+            <option value="Vlettenstelling">Vlettenstelling</option>
+            <option value="Hoek van de staak">Hoek van de staak</option>
+
+            <option value="Schiermonnikoog">Schiermonnikoog</option>
+            <option value="Borkumse stenen">Borkumse stenen</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Fishing duration:</td>
+        <td>{{ form.duration }}</td>
+      </tr>
+      <tr>
+        <td>Tidal phase:</td>
+        <td>{{ form.tidal_phase }}</td>
+      </tr>
+      <tr>
+        <td>Salinity (µS/cm):</td>
+        <td>{{ form.salinity }}</td>
+      </tr>
+      <tr>
+        <td>Temperature (˚C):</td>
+        <td>{{ form.temperature }}</td>
+      </tr>
+      <tr>
+        <td>Wind direction:</td>
+        <td>{{ form.wind_direction }}</td>
+      </tr>
+      <tr>
+        <td>Wind speed (Bft):</td>
+        <td>{{ form.wind_speed }}</td>
+      </tr>
+      <tr>
+        <td>Secchi depth (cm):</td>
+        <td>{{ form.secchi_depth }}</td>
+      </tr>
+      <tr>
+        <td>FU-scale:</td>
+        <td>{{ form.fu_scale }}</td>
+      </tr>
+      <tr>
+        <td>Remarks:</td>
+        <td>
+          <textarea name="remarks" rows="4" cols="50">
+{{ form.remarks.value }}</textarea
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Collect species/week:</td>
+        <td>{{ form.collect }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <input type="hidden" name="year" value="{{ form.year.value|default:current_year }}">
+  <input type="hidden" name="week" value="{{ form.week.value|default:current_week }}">
+  <input type="hidden" name="fishingday" value="{{ form.fishingday.value|default:fishingday }}">
+  <input type="hidden" name="version" value="3.0">
+
+  <div style="margin-top: 5px">
+    <button class="btn btn-secondary" type="submit">Submit</button>
+    <a href="{% url 'datacollection' %}" class="btn btn-primary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

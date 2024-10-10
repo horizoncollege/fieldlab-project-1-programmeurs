@@ -1,0 +1,74 @@
+{% extends 'index.html' %} {% block content %}
+<div class="datacollection-wrapper">
+  <span class="newrecord"><a href="{% url 'new_record' %}">New Record</a></span>
+  <div class="datacollection">
+    <table class="year-selection-table">
+      <tbody>
+        <tr>
+          <th>Year:</th>
+        </tr>
+        <tr>
+          <td>
+            <a href="#">2010</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#">2011</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#">2012</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <!-- <a href="#" class="newrecord">New Record</a> -->
+      <table border="1" cellpadding="4" class="datacollection-table">
+        <tbody>
+          <tr>
+            <th>options</th>
+            <th>date</th>
+            <th>time</th>
+            <th>year</th>
+            <th>week</th>
+            <th>fishingday</th>
+            <th>fyke</th>
+            <th>duration</th>
+            <th>collect</th>
+            <th>remarks</th>
+            <th>observer</th>
+            <th>version</th>
+          </tr>
+          <tr>
+            {% for item in data %}
+            <td>
+              <a href="#">print</a>
+              <a href="#">edit</a>
+              <a href="#">biotic</a>
+            </td>
+            <td>{{ item.date }}</td>
+            <td>{{ item.time }}</td>
+            <td>{{ item.year }}</td>
+            <td>{{ item.week }}</td>
+            <td>{{ item.fishingday }}</td>
+            <td>{{ item.fyke }}</td>
+            <td>{{ item.duration }}</td>
+            <td>{{ item.collect }}</td>
+            <td>{{ item.remarks }}</td>
+            <td>{{ item.observer }}</td>
+            <td>{{ item.version }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="12">No data available.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
