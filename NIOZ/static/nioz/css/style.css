@@ -7,7 +7,7 @@
 }
 
 
-
+/* ===== Default styling ===== */
 html,
 body {
   margin: 0;
@@ -15,6 +15,31 @@ body {
 
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
+.btn {
+  border-radius: 5px;
+  /* background-color: var(--main-color); */
+  padding: 2px 8px;
+  margin-right: 8px;
+  color: black;
+  text-decoration: none;
+  transition: background-color 0.25s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--main-color);
+}
+.btn-primary:hover {
+  background-color: var(--main-color-hover);
+}
+.btn-secondary {
+  background-color: var(--secondary-color);
+}
+.btn-secondary:hover {
+  background-color: var(--secondary-color-hover);
+}
+
 
 /* ===== Navbar Start ===== */
 .navbar-header {
