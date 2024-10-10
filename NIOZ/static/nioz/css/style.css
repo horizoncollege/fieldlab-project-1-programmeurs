@@ -1,3 +1,13 @@
+:root {
+  --main-color: #f3bd3c;
+  --main-color-hover: #c0952f;
+  --secondary-color: #0f0;
+  --secondary-color-hover: #0b0;
+  --main-font: Verdana;
+}
+
+
+
 html,
 body {
   margin: 0;
@@ -28,16 +38,18 @@ body {
 
 .navbar-menu li a {
   border-radius: 5px;
-  background-color: #f3bd3c;
+  background-color: var(--main-color);
   padding: 2px 8px;
   margin-right: 8px;
   color: black;
   text-decoration: none;
+  transition: background-color 0.25s ease;
+  white-space: nowrap;
 }
 
 .navbar-menu li a:hover {
-  background-color: #c0952f;
-  transition: background-color 250ms ease;
+  background-color: var(--main-color-hover);
+  
 }
 
 /* ===== Navbar End ===== */
