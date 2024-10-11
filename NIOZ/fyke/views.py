@@ -4,7 +4,6 @@ from .models import DataCollection
 from datetime import datetime
 from .forms import DataCollectionForm
 from django.db.models.functions import ExtractYear, ExtractWeek
-from django.db.models import F
 
 # Index
 def index(request):
@@ -15,8 +14,8 @@ def index(request):
 def datacollection_view(request):
     # Extract the year and week from the 'date' field in the database
     data = DataCollection.objects.annotate(
-        year=ExtractYear('date'),
-        week=ExtractWeek('date')
+        year=ExtractYear('date'),  # Extract year from the date
+        week=ExtractWeek('date')    # Extract week from the date
     )
 
     # Get distinct years based on the 'date' field
@@ -28,10 +27,7 @@ def datacollection_view(request):
     # Filter the records by the selected year, if provided
     if selected_year:
         selected_year = int(selected_year)  # Convert to int for comparison
-        data = data.filter(year=selected_year)
-
-    # If no filter is applied, show all records
-    # Note: `data` already contains the filtered results if a year is selected
+        data = data.filter(year=selected_year)  # Filter data based on extracted year
 
     return render(request, 'datacollection.html', {
         'data': data,
@@ -102,8 +98,6 @@ def new_record_view(request):
         'form': form,
         'fishingday': fishingday,
     })
-
-
     
 def edit_record_view(request, pk):
     # Retrieve the record from the database or return 404 if it doesn't exist
@@ -125,17 +119,25 @@ def edit_record_view(request, pk):
 
 # Fishdetails
 def fishdetails(request):
-    # Get the distinct years from the records
-    years = DataCollection.objects.values_list('year', flat=True).distinct().order_by('year')
+    # Extract the year and week from the 'date' field in the database
+    data = DataCollection.objects.annotate(
+        year=ExtractYear('date'),
+        week=ExtractWeek('date')
+    )
+
+    # Get distinct years based on the 'date' field
+    years = data.values_list('year', flat=True).distinct().order_by('year')
 
     # Check if a year filter is applied in the URL
     selected_year = request.GET.get('year')
+    selected_week = request.GET.get('week')
 
     # Start with filtering by year
     if selected_year:
         selected_year = int(selected_year)  # Convert to int for comparison
-        # Filter records by selected year
-        data = DataCollection.objects.filter(year=selected_year)
+        data = data.filter(year=selected_year)  # Filter data based on extracted year
+        
+        weeks = data.values_list('week', flat=True).distinct().order_by('week')
         
         # If a week filter is applied, filter further by week
         if selected_week:
@@ -144,12 +146,14 @@ def fishdetails(request):
     else:
         # If no year is selected, show all records and no week filtering
         data = DataCollection.objects.all()
+        weeks = []
 
     return render(request, 'fishdetails.html', {
         'data': data,
         'years': years,
         'selected_year': selected_year,
-        'selected_week': selected_week
+        'selected_week': selected_week,
+        'weeks': weeks,
     })
 
 
