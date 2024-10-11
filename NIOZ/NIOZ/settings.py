@@ -89,7 +89,7 @@ DATABASES = {
         'USER': 'root',  # De MySQL-gebruiker
         'PASSWORD': '',  # Het wachtwoord voor de MySQL-gebruiker
         'HOST': 'localhost',  # Of het IP-adres van je MySQL-server
-        'PORT': '3306',  # De standaardpoort voor MySQL
+        'PORT': '3308',  # De standaardpoort voor MySQL
     }
 }
 
