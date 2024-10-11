@@ -46,7 +46,7 @@
             {% for item in data %}
             <td>
               <a href="#">print</a>
-              <a href="#">edit</a>
+              <a href="{% url 'edit_record' item.pk %}">edit</a>
               <a href="#">biotic</a>
             </td>
             <td>{{ item.date }}</td>

@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
 from .models import DataCollection
 from datetime import datetime
 from .forms import DataCollectionForm
@@ -55,10 +56,28 @@ def new_record_view(request):
     # Pass the variables to the template context
     return render(request, 'datacollection/new_record.html', {
         'form': form,
-        'current_year': current_year,   # Add this line
-        'current_week': current_week,     # Add this line
-        'fishingday': fishingday,         # Add this line
+        'current_year': current_year,
+        'current_week': current_week,
+        'fishingday': fishingday,
     })
+    
+def edit_record_view(request, pk):
+    # Retrieve the record from the database or return 404 if it doesn't exist
+    record = get_object_or_404(DataCollection, pk=pk)
+    
+    if request.method == 'POST':
+        form = DataCollectionForm(request.POST, instance=record)  # Bind the form with the existing record
+        if form.is_valid():
+            form.save()  # Save the updated record
+            return redirect('datacollection')  # Redirect after successful edit
+        else:
+            print(form.errors)
+    else:
+        form = DataCollectionForm(instance=record)  # Pre-fill the form with the existing record
+
+    # Render the edit form template
+    return render(request, 'datacollection/edit_record.html', {'form': form, 'record': record})
+
 
 # Fishdetails
 def fishdetails(request):

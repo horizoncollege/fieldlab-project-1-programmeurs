@@ -7,12 +7,10 @@ class DataCollectionForm(forms.ModelForm):
         fields = [
             'tidal_phase', 'salinity', 'temperature',
             'wind_direction', 'wind_speed', 'secchi_depth',
-            'fu_scale',
-            'date', 'time', 'year', 'week', 
+            'fu_scale', 'date', 'time', 'year', 'week', 
             'fishingday', 'fyke', 'duration', 'collect', 
             'remarks', 'observer', 'version'
         ]
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),  # Should render as <input type="date">
-            'time': forms.TimeInput(attrs={'type': 'time'}),   # Should render as <input type="time">
         }
