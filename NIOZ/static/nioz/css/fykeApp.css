@@ -14,17 +14,11 @@
     gap: 25px;
 }
 
-/* Styles all <a> (buttons) */
-.datacollection-wrapper a {
-    padding: 2px 5px;
-    background-color: var(--main-color);
-    color: black;
-    text-decoration: none;
-    transition: background-color 0.25s ease;
+.datacollection-wrapper .btn {
+    margin-right: 0 !important;
+    border-radius: 0 !important;
 }
-.datacollection-wrapper a:hover {
-    background-color: var(--main-color-hover);
-}
+
 
 /* Table Styling */
 .datacollection-table {

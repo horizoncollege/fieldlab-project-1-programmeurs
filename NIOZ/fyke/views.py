@@ -12,20 +12,46 @@ def index(request):
 
 # DataCollection
 def datacollection_view(request):
-    data = DataCollection.objects.all()  # Fetch all records
-    return render(request, 'datacollection.html', {'data': data})
+    # Get the distinct years from the records
+    years = DataCollection.objects.values_list('year', flat=True).distinct().order_by('year')
+
+    # Check if a year filter is applied in the URL
+    selected_year = request.GET.get('year')
+
+    # Convert selected_year to an integer for comparison
+    if selected_year:
+        selected_year = int(selected_year)  # Convert to int for comparison
+        # Filter the records by the selected year
+        data = DataCollection.objects.filter(year=selected_year)
+    else:
+        # If no filter is applied, show all records
+        data = DataCollection.objects.all()
+
+    return render(request, 'datacollection.html', {
+        'data': data,
+        'years': years,
+        'selected_year': selected_year
+    })
 
 def new_record_view(request):
     if request.method == 'POST':
-        # Get the form data, including the fyke dropdown
+        # Get the form data, including the fyke dropdown and date
         fyke = request.POST.get('fyke')  # Get the value from the custom dropdown
-        
+        date_input = request.POST.get('date')  # Get the date input
+
         # Create a form instance with the POST data
         form = DataCollectionForm(request.POST)
         
         if form.is_valid():
-            # Create the instance and save it
-            new_record = form.save(commit=False)  # Don't save to the database yet
+            # Extract the year from the date if it's provided
+            if date_input:
+                selected_date = datetime.strptime(date_input, '%Y-%m-%d')  # Adjust format if needed
+                new_record = form.save(commit=False)  # Don't save to the database yet
+                new_record.year = selected_date.year  # Set the year from the selected date
+            else:
+                new_record = form.save(commit=False)  # Don't save to the database yet
+                new_record.year = datetime.now().year  # Fallback to current year if no date is provided
+            
             new_record.fyke = fyke               # Set the fyke field from the dropdown
             new_record.save()                     # Now save the instance
             return redirect('datacollection')     # Redirect after successful submission

@@ -1,27 +1,29 @@
 {% extends 'index.html' %} {% block content %}
 <div class="datacollection-wrapper">
-  <span class="newrecord"><a href="{% url 'new_record' %}">New Record</a></span>
+  <span class="newrecord"
+    ><a href="{% url 'new_record' %}" class="btn btn-primary"
+      >New Record</a
+    ></span
+  >
   <div class="datacollection">
     <table class="year-selection-table">
       <tbody>
         <tr>
           <th>Year:</th>
         </tr>
+        {% for year in years %}
         <tr>
           <td>
-            <a href="#">2010</a>
+            <!-- Generate links that filter by year -->
+            <a
+              href="?year={{ year }}"
+              class="btn {% if year == selected_year %}btn-secondary{% else %}btn-primary{% endif %}"
+            >
+              {{ year }}
+            </a>
           </td>
         </tr>
-        <tr>
-          <td>
-            <a href="#">2011</a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <a href="#">2012</a>
-          </td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
     <div>
@@ -45,9 +47,11 @@
           <tr>
             {% for item in data %}
             <td>
-              <a href="#">print</a>
-              <a href="{% url 'edit_record' item.pk %}">edit</a>
-              <a href="#">biotic</a>
+              <a class="btn btn-primary" href="#">print</a>
+              <a class="btn btn-primary" href="{% url 'edit_record' item.pk %}"
+                >edit</a
+              >
+              <a class="btn btn-primary" href="#">biotic</a>
             </td>
             <td>{{ item.date }}</td>
             <td>{{ item.time }}</td>
