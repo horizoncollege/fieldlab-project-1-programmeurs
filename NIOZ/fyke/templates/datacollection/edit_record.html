@@ -6,7 +6,7 @@
     <tbody>
       <tr>
         <td>Date:</td>
-        <td>{{ form.date.value|date:"Y-m-d" }}</td>
+        <td><input type="text" value="{{ form.date.value|date:"Y-m-d" }}" disabled></td>
       </tr>
       <tr>
         <td>Time:</td>
@@ -69,6 +69,7 @@
     </tbody>
   </table>
 
+  <input type="hidden" name="date" value="{{ form.date.value|date:"Y-m-d" }}">
   <input type="hidden" name="year" value="{{ form.year.value }}">
   <input type="hidden" name="week" value="{{ form.week.value }}">
   <input type="hidden" name="fishingday" value="{{ form.fishingday.value }}">

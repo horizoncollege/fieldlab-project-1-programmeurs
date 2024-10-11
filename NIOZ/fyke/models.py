@@ -91,3 +91,7 @@ class DataCollectionForm(forms.ModelForm):
             'date': forms.DateInput(attrs={'type': 'date'}),  # Should render as <input type="date">
             # 'time': forms.TimeInput(attrs={'type': 'time'}),   # Should render as <input type="time">
         }
+    def __init__(self, *args, **kwargs):
+        super(DataCollectionForm, self).__init__(*args, **kwargs)
+        # Mark 'date' as disabled if it exists in form
+        self.fields['date'].disabled = True
