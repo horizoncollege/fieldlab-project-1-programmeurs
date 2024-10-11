@@ -1,1 +1,71 @@
-{% extends 'index.html' %}
+{% extends 'index.html' %} {% block content %}
+
+<div class="fishdetails-wrapper">
+  <span>Fish details</span>
+  <div class="fishdetails-wrapper-inner">
+    <table class="year-table">
+      <tbody>
+        <tr>
+          <th>Year:</th>
+        </tr>
+        {% for year in years %}
+        <tr>
+          <td>
+            <!-- Generate links that filter by year -->
+            <a
+              href="?year={{ year }}"
+              class="btn {% if year == selected_year %}btn-secondary{% else %}btn-primary{% endif %}"
+            >
+              {{ year }}
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <table class="week-table">
+      <tbody>
+        <tr>
+          <th>week:</th>
+        </tr>
+        {% if selected_year %} {% for week in weeks %}
+        <tr>
+          <td>
+            <a
+              href="?year={{ selected_year }}&week={{ week }}"
+              class="btn {% if week == selected_week %}btn-secondary{% else %}btn-primary{% endif %}"
+            >
+              {{ week }}
+            </a>
+          </td>
+        </tr>
+        {% endfor %} {% else %}
+        <tr>
+          <td>No year selected</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+    <table class="collectno-table">
+      <tbody>
+        <tr>
+          <th>Collectno:</th>
+        </tr>
+        <tr>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="multi-table">
+      <tbody>
+        <tr>
+          <th>N# * Name</th>
+        </tr>
+        <tr>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

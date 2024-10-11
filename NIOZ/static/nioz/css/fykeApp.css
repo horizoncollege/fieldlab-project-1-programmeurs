@@ -1,4 +1,4 @@
-/* fyke/Datacollection page */
+/* Datacollection page */
 .datacollection-wrapper {
     background-color: #eee;
     padding: 5px;
@@ -19,8 +19,6 @@
     border-radius: 0 !important;
 }
 
-
-/* Table Styling */
 .datacollection-table {
     border: 1px solid;
     border-collapse: collapse;
@@ -41,12 +39,10 @@
     font-weight: bold;
 }
 
-/* fyke/datacollection/new_record page */
-
+/* datacollection/new_record page */
 .datacollection {
     display: flex;
 }
-
 
 .datacollection-form table {
     background-color: #eee;
@@ -73,4 +69,40 @@
     text-align: center;
     width: 100%;
     display: block;
+}
+
+
+/* fishdetails page */
+.fishdetails-wrapper {
+    background-color: #eee;
+    padding: 5px;
+}
+
+.fishdetails-wrapper th {
+    background-color: #ddd;
+}
+
+.fishdetails-wrapper span {
+    display: block;
+    text-align: center;
+}
+
+.fishdetails-wrapper a {
+    margin: 0 !important;
+    display: block;
+    text-align: center;
+}
+
+.fishdetails-wrapper table {
+    border: 1px solid;
+    padding: 0;
+    border-spacing: 0;
+}
+
+.fishdetails-wrapper-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+
+    gap: 10px;
 }

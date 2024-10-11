@@ -70,14 +70,14 @@
   </table>
 
   <input type="hidden" name="date" value="{{ form.date.value|date:"Y-m-d" }}">
-  <input type="hidden" name="year" value="{{ form.year.value }}">
-  <input type="hidden" name="week" value="{{ form.week.value }}">
+  {% comment %} <input type="hidden" name="year" value="{{ form.year.value }}"> {% endcomment %}
+  {% comment %} <input type="hidden" name="week" value="{{ form.week.value }}"> {% endcomment %}
   <input type="hidden" name="fishingday" value="{{ form.fishingday.value }}">
   <input type="hidden" name="version" value="3.0">
 
   <div style="margin-top: 5px">
-    <button class="btn btn-secondary" type="submit">Submit</button>
-    <a href="{% url 'datacollection' %}" class="btn btn-primary">Cancel</a>
+    <button class="btn btn-secondary" type="submit">Store</button>
+    <button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'datacollection' %}'">Cancel</button>
   </div>
 </form>
 {% endblock %}

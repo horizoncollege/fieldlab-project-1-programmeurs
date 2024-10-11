@@ -1,24 +1,22 @@
 from django.db import models
 
 class DataCollection(models.Model):
-    tidal_phase = models.CharField(max_length=50)
-    salinity = models.IntegerField()
-    temperature = models.IntegerField()
-    wind_direction = models.CharField(max_length=10)
-    wind_speed = models.IntegerField()
-    secchi_depth = models.IntegerField()
-    fu_scale = models.CharField(max_length=10)
+    tidal_phase = models.CharField(max_length=50, blank=True, null=True)
+    salinity = models.IntegerField(blank=True, null=True)
+    temperature = models.IntegerField(blank=True, null=True)
+    wind_direction = models.CharField(max_length=10, blank=True, null=True)
+    wind_speed = models.IntegerField(blank=True, null=True)
+    secchi_depth = models.IntegerField(blank=True, null=True)
+    fu_scale = models.CharField(max_length=10, blank=True, null=True)
+    remarks = models.TextField(blank=True, null=True)
+    observer = models.CharField(max_length=255, blank=True, null=True)
 
     date = models.DateField()
     time = models.TimeField()
-    year = models.IntegerField()
-    week = models.IntegerField()
     fishingday = models.IntegerField()
-    fyke = models.CharField(max_length=255)
+    fyke = models.CharField()
     duration = models.IntegerField()
     collect = models.IntegerField()
-    remarks = models.TextField()
-    observer = models.CharField(max_length=255)
     version = models.CharField(max_length=255)
     
     FYKE_CHOICES = [
@@ -72,13 +70,15 @@ class DataCollectionForm(forms.ModelForm):
     class Meta:
         model = DataCollection
         fields = [
-            'tidal_phase', 'salinity', 'temperature',
-            'wind_direction', 'wind_speed', 'secchi_depth',
-            'fu_scale', 
+            'tidal_phase',
+            'salinity',
+            'temperature',
+            'wind_direction',
+            'wind_speed',
+            'secchi_depth',
+            'fu_scale',
             'date',
             'time',
-            'year',
-            'week',
             'fishingday',
             'fyke',
             'duration',
@@ -95,3 +95,7 @@ class DataCollectionForm(forms.ModelForm):
         super(DataCollectionForm, self).__init__(*args, **kwargs)
         # Mark 'date' as disabled if it exists in form
         self.fields['date'].disabled = True
+        
+# class Fishdetails(models.Model):
+#     collectdate = models.DateField()
+#     species = models.CharField(max_length=50)
