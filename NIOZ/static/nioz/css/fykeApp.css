@@ -1,0 +1,76 @@
+/* fyke/Datacollection page */
+.datacollection-wrapper {
+    background-color: #eee;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.datacollection {
+    display: flex;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+.datacollection-wrapper .btn {
+    margin-right: 0 !important;
+    border-radius: 0 !important;
+}
+
+
+/* Table Styling */
+.datacollection-table {
+    border: 1px solid;
+    border-collapse: collapse;
+    background-color: #fdfdfd;
+}
+
+.datacollection-table th {
+    background-color: #ddd;
+}
+
+.year-selection-table {
+    background-color: #eee;
+    padding: 2px;
+    border: 1px solid black;
+}
+
+.year-selection-table span {
+    font-weight: bold;
+}
+
+/* fyke/datacollection/new_record page */
+
+.datacollection {
+    display: flex;
+}
+
+
+.datacollection-form table {
+    background-color: #eee;
+    border: 1px solid black;
+}
+
+.datacollection-form td {
+    vertical-align: top;
+}
+
+.datacollection-form td:first-child {
+    font-weight: bold;
+    text-align: right;
+}
+
+.datacollection-form input {
+    COLOR: #000000;
+    FONT-FAMILY: verdana, helvetica, sans-serif;
+    FONT-SIZE: 12px;
+    line-height: 16px;
+}
+
+.datacollection-form span {
+    text-align: center;
+    width: 100%;
+    display: block;
+}
