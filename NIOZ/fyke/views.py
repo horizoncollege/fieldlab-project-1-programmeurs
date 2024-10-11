@@ -34,6 +34,13 @@ def datacollection_view(request):
     })
 
 def new_record_view(request):
+    # Initialize variables
+    current_year = datetime.now().year
+    current_week = datetime.now().isocalendar()[1]  # Get the current week number
+    fishingday = 0  # Default or calculated value
+    version = '3.0'
+    form = DataCollectionForm()  # Initialize an empty form
+
     if request.method == 'POST':
         # Get the form data, including the fyke dropdown and date
         fyke = request.POST.get('fyke')  # Get the value from the custom dropdown
@@ -50,7 +57,7 @@ def new_record_view(request):
                 new_record.year = selected_date.year  # Set the year from the selected date
             else:
                 new_record = form.save(commit=False)  # Don't save to the database yet
-                new_record.year = datetime.now().year  # Fallback to current year if no date is provided
+                new_record.year = current_year  # Fallback to current year if no date is provided
             
             new_record.fyke = fyke               # Set the fyke field from the dropdown
             new_record.save()                     # Now save the instance
@@ -58,19 +65,11 @@ def new_record_view(request):
         else:
             print(form.errors)
     else:
-        # Get the current year and week number
-        current_year = datetime.now().year
-        current_week = datetime.now().isocalendar()[1]  # Get the current week number
-        
-        # Choose a reference date (e.g., Jan 1 of the current year)
+        # Only run this block if the method is GET
         reference_date = datetime(current_year, 1, 1)  # Change as needed
-        
-        # Calculate fishingday as the number of days since the reference date
         today = datetime.now()
         fishingday = (today - reference_date).days
         
-        version = '3.0'
-
         # Set the initial values for the form
         form = DataCollectionForm(initial={
             'year': current_year,
