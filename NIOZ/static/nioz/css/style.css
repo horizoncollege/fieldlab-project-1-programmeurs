@@ -26,8 +26,8 @@ body {
   display: inline;
 }
 
-.navbar-menu li a {
-  border-radius: 5px;
+.navbar-menu li a, .adminMenu a {
+  border-radius: 2px;
   background-color: #f3bd3c;
   padding: 2px 8px;
   margin-right: 8px;

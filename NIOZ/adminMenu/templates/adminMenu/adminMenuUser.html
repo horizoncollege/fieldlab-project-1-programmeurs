@@ -1,0 +1,541 @@
+{% extends 'home.html' %}
+
+{% block title %}Administrator{{ block.super }}{% endblock %}
+
+
+{% block submenu %}
+<!-- <ul>
+    <li><a href="/adminMenu/adminMenuUser">test</a></li>
+</ul> -->
+{% endblock %}
+
+{% block content %}
+<div class="adminMenu">
+            <table border="0" cellspacing="0" cellpadding="0" bgcolor="#FDFDFD" class="text">
+                <tbody>
+                    <tr>
+                        <td align="CENTER">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td align="CENTER">
+                            <table border="0" cellspacing="0" cellpadding="2" class="text">
+                                <tbody>
+                                    <tr>
+                                        <th bgcolor="#F0F0F0">User permissions</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="CENTER">
+                            <table border="1" cellspacing="0" cellpadding="2" class="text"
+                                style="border:1px solid; border-collapse:collapse;" bgcolor="#FCFCFC">
+                                <tbody>
+                                    <tr>
+                                        <th bgcolor="#F7F7F7">User</th>
+                                        <th bgcolor="#F7F7F7">Active</th>
+                                        <th bgcolor="#F7F7F7">Name</th>
+                                        <th>Year range access</th>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;student&nbsp;</td>
+                                        <td align="CENTER"></td>
+                                        <td>student</td>
+                                        <td align="center"> from 2010</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table border="0" cellspacing="0" cellpadding="5" class="text">
+                                <tbody>
+                                    <tr>
+                                        <td>&nbsp;<a href="procfish.php?cmd=9030&amp;uid=5037&amp;origcmd=9020"
+                                                class="but11">&nbsp;Change password&nbsp;</a>&nbsp;</td>
+                                        <td>&nbsp;<a href="procfish.php?cmd=9040&amp;uid=5037&amp;origcmd=9020"
+                                                class="but11">&nbsp;Change name&nbsp;</a>&nbsp;</td>
+                                        <td>&nbsp;<a href="procfish.php?cmd=9050&amp;uid=5037&amp;origcmd=9020"
+                                                class="but11">&nbsp;Change year range&nbsp;</a>&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table border="1" cellspacing="0" cellpadding="2" class="text"
+                                style="border:1px solid; border-collapse:collapse;" bgcolor="#FCFCFC">
+                                <tbody>
+                                    <tr>
+                                        <th bgcolor="#F7F7F7">&nbsp;<br>Function</th>
+                                        <th bgcolor="#F7F7F7">No<br>access</th>
+                                        <th bgcolor="#F7F7F7">Read<br>only</th>
+                                        <th bgcolor="#F7F7F7">Read/<br>Write</th>
+                                    </tr>
+                                    <tr>
+                                        <td bgcolor="#A0F0A0">Access to <b>Texel</b></td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Texel" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Texel" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="Texel" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        </tr>
+                                    <tr>
+                                        <td bgcolor="#A0F0A0">Access to <b>Lauwersoog</b></td>
+                                        <td>
+                                        <label>
+                                            <input type="radio" name="Lauwersoog" value="1">
+                                            <span class="custom-radio"></span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input type="radio" name="Lauwersoog" value="2">
+                                            <span class="custom-radio"></span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input checked type="radio" name="Lauwersoog" value="3">
+                                            <span class="custom-radio"></span>
+                                        </label>
+                                    </td>
+                                        </tr>
+                                    <tr>
+                                        <td>Fishdata</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fishdata" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fishdata" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="fishdata" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fishdata - delete records</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="deleteRecords" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="deleteRecords" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="deleteRecords" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fishdata - Export</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fishdataExport" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fishdataExport" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="fishdataExport" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fishdata - records</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fishdataRecords" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fishdataRecords" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="fishdataRecords" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fishdata - Source</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fishdataSource" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fishdataSource" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="fishdataSource" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fyke</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fyke" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fyke" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="fyke" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fyke - Biotic data</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="bioticData" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="bioticData" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="bioticData" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fyke - Data Collection </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="dataCollection" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="dataCollection" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="dataCollection" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fyke - Export data</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="exportData" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="exportData" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="exportData" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fyke - Fish Details</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fishDetails" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fishDetails" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="fishDetails" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fyke - Fyke locations</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fykeLocations" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="fykeLocations" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="fykeLocations" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Help</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Help" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Help" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="Help" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Maintenance</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Maintenance" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Maintenance" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="Maintenance" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Maintenance - Fishprogrammes</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Fishprogrammes" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Fishprogrammes" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="Fishprogrammes" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Maintenance - Locations</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Locations" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Locations" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="Locations" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Maintenance - Species</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Species" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Species" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="Species" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Manager</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="manager" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="manager" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="manager" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Manager - User access</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="UserAccess" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="UserAccess" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="UserAccess" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Options</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Options" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="Options" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="Options" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Options - User settings</td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="userSettings" value="1">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input type="radio" name="userSettings" value="2">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input checked type="radio" name="userSettings" value="3">
+                                                <span class="custom-radio"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+            {% endblock %}
+
+
