@@ -117,7 +117,10 @@ def edit_record_view(request, pk):
     # Render the edit form template
     return render(request, 'datacollection/edit_record.html', {'form': form, 'record': record})
 
-
+def biotic(request, pk):
+    
+    return render(request, 'datacollection/biotic.html')
+    
 # Fishdetails
 def fishdetails(request):
     # Extract the year and week from the 'date' field in the database
@@ -179,7 +182,6 @@ def fishdetails(request):
         collect_numbers = []
         range_groups = []
 
-    print(selected_range)
     return render(request, 'fishdetails.html', {
         'data': data,
         'years': years,

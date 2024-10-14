@@ -51,7 +51,7 @@
               <a class="btn btn-primary" href="{% url 'edit_record' item.pk %}"
                 >edit</a
               >
-              <a class="btn btn-primary" href="#">biotic</a>
+              <a class="btn btn-primary" href="{% url 'biotic' item.pk %}">biotic</a>
             </td>
             <td>{{ item.date }}</td>
             <td>{{ item.time }}</td>
