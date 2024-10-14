@@ -23,6 +23,7 @@
         {% endfor %}
       </tbody>
     </table>
+
     <table class="week-table">
       <tbody>
         <tr>
@@ -47,11 +48,33 @@
         <tr>
           <th>Collectno:</th>
         </tr>
+        {% if selected_year %}{% if selected_week %}
         <tr>
-          <td></td>
+          <td>
+            <a
+              href="?year={{ selected_year }}&week={{ selected_week }}"
+              class="btn {% if selected_range %}btn-primary{% else %}btn-secondary{% endif %}"
+              >All
+            </a>
+          </td>
         </tr>
+        <!-- Loop through range groups -->
+        {% for group in range_groups %} {% if group.collect_in_range %}
+        <tr>
+          <td>
+            <a
+              href="?year={{ selected_year }}&week={{ selected_week }}&range={{ group.start }}-{{ group.end }}"
+              class="btn btn-primary"
+              id="{{ group.start }}-{{ group.end }}"
+            >
+              {{ group.start }}-{{ group.end }}
+            </a>
+          </td>
+        </tr>
+        {% endif %} {% endfor %} {% endif %} {% endif %}
       </tbody>
     </table>
+
     <table class="multi-table">
       <tbody>
         <tr>
@@ -64,4 +87,10 @@
     </table>
   </div>
 </div>
+
+<style>
+  a#\3{{ selected_range}} {background-color: var(--secondary-color)}
+</style>
+
 {% endblock %}
+

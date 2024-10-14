@@ -62,39 +62,6 @@ class DataCollection(models.Model):
     def __str__(self):
         return f"DataCollection on {self.date} by {self.observer}"
     
-
-from django import forms
-from .models import DataCollection
-
-class DataCollectionForm(forms.ModelForm):
-    class Meta:
-        model = DataCollection
-        fields = [
-            'tidal_phase',
-            'salinity',
-            'temperature',
-            'wind_direction',
-            'wind_speed',
-            'secchi_depth',
-            'fu_scale',
-            'date',
-            'time',
-            'fishingday',
-            'fyke',
-            'duration',
-            'collect',
-            'remarks',
-            'observer',
-            'version'
-        ]
-        widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),  # Should render as <input type="date">
-            # 'time': forms.TimeInput(attrs={'type': 'time'}),   # Should render as <input type="time">
-        }
-    def __init__(self, *args, **kwargs):
-        super(DataCollectionForm, self).__init__(*args, **kwargs)
-        # Mark 'date' as disabled if it exists in form
-        self.fields['date'].disabled = True
         
 # class Fishdetails(models.Model):
 #     collectdate = models.DateField()

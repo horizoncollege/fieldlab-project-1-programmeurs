@@ -4,6 +4,7 @@ from .models import DataCollection
 from datetime import datetime
 from .forms import DataCollectionForm
 from django.db.models.functions import ExtractYear, ExtractWeek
+from math import ceil
 
 # Index
 def index(request):
@@ -125,35 +126,68 @@ def fishdetails(request):
         week=ExtractWeek('date')
     )
 
-    # Get distinct years based on the 'date' field
+    # Get distinct years and weeks based on the 'date' field
     years = data.values_list('year', flat=True).distinct().order_by('year')
 
     # Check if a year filter is applied in the URL
     selected_year = request.GET.get('year')
     selected_week = request.GET.get('week')
+    selected_range = request.GET.get('range')  # Collect range filter
 
+    # Placeholder for the available weeks of the selected year
+    weeks = []
+    
     # Start with filtering by year
     if selected_year:
         selected_year = int(selected_year)  # Convert to int for comparison
         data = data.filter(year=selected_year)  # Filter data based on extracted year
         
+        # Get distinct weeks for the selected year
         weeks = data.values_list('week', flat=True).distinct().order_by('week')
-        
+
         # If a week filter is applied, filter further by week
         if selected_week:
             selected_week = int(selected_week)  # Convert to int for comparison
             data = data.filter(week=selected_week)
-    else:
-        # If no year is selected, show all records and no week filtering
-        data = DataCollection.objects.all()
-        weeks = []
+        
+        # Retrieve 'collect' values from the filtered data
+        collect_numbers = data.values_list('collect', flat=True).distinct()
 
+        # Group the collect numbers into ranges (1-5, 6-10, etc.)
+        max_collect = max(collect_numbers) if collect_numbers else 0
+        range_groups = []
+        
+        # Generate the range groups dynamically
+        for i in range(1, ceil(max_collect / 5) + 1):
+            start = (i - 1) * 5 + 1
+            end = i * 5
+            # Collect numbers in the current range
+            range_groups.append({
+                'start': start,
+                'end': end,
+                'collect_in_range': [c for c in collect_numbers if start <= c <= end]
+            })
+
+        # If range filter is applied, filter collect numbers by range
+        if selected_range:
+            range_start, range_end = map(int, selected_range.split('-'))
+            data = data.filter(collect__gte=range_start, collect__lte=range_end)
+    
+    else:
+        # If no year is selected, show all records and no week or range filtering
+        data = DataCollection.objects.all()
+        collect_numbers = []
+        range_groups = []
+
+    print(selected_range)
     return render(request, 'fishdetails.html', {
         'data': data,
         'years': years,
+        'weeks': weeks,
         'selected_year': selected_year,
         'selected_week': selected_week,
-        'weeks': weeks,
+        'selected_range' : selected_range,
+        'range_groups': range_groups,  # Pass the collect ranges to the template
     })
 
 
