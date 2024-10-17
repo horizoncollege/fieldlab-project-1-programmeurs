@@ -17,7 +17,6 @@ urlpatterns = [
     
     # Fykelocations URL's
     path('fykelocations/', views.fykelocations, name='fykelocations'),
-    path('fykelocations/add_location.html', views.new_location, name='new_location'),
-    path('fykelocations/edit_location.html', views.edit_location, name='edit_location'),
-    
+    path('fykelocations/new_location/', views.new_location, name='new_location'),
+    path('fykelocations/edit_location/<int:pk>/', views.edit_location, name='edit_location'), 
 ]

@@ -212,6 +212,12 @@ def fykelocations(request):
         'data': data  # Pass the data to the template
     })
 
+def new_location(request):
+    return render(request, 'fykelocations/new_location.html')
+    
+def edit_location(request, pk):
+    return render(request, 'fykelocations/edit_location.html')
+
 
 # Exportdata
 def exportdata(request):
