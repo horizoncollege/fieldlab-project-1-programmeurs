@@ -11,15 +11,6 @@ def species_list(request):
     sort_order = request.GET.get('order', 'asc')  # Standaard volgorde is 'asc'
     print(sort_order)
 
-    # Controleer of de huidige sortering opnieuw moet worden omgekeerd
-    # if request.GET.get('sort') == sort_field:
-    if sort_order == 'desc':
-            sort_order = 'asc'
-    else:
-            sort_order = 'desc'
-    # else:
-        # sort_order = 'asc'  # Reset naar 'asc' als een andere kolom wordt aangeklikt
-
     # Maak een dynamische queryset op basis van sort_field en sort_order
     species = MaintenanceSpeciesList.objects.all()
     if sort_order == 'asc':
