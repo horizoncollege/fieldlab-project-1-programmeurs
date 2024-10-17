@@ -5,7 +5,10 @@
 
 {% block submenu %}
 <ul>
-    <li><a href="/adminMenu/adminMenuUser">test</a></li>
+    <li class="adminMenuBar">admin menu:</li>
+    <li><a href="/adminMenu/adminMenuUser">Users</a></li>
+    <li><a href="/adminMenu/adminMenuUser">New user</a></li>
+    <li><a href="/adminMenu/adminMenuUser">Djangoinfo</a></li>
 </ul>
 {% endblock %}
 
@@ -33,7 +36,7 @@
                         </tr>
                         {% for person in persons %}
                         <tr class="bars">
-                            <td><a class="user" href="/adminMenu/adminMenuUser">{{ person.username }}</a></td>
+                            <td><a class="user" href="{% url 'adminMenuUser' person.pk %}">{{ person.username }}</a></td>
                             <td><input checked type="checkbox"></td>
                             <td>{{ person.realName }}</td>
                             <td>{{ person.collectlocation }}</td>
