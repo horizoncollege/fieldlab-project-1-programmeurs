@@ -1,5 +1,6 @@
 {% extends 'maintenance/index.html' %}
 
+
 {% block content %}
 <div class="species_list_wrapper">
     <table cellspacing="0" cellpadding="5" class="text">
@@ -13,48 +14,45 @@
                         <thead>
                             <tr>
                                 <th class="bok11">
-                                    <a href="?sort=id" class="center">SpeciesID</a>
+                                    <a href="#" id="sort-id-btn" class="center" data-sort="id">SpeciesID</a>
                                 </th>
                                 <th class="bok11">
-                                    <a href="?sort=active&order={% if sort_field == 'active' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Active</a>
+                                    <a href="#" id="sort-active-btn" class="center" data-sort="active">Active</a>
                                 </th>
                                 <th class="bok11">
-                                    <a href="?sort=nl_name&order={% if sort_field == 'nl_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">NL name</a>
+                                    <a href="#" id="sort-nl_name-btn" class="center" data-sort="nl-name">NL name</a>
                                 </th>
                                 <th class="bok11">
-                                    <a href="?sort=name&order={% if sort_field == 'name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">EN name</a>
+                                    <a href="#" id="sort-en_name-btn" class="center" data-sort="en-name">EN name</a>
                                 </th>
                                 <th class="bok11">
-                                    <a href="?sort=latin_name&order={% if sort_field == 'latin_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">LATIN name</a>
+                                    <a href="#" id="sort-latin_name-btn" class="center" data-sort="latin-name">LATIN name</a>
                                 </th>
                                 <th class="bok11">
-                                    <a href="?sort=WoRMS&order={% if sort_field == 'WoRMS' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">WoRMS</a>
+                                    <a href="#" id="sort-worms-btn" class="center" data-sort="worms">WoRMS</a>
                                 </th>
                                 <th class="bok11">
-                                    <a href="?sort=pauly_trophic_level&order={% if sort_field == 'pauly_trophic_level' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">PaulyTrophicLevel</a>
+                                    <a href="#" id="sort-paulytrophiclevel-btn" class="center" data-sort="pauly">PaulyTrophicLevel</a>
                                 </th>
                                 <th class="bok11">
-                                    <a href="?sort=var_x&order={% if sort_field == 'var_x' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Var X</a>
+                                    <a href="#" id="sort-varx-btn" class="center" data-sort="varx">Var X</a>
                                 </th>
                                 <th class="bok11">
-                                    <a href="?sort=fishflag&order={% if sort_field == 'fishflag' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Fishflag</a>
+                                    <a href="#" id="sort-fish-btn" class="center" data-sort="fish">Fishflag</a>
                                 </th>
                                 <th class="bok11">
-                                    <a href="?sort=collecting_per_week&order={% if sort_field == 'collecting_per_week' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Coll/wk</a>
+                                    <a href="#" id="sort-coll/wk-btn" class="center" data-sort="collecting">Coll/wk</a>
                                 </th>
                                 <th class="bok11">
-                                    <a href="?sort=always_collecting&order={% if sort_field == 'always_collecting' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Alw.Coll</a>
+                                    <a href="#" id="sort-alw.coll-btn" class="center" data-sort="always-collecting">Alw.Coll</a>
                                 </th>
+                                <th class="bok11">Acties</th>  <!-- Nieuwe kolom voor acties -->
                             </tr>
                         </thead>
-                        
-                        
                         <tbody>
                             {% for specie in species %}
                             <tr>
-                                <td class="center" data-id="{{ specie.id }}">
-                                    <a href="{% url 'species_edit' specie.id %}" class="btn btn-primary">{{ specie.id }}</a>
-                                </td>
+                                <td class="center" data-id="{{ specie.id }}">{{ specie.id }}</td>
                                 <td class="center">
                                     <img src="{% if specie.active %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}" alt="Active Checkbox" style="width: 15px; height: 15px;">
                                 </td>
@@ -71,6 +69,9 @@
                                 <td class="center">
                                     <img src="{% if specie.always_collecting %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}" alt="Always Collecting Checkbox" style="width: 15px; height: 15px;">
                                 </td>
+                                <td class="center"> <!-- Acties voor bewerken -->
+                                    <a href="{% url 'species_edit' specie.id %}">Bewerken</a>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -80,11 +81,18 @@
         </tbody>
     </table>
 
-    <form method="POST" action="{% url 'species_list' %}" class="form2">
+
+
+
+
+
+
+<div class="species_edit_wrapper">
+    <form method="POST" action="{% url 'species_edit' specie.id %}" class="form2">
         {% csrf_token %}
-        <table border="1" cellspacing="0" cellpadding="2" class="text" style="display: none;" id="species-form">
+        <table border="1" cellspacing="0" cellpadding="2" class="text">
             <tbody>
-                <tr><th colspan="2">New record</th></tr>
+                <tr><th colspan="2">Edit Species</th></tr>
                 <tr><th>Variable</th><th>Value</th></tr>
                 <div class="background2">
                     <tr>
@@ -134,12 +142,11 @@
                 </div>
                 <tr>
                     <td colspan="2" align="center">
-                        <button name="btn1" value="store" type="submit">Store</button>
+                        <button name="btn1" value="update" type="submit">Update</button>
                     </td>
                 </tr>
             </tbody>
         </table>
     </form>
 </div>
-
 {% endblock %}

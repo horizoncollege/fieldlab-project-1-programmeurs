@@ -2,9 +2,7 @@
     background-color: #F3D71C; 
  }
  
- .bgn11{
-     background-color: #00FF00; 
- }
+
  
  .but11{
  background-color: #F3BD3C;
@@ -67,4 +65,18 @@
      border-collapse: collapse; /* Zorg ervoor dat de randen van de cellen samenkomen */
  }
  
- 
+ .sorted-asc {
+    background-color: #00FF00;
+}
+
+.sorted-desc{
+    background-color: #FF0000;
+}
+
+.form2{
+    background-color: #f0f0f0;
+}
+
+.form2 td:first-child{
+    background-color: #e0e0e0;
+}
