@@ -66,3 +66,24 @@ class DataCollection(models.Model):
 # class Fishdetails(models.Model):
 #     collectdate = models.DateField()
 #     species = models.CharField(max_length=50)
+
+class FykeLocations(models.Model):
+    name = models.CharField(max_length=50)
+    type = models.CharField(max_length=50)
+    remarks = models.CharField(max_length=256)
+    collectgroup = models.CharField(max_length=50)
+    printlabel = models.CharField(max_length=50)
+    
+    OPTIONS = [
+        ('Texel', 'Texel'),
+        ('Lauwersoog', 'Lauwersoog')
+    ]
+    
+    latitude = models.FloatField(choices=OPTIONS)
+    longitude = models.FloatField(choices=OPTIONS)
+    
+    class Meta:
+        db_table = 'fyke_fykelocations'  # Set the name to your existing database table
+        
+    def __str__(self):
+        return f"Fykelocations"

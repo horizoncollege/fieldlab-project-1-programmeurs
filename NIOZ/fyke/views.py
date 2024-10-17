@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .models import DataCollection
+from .models import DataCollection, FykeLocations
 from datetime import datetime
 from .forms import DataCollectionForm
 from django.db.models.functions import ExtractYear, ExtractWeek
@@ -112,10 +112,13 @@ def edit_record_view(request, pk):
         else:
             print(form.errors)
     else:
-        form = DataCollectionForm(instance=record)  # Pre-fill the form with the existing record
+        form = DataCollectionForm(instance=record)
 
     # Render the edit form template
-    return render(request, 'datacollection/edit_record.html', {'form': form, 'record': record})
+    return render(request, 'datacollection/edit_record.html', {
+        'form': form,
+        # 'record': record,
+    })
 
 def biotic(request, pk):
     
@@ -195,7 +198,12 @@ def fishdetails(request):
 
 # Fykelocations
 def fykelocations(request):
-    return render(request, 'fykelocations.html')
+    # Retrieve all records from the FykeLocations table
+    data = FykeLocations.objects.all()  # This gets all entries in the table
+    
+    return render(request, 'fykelocations.html', {
+        'data': data  # Pass the data to the template
+    })
 
 
 # Exportdata
