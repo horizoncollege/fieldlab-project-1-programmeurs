@@ -121,8 +121,15 @@ def edit_record_view(request, pk):
     })
 
 def biotic(request, pk):
-    
-    return render(request, 'datacollection/biotic.html')
+    # Retrieve the specific record from the DataCollection model using the primary key
+    record = get_object_or_404(DataCollection.objects.annotate(
+        year=ExtractYear('date'),  # Extract year from the date
+        week=ExtractWeek('date')    # Extract week from the date
+    ), pk=pk)
+
+    return render(request, 'datacollection/biotic.html', {
+        'record': record,  # Pass the record to the template
+    })
     
 # Fishdetails
 def fishdetails(request):

@@ -1,4 +1,43 @@
 {% extends 'index.html' %} {% block content %}
 
+<div class="fyke-wrapper">
+    <a href="?week={{ record.week}}" class="btn btn-primary">
+        view total for week {{ record.week}}
+    </a>
+<table border="1" cellpadding="4" class="fyke-table">
+        <tbody>
+          <tr>
+            <th>options</th>
+            <th>date</th>
+            <th>time</th>
+            <th>year</th>
+            <th>week</th>
+            <th>fishingday</th>
+            <th>fyke</th>
+            <th>duration</th>
+            <th>collect</th>
+            <th>remarks</th>
+            <th>observer</th>
+            <th>version</th>
+          </tr>
+          <tr>
+            <td>
+                <a class="btn btn-primary" href="{% url 'datacollection' %}">Back</a>
+            </td>
+            <td>{{ record.date }}</td>
+            <td>{{ record.time }}</td>
+            <td>{{ record.year }}</td>
+            <td>{{ record.week }}</td>
+            <td>{{ record.fishingday }}</td>
+            <td>{{ record.fyke }}</td>
+            <td>{{ record.duration }}</td>
+            <td>{{ record.collect }}</td>
+            <td>{{ record.remarks }}</td>
+            <td>{{ record.observer }}</td>
+            <td>{{ record.version }}</td>
+          </tr>
+        </tbody>
+      </table>
 
+</div>
 {% endblock %}
