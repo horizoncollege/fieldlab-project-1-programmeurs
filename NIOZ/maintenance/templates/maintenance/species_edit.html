@@ -1,0 +1,152 @@
+{% extends 'maintenance/index.html' %}
+
+
+{% block content %}
+<div class="maintenance species_list">
+    <table cellspacing="0" cellpadding="5" class="text">
+        <tbody>
+            <tr>
+                <th>Species&nbsp;&nbsp;<a href="#" id="new-species-btn" class="but11">&nbsp;new&nbsp;</a></th>
+            </tr>
+            <tr>
+                <td class="background">
+                    <table border="1" cellspacing="0" cellpadding="2" class="text" id="table">
+                        <thead>
+                            <tr>
+                                <th class="bok11">
+                                    <a href="#" id="sort-id-btn" class="center" data-sort="id">SpeciesID</a>
+                                </th>
+                                <th class="bok11">
+                                    <a href="#" id="sort-active-btn" class="center" data-sort="active">Active</a>
+                                </th>
+                                <th class="bok11">
+                                    <a href="#" id="sort-nl_name-btn" class="center" data-sort="nl-name">NL name</a>
+                                </th>
+                                <th class="bok11">
+                                    <a href="#" id="sort-en_name-btn" class="center" data-sort="en-name">EN name</a>
+                                </th>
+                                <th class="bok11">
+                                    <a href="#" id="sort-latin_name-btn" class="center" data-sort="latin-name">LATIN name</a>
+                                </th>
+                                <th class="bok11">
+                                    <a href="#" id="sort-worms-btn" class="center" data-sort="worms">WoRMS</a>
+                                </th>
+                                <th class="bok11">
+                                    <a href="#" id="sort-paulytrophiclevel-btn" class="center" data-sort="pauly">PaulyTrophicLevel</a>
+                                </th>
+                                <th class="bok11">
+                                    <a href="#" id="sort-varx-btn" class="center" data-sort="varx">Var X</a>
+                                </th>
+                                <th class="bok11">
+                                    <a href="#" id="sort-fish-btn" class="center" data-sort="fish">Fishflag</a>
+                                </th>
+                                <th class="bok11">
+                                    <a href="#" id="sort-coll/wk-btn" class="center" data-sort="collecting">Coll/wk</a>
+                                </th>
+                                <th class="bok11">
+                                    <a href="#" id="sort-alw.coll-btn" class="center" data-sort="always-collecting">Alw.Coll</a>
+                                </th>
+                                <th class="bok11">Acties</th>  <!-- Nieuwe kolom voor acties -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for specie in species %}
+                            <tr>
+                                <td class="center" data-id="{{ specie.id }}">{{ specie.id }}</td>
+                                <td class="center">
+                                    <img src="{% if specie.active %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}" alt="Active Checkbox" style="width: 15px; height: 15px;">
+                                </td>
+                                <td>{{ specie.nl_name }}</td>
+                                <td>{{ specie.name }}</td>
+                                <td>{{ specie.latin_name }}</td>
+                                <td>{{ specie.WoRMS }}</td>
+                                <td class="center">{{ specie.pauly_trophic_level }}</td>
+                                <td class="center">{{ specie.var_x }}</td>
+                                <td class="center">
+                                    <img src="{% if specie.fishflag %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}" alt="Fishflag Checkbox" style="width: 15px; height: 15px;">
+                                </td>
+                                <td class="center">{{ specie.collecting_per_week }}</td>
+                                <td class="center">
+                                    <img src="{% if specie.always_collecting %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}" alt="Always Collecting Checkbox" style="width: 15px; height: 15px;">
+                                </td>
+                                <td class="center"> <!-- Acties voor bewerken -->
+                                    <a href="{% url 'species_edit' specie.id %}">Bewerken</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+<div class="species_edit_wrapper">
+    <form method="POST" action="{% url 'species_edit' specie.id %}" class="form2">
+        {% csrf_token %}
+        <table border="1" cellspacing="0" cellpadding="2" class="text">
+            <tbody>
+                <tr><th colspan="2">Edit Species</th></tr>
+                <tr><th>Variable</th><th>Value</th></tr>
+                <div class="background2">
+                    <tr>
+                        <td>Species ID:</td>
+                        <td>{{ form.species_id }} {{ form.species_id.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>Active:</td>
+                        <td>{{ form.active }} {{ form.active.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>NL Name:</td>
+                        <td>{{ form.nl_name }} {{ form.nl_name.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>EN Name:</td>
+                        <td>{{ form.name }} {{ form.name.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>Latin Name:</td>
+                        <td>{{ form.latin_name }} {{ form.latin_name.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>WoRMS:</td>
+                        <td>{{ form.WoRMS }} {{ form.WoRMS.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>Pauly Trophic Level:</td>
+                        <td>{{ form.pauly_trophic_level }} {{ form.pauly_trophic_level.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>Var X:</td>
+                        <td>{{ form.var_x }} {{ form.var_x.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>Fishflag:</td>
+                        <td>{{ form.fishflag }} {{ form.fishflag.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>Collecting/Week:</td>
+                        <td>{{ form.collecting_per_week }} {{ form.collecting_per_week.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>Always Collecting:</td>
+                        <td>{{ form.always_collecting }} {{ form.always_collecting.errors }}</td>
+                    </tr>
+                </div>
+                <tr>
+                    <td colspan="2" align="center">
+                        <button name="btn1" value="update" type="submit">Update</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+{% endblock %}
