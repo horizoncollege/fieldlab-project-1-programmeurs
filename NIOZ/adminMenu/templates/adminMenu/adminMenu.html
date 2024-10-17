@@ -1,11 +1,17 @@
 {% extends 'home.html' %}
 
-{% block title %}adminMenu{{ block.super }}{% endblock %}
+{% block title %}Administrator{{ block.super }}{% endblock %}
 
 
 {% block submenu %}
-<!-- hier komt het submenu (een 2e navabr zoals op de oude website) -->
+<ul>
+    <li class="adminMenuBar">admin menu:</li>
+    <li><a href="/adminMenu/adminMenuUser">Users</a></li>
+    <li><a href="/adminMenu/adminMenuUser">New user</a></li>
+    <li><a href="/adminMenu/adminMenuUser">Djangoinfo</a></li>
+</ul>
 {% endblock %}
+
 {% block content %}
 <table class="spacing" class="text">
         <tr>
@@ -30,7 +36,7 @@
                         </tr>
                         {% for person in persons %}
                         <tr class="bars">
-                            <td><button class="user">{{ person.username }}</button></td>
+                            <td><a class="user" href="{% url 'adminMenuUser' person.pk %}">{{ person.username }}</a></td>
                             <td><input checked type="checkbox"></td>
                             <td>{{ person.realName }}</td>
                             <td>{{ person.collectlocation }}</td>

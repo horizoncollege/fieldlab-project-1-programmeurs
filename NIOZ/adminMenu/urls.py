@@ -1,10 +1,14 @@
 from django.urls import path
 from . import views
+from .views import adminMenu
 
 urlpatterns = [
-    path('adminMenu/', views.admin_menu_view, name='adminMenu'),
-]
+    # Root URL
+    path('', views.adminMenu, name='adminMenu'),
 
-urlpatterns = [
-    path('adminMenu/', views.people_list, name='people_list'),
+    # Admin Menu URL
+    path('adminMenu/', views.admin_menu_view, name='adminMenuView'),
+
+    # Admin Menu User URL
+    path('adminMenuUser/<int:pk>/', views.admin_menu_user, name='adminMenuUser'),
 ]
