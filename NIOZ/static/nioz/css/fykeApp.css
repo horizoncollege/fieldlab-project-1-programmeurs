@@ -1,5 +1,5 @@
-/* fyke/Datacollection page */
-.datacollection-wrapper {
+/* Default fyke app styling */
+.fyke-wrapper {
     background-color: #eee;
     padding: 5px;
     display: flex;
@@ -8,29 +8,60 @@
     gap: 5px;
 }
 
-.datacollection {
+.fyke-inner {
     display: flex;
     align-items: flex-start;
     gap: 25px;
 }
 
-.datacollection-wrapper .btn {
+.fyke-wrapper .btn {
     margin-right: 0 !important;
     border-radius: 0 !important;
 }
 
-
-/* Table Styling */
-.datacollection-table {
+.fyke-table {
     border: 1px solid;
     border-collapse: collapse;
     background-color: #fdfdfd;
 }
 
-.datacollection-table th {
+.fyke-table th {
     background-color: #ddd;
 }
 
+.fyke {
+    display: flex;
+}
+
+.fyke-form table {
+    background-color: #eee;
+    border: 1px solid black;
+}
+
+.fyke-form td {
+    vertical-align: top;
+}
+
+.fyke-form td:first-child {
+    font-weight: bold;
+    text-align: right;
+}
+
+.fyke-form input {
+    COLOR: #000000;
+    FONT-FAMILY: verdana, helvetica, sans-serif;
+    FONT-SIZE: 12px;
+    line-height: 16px;
+}
+
+.fyke-form span {
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+
+/* Datacollection page */
 .year-selection-table {
     background-color: #eee;
     padding: 2px;
@@ -41,36 +72,41 @@
     font-weight: bold;
 }
 
-/* fyke/datacollection/new_record page */
 
-.datacollection {
-    display: flex;
-}
+/* datacollection/new_record page */
 
 
-.datacollection-form table {
+
+/* fishdetails page */
+.fishdetails {
     background-color: #eee;
-    border: 1px solid black;
+    padding: 5px;
 }
 
-.datacollection-form td {
-    vertical-align: top;
+.fishdetails th {
+    background-color: #ddd;
 }
 
-.datacollection-form td:first-child {
-    font-weight: bold;
-    text-align: right;
-}
-
-.datacollection-form input {
-    COLOR: #000000;
-    FONT-FAMILY: verdana, helvetica, sans-serif;
-    FONT-SIZE: 12px;
-    line-height: 16px;
-}
-
-.datacollection-form span {
-    text-align: center;
-    width: 100%;
+.fishdetails span {
     display: block;
+    text-align: center;
+}
+
+.fishdetails a {
+    margin: 0 !important;
+    display: block;
+    text-align: center;
+}
+
+.fishdetails table {
+    border: 1px solid;
+    padding: 0;
+    border-spacing: 0;
+}
+
+.fishdetails .fyke-wrapper-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
 }

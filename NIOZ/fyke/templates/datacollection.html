@@ -1,12 +1,12 @@
 {% extends 'index.html' %} {% block content %}
-<div class="datacollection-wrapper">
+<div class="fyke-wrapper">
   <span class="newrecord"
     ><a href="{% url 'new_record' %}" class="btn btn-primary"
       >New Record</a
     ></span
   >
-  <div class="datacollection">
-    <table class="year-selection-table">
+  <div class="fyke-inner">
+    <table class="year-selection-table fyke-table">
       <tbody>
         <tr>
           <th>Year:</th>
@@ -27,8 +27,7 @@
       </tbody>
     </table>
     <div>
-      <!-- <a href="#" class="newrecord">New Record</a> -->
-      <table border="1" cellpadding="4" class="datacollection-table">
+      <table border="1" cellpadding="4" class="fyke-table">
         <tbody>
           <tr>
             <th>options</th>
@@ -51,7 +50,7 @@
               <a class="btn btn-primary" href="{% url 'edit_record' item.pk %}"
                 >edit</a
               >
-              <a class="btn btn-primary" href="#">biotic</a>
+              <a class="btn btn-primary" href="{% url 'biotic' item.pk %}">biotic</a>
             </td>
             <td>{{ item.date }}</td>
             <td>{{ item.time }}</td>

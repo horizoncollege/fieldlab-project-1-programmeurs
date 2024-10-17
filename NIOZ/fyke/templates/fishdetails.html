@@ -1,1 +1,97 @@
-{% extends 'index.html' %}
+{% extends 'index.html' %} {% block content %}
+
+<div class="fyke-wrapper fishdetails">
+  <span>Fish details</span>
+  <div class="fyke-wrapper-inner">
+    <table class="year-table fyke-table">
+      <tbody>
+        <tr>
+          <th>Year:</th>
+        </tr>
+        {% for year in years %}
+        <tr>
+          <td>
+            <!-- Generate links that filter by year -->
+            <a
+              href="?year={{ year }}"
+              class="btn {% if year == selected_year %}btn-secondary{% else %}btn-primary{% endif %}"
+            >
+              {{ year }}
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <table class="week-table fyke-table">
+      <tbody>
+        <tr>
+          <th>week:</th>
+        </tr>
+        {% if selected_year %} {% for week in weeks %}
+        <tr>
+          <td>
+            <a
+              href="?year={{ selected_year }}&week={{ week }}"
+              class="btn {% if week == selected_week %}btn-secondary{% else %}btn-primary{% endif %}"
+            >
+              {{ week }}
+            </a>
+          </td>
+        </tr>
+        {% endfor %} {% endif %}
+      </tbody>
+    </table>
+
+    <table class="collectno-table fyke-table">
+      <tbody>
+        <tr>
+          <th>Collectno:</th>
+        </tr>
+        {% if selected_year %}{% if selected_week %}
+        <tr>
+          <td>
+            <a
+              href="?year={{ selected_year }}&week={{ selected_week }}"
+              class="btn {% if selected_range %}btn-primary{% else %}btn-secondary{% endif %}"
+              >All
+            </a>
+          </td>
+        </tr>
+        <!-- Loop through range groups -->
+        {% for group in range_groups %} {% if group.collect_in_range %}
+        <tr>
+          <td>
+            <a
+              href="?year={{ selected_year }}&week={{ selected_week }}&range={{ group.start }}-{{ group.end }}"
+              class="btn btn-primary"
+              id="{{ group.start }}-{{ group.end }}"
+            >
+              {{ group.start }}-{{ group.end }}
+            </a>
+          </td>
+        </tr>
+        {% endif %} {% endfor %} {% endif %} {% endif %}
+      </tbody>
+    </table>
+
+    <table class="multi-table fyke-table">
+      <tbody>
+        <tr>
+          <th>N# * Name</th>
+        </tr>
+        <tr>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  a#\3{{ selected_range}} {background-color: var(--secondary-color)}
+</style>
+
+{% endblock %}
+
