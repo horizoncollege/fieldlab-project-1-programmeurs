@@ -32,6 +32,18 @@
     background-color: #f0f0f0;
 }
 
+.maintenance th {
+    size: 30px;
+}
+
+.maintenance .btn {
+    font-size: 12px !important;
+    border-radius: 0px !important;
+    background-color: #f3bd3c;
+    margin: 0px !important;
+  
+
+}
 
 .maintenance .centered-cell {
     text-align: center;
