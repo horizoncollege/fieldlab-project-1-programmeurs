@@ -18,16 +18,6 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'LoginSysteem/login.html', {'form': form})
 
-def signup_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'LoginSysteem/signup.html', {'form': form})
-
 def logout_view(request):
     logout(request)
     return redirect('login')

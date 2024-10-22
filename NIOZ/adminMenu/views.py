@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Person
+from django.contrib.auth.forms import UserCreationForm
+from .forms import PersonForm
 
 def admin_menu_view(request):
     return render(request, 'adminMenu/adminMenu.html')
@@ -11,6 +13,17 @@ def admin_menu_view(request):
 
 def adminMenu(request):
     return render(request, 'adminMenu/adminMenu.html')
+
+def admin_menu_new_user(request):
+    if request.method == 'POST':
+        form = PersonForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('adminMenu')
+    else:
+        form = PersonForm()
+
+    return render(request, 'adminMenu/adminMenuNewUser.html', {'form': form})
 
 def admin_menu_user(request, pk):
     record = get_object_or_404(Person, pk=pk)

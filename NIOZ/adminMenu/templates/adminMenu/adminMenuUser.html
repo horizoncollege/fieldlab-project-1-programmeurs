@@ -6,9 +6,8 @@
 {% block submenu %}
 <ul>
     <li class="adminMenuBar">admin menu:</li>
-    <li><a href="/adminMenu/adminMenuUser">Users</a></li>
-    <li><a href="/adminMenu/adminMenuUser">New user</a></li>
-    <li><a href="/adminMenu/adminMenuUser">Djangoinfo</a></li>
+    <li><a href="/adminMenu">Users</a></li>
+    <li><a href="{% url 'adminMenuNewUser' %}">New User</a></li>
 </ul>
 {% endblock %}
 
