@@ -22,6 +22,8 @@
                         </tr>
                     </tbody>
                 </table>
+                <form id="active-form">
+                    {% csrf_token %}
                 <table border="1" cellpadding="2" class="text" style="border:1px solid; border-collapse:collapse;"
                     bgcolor="#fcfcfc">
                     <tbody>
@@ -36,16 +38,52 @@
                         {% for person in persons %}
                         <tr class="bars">
                             <td><a class="user" href="{% url 'adminMenuUser' person.pk %}">{{ person.username }}</a></td>
-                            <td><input checked type="checkbox"></td>
+                            <td><input type="checkbox" onchange="saveActiveState(this)" value="{{ person.id }}" {% if person.active %}checked{% endif %}></td>
                             <td>{{ person.realName }}</td>
                             <td>{{ person.collectlocation }}</td>
                             <td>{{ person.yearFrom }}</td>
-                            <td>{{ person.yearUntil }}</td>
+                            <td>{% if person.yearUntil == '9999' %} &infin; {% else %} {{ person.yearUntil }}{% endif %}</td>
                         </tr>
                         {% endfor %}
+                        <button type="submit">Save</button>
                     </tbody>
                 </table>
+            </form>
             </td>
         </tr>
 </table>
+
+<script>
+    function saveActiveState(checkbox) {
+        const personId = checkbox.value;
+        const isChecked = checkbox.checked;
+    
+        const formData = new FormData();
+        formData.append('person_id', personId);
+        formData.append('active', isChecked);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    
+        // Send the AJAX request
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('Active state saved successfully!');
+            } else {
+                console.error('Error:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    </script>
 {% endblock %}

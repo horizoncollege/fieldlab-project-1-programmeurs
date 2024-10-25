@@ -1,15 +1,16 @@
 from django.shortcuts import render
 from django.db import models
-from django.core.validators import RegexValidator
+from datetime import datetime
+from django.contrib.auth.hashers import make_password
 
 class Person(models.Model):
-    username = models.CharField(max_length=50)
+    username = models.CharField(max_length=50, unique=True)
     active = models.BooleanField(default=True)
     realName = models.CharField(max_length=50)
-    password = models.CharField(max_length=50)
+    password = models.CharField(max_length=128)
     collectlocation = models.CharField(max_length=100, default="Texel (RW) Lauwersoog (RW)")
-    yearFrom = models.CharField(max_length=10, validators=[RegexValidator(r'^\d+$', 'Only numeric characters are allowed.')])
-    yearUntil = models.CharField(max_length=10)
+    yearFrom = models.CharField(max_length=10, default=str(datetime.now().year))
+    yearUntil = models.CharField(max_length=4, default=9999)
     accessTexel = models.IntegerField(default=3)
     accessLauwersoog = models.IntegerField(default=3)
     fishdata = models.IntegerField(default=3)
@@ -36,6 +37,11 @@ class Person(models.Model):
 
 def __str__(self):
         return f'{self.username} {self.active} {self.realName} {self.password} {self.collectlocation} {self.yearFrom} {self.yearUntil} {self.accessTexel} {self.accessLauwersoog} {self.fishdata} {self.deleteRecords} {self.fishdataExport} {self.fishdataRecords} {self.fishdataSource} {self.fyke} {self.fykeBioticdata}{self.fykeDatacollection} {self.fykeExportdata} {self.fykeFishDetails} {self.fykeLocations} {self.help} {self.maintenance} {self.maintenanceFishprogrammes} {self.maintenanceLocations}{self.maintenanceSpecies} {self.manager} {self.managerUserAccess} {self.options} {self.optionsUserSettings}'
+
+def save(self, *args, **kwargs):
+        if not self.password.startswith("pbkdf2_sha256$"):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
 
 class Meta:
       db_table = 'adminmenu_person'
