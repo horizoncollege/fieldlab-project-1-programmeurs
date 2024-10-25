@@ -7,7 +7,9 @@ Maak zelf submappen voor de verschillende onderdelen.
 
 ## [Source](Source)
 
-In deze map komt alle broncode
+#### Daily list: https://docs.google.com/spreadsheets/d/1U7Ia20cgVtwEZccYG1NPBzs6WQacZ8VWnD0Iy3KhMzM/edit?usp=sharing
+#### 
+####
 
 ## [Templates](Templates)
 
