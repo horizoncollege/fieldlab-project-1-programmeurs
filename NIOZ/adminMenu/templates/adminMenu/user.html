@@ -2,12 +2,10 @@
 
 {% block title %}Administrator{{ block.super }}{% endblock %}
 
-
 {% block submenu %}
 <ul>
-    <li class="adminMenuBar">admin menu:</li>
     <li><a href="/adminMenu">Users</a></li>
-    <li><a href="{% url 'adminMenuNewUser' %}">New User</a></li>
+    <li><a href="{% url 'new_user' %}">New User</a></li>
 </ul>
 {% endblock %}
 
@@ -41,10 +39,10 @@
                                 <th>Year range access</th>
                             </tr>
                             <tr>
-                                <td>{{ record.username }}</td>
+                                <td>{{ record.user.username }}</td>
                                 <td align="CENTER"></td>
-                                <td>{{ record.realName }}</td>
-                                <td align="center">{{ record.yearFrom }}</td>
+                                <td>{{ record.user.first_name }}</td>
+                                <td align="center">from {{ record.yearFrom }}</td>
                             </tr>
                         </tbody>
                     </table>

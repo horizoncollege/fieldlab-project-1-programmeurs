@@ -2,44 +2,43 @@
 
 {% block title %}Administrator{{ block.super }}{% endblock %}
 
-
 {% block submenu %}
 <ul>
-    <li class="adminMenuBar">admin menu:</li>
     <li><a href="/adminMenu">Users</a></li>
-    <li><a href="{% url 'adminMenuNewUser' %}">New User</a></li>
+    <li><a href="{% url 'new_user' %}">New User</a></li>
 </ul>
 {% endblock %}
 
 {% block content %}
 <table class="spacing" class="text">
-        <tr>
-            <td align="CENTER" bgcolor="#F0F0F0">
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>Users</th>
-                        </tr>
-                    </tbody>
-                </table>
-                <form id="active-form">
-                    {% csrf_token %}
-                <table border="1" cellpadding="2" class="text" style="border:1px solid; border-collapse:collapse;"
-                    bgcolor="#fcfcfc">
+    <tr>
+        <td align="CENTER" bgcolor="#F0F0F0">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Users</th>
+                    </tr>
+                </tbody>
+            </table>
+            <form id="active-form">
+                {% csrf_token %}
+                <table border="1" cellpadding="2" class="text" style="border:1px solid; border-collapse:collapse;" bgcolor="#fcfcfc">
                     <tbody>
                         <tr class="bars" bgcolor="#e0e0e0">
-                            <th>username</th>
+                            <th>Username</th>
                             <th>Active</th>
-                            <th>real name</th>
-                            <th>access to<br>collectlocation</th>
-                            <th>access from<br>year</th>
-                            <th>access until<br>year</th>
+                            <th>Real Name</th>
+                            <th>Access to Collect Location</th>
+                            <th>Access from Year</th>
+                            <th>Access until Year</th>
                         </tr>
                         {% for person in persons %}
                         <tr class="bars">
-                            <td><a class="user" href="{% url 'adminMenuUser' person.pk %}">{{ person.username }}</a></td>
-                            <td><input type="checkbox" onchange="saveActiveState(this)" value="{{ person.id }}" {% if person.active %}checked{% endif %}></td>
-                            <td>{{ person.realName }}</td>
+                            <td><a class="user" href="{% url 'userinfo_view' person.pk %}">{{ person.user.username }}</a></td>
+                            <td>
+                                <input type="checkbox" onchange="saveActiveState(this)" value="{{ person.id }}" {% if person.user.is_active %}checked{% endif %}>
+                            </td>
+                            <td>{{ person.user.first_name }}</td>
                             <td>{{ person.collectlocation }}</td>
                             <td>{{ person.yearFrom }}</td>
                             <td>{% if person.yearUntil == '9999' %} &infin; {% else %} {{ person.yearUntil }}{% endif %}</td>
@@ -48,8 +47,8 @@
                     </tbody>
                 </table>
             </form>
-            </td>
-        </tr>
+        </td>
+    </tr>
 </table>
 
 <script>
@@ -59,7 +58,7 @@
     
         const formData = new FormData();
         formData.append('person_id', personId);
-        formData.append('active', isChecked);
+        formData.append('active', isChecked ? 'true' : 'false');  // Send true or false as string
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
     
         // Send the AJAX request
@@ -84,5 +83,5 @@
             console.error('Error:', error);
         });
     }
-    </script>
+</script>
 {% endblock %}
