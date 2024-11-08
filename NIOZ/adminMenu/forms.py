@@ -8,7 +8,7 @@ class PersonForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ['username', 'realName', 'password1', 'password2']
+        fields = ['realName', 'password1', 'password2']
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
