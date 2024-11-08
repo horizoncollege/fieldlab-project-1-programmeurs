@@ -4,7 +4,7 @@
 
 {% block submenu %}
 <ul>
-    <li><a href="/adminMenu">Users</a></li>
+    <li><a href="{% url 'users_view' %}">Users</a></li>
     <li><a href="{% url 'new_user' %}">New User</a></li>
 </ul>
 {% endblock %}

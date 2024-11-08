@@ -4,6 +4,9 @@ from .forms import CustomUserCreationForm
 from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 
 
 # Index
@@ -81,3 +84,28 @@ def userinfo_view(request, pk):
         record.save()  # Save the data to the database
 
     return render(request, 'adminMenu/user.html', {'record': record})
+
+@login_required
+def change_password(request, pk):
+    # Fetch the Person record by primary key
+    person = get_object_or_404(Person, pk=pk)
+    
+    # Only allow the password change if the user is the same as `person.user`
+    if request.user != person.user:
+        messages.error(request, "You don't have permission to change this user's password.")
+        return redirect('adminMenu')  # Redirect to an appropriate page if unauthorized
+    
+    # Handle the password change form
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()  # Save the new password
+            update_session_auth_hash(request, form.user)  # Keep the user logged in after password change
+            messages.success(request, "Password changed successfully.")
+            return redirect('users_view')  # Redirect to a view of your choice, like a user list or admin menu
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+    return render(request, 'adminMenu/change_password.html', {'form': form, 'person': person})

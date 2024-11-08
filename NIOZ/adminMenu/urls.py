@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views import adminMenu
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # Admin Menu URL
@@ -11,4 +12,7 @@ urlpatterns = [
 
     # Admin Menu New User URL
     path('new_user/', views.new_user, name='new_user'),
+
+    # Admin Menu change password URL
+    path('change-password/<int:pk>/', views.change_password, name='change_password'),
 ]
