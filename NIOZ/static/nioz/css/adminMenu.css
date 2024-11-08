@@ -82,3 +82,9 @@ label {
 .adminMenuBarSize {
     margin: 8px;
 }
+
+.adminMenu .change_password_button {
+margin-bottom: 1rem;
+width: 75%;
+height: 30px;
+}

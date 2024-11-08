@@ -93,7 +93,7 @@ def change_password(request, pk):
     # Only allow the password change if the user is the same as `person.user`
     if request.user != person.user:
         messages.error(request, "You don't have permission to change this user's password.")
-        return redirect('adminMenu')  # Redirect to an appropriate page if unauthorized
+        return redirect('no_access')  # Redirect to an appropriate page if unauthorized
     
     # Handle the password change form
     if request.method == 'POST':
@@ -109,3 +109,6 @@ def change_password(request, pk):
         form = PasswordChangeForm(user=request.user)
 
     return render(request, 'adminMenu/change_password.html', {'form': form, 'person': person})
+
+def no_access(request):
+    return render(request, 'adminMenu/no_access.html')

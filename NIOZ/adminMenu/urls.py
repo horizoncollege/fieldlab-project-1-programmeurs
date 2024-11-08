@@ -15,4 +15,6 @@ urlpatterns = [
 
     # Admin Menu change password URL
     path('change-password/<int:pk>/', views.change_password, name='change_password'),
+
+    path('no_access/', views.no_access, name='no_access'),
 ]
