@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
-from .models import DataCollection, FykeLocations
+from .models import DataCollection, FykeLocations, FishDetails
 from datetime import datetime
 from .forms import DataCollectionForm
 from django.db.models.functions import ExtractYear, ExtractWeek
@@ -133,22 +132,24 @@ def biotic(request, pk):
     
 # Fishdetails
 def fishdetails(request):
-    # Extract the year and week from the 'date' field in the database
-    data = DataCollection.objects.annotate(
-        year=ExtractYear('date'),
-        week=ExtractWeek('date')
+    # Extract the year and week from the 'collectdate' field in the database
+    data = FishDetails.objects.annotate(
+        year=ExtractYear('collectdate'),
+        week=ExtractWeek('collectdate')
     )
 
-    # Get distinct years and weeks based on the 'date' field
+    # Get distinct years based on the 'collectdate' field
     years = data.values_list('year', flat=True).distinct().order_by('year')
+    weeks = []
 
     # Check if a year filter is applied in the URL
     selected_year = request.GET.get('year')
     selected_week = request.GET.get('week')
-    selected_range = request.GET.get('range')  # Collect range filter
-
-    # Placeholder for the available weeks of the selected year
-    weeks = []
+    selected_range = request.GET.get('range')
+    selected_species = request.GET.get('species')
+    
+    # Initialize species_data
+    species_data = None
     
     # Start with filtering by year
     if selected_year:
@@ -163,8 +164,8 @@ def fishdetails(request):
             selected_week = int(selected_week)  # Convert to int for comparison
             data = data.filter(week=selected_week)
         
-        # Retrieve 'collect' values from the filtered data
-        collect_numbers = data.values_list('collect', flat=True).distinct()
+        # Retrieve 'collectno' values from the filtered data
+        collect_numbers = data.values_list('collectno', flat=True).distinct()
 
         # Group the collect numbers into ranges (1-5, 6-10, etc.)
         max_collect = max(collect_numbers) if collect_numbers else 0
@@ -181,26 +182,60 @@ def fishdetails(request):
                 'collect_in_range': [c for c in collect_numbers if start <= c <= end]
             })
 
+        # Add the all-inclusive range group as the first item
+        if collect_numbers:
+            min_collect = min(collect_numbers)
+            max_collect = max(collect_numbers)
+            range_groups.insert(0, {
+                'start': min_collect,
+                'end': max_collect,
+                'collect_in_range': collect_numbers,
+                'label': 'All'  # Add a label for easier HTML handling
+            })
+
         # If range filter is applied, filter collect numbers by range
         if selected_range:
             range_start, range_end = map(int, selected_range.split('-'))
-            data = data.filter(collect__gte=range_start, collect__lte=range_end)
+            data = data.filter(collectno__gte=range_start, collectno__lte=range_end)
+            
+            
+        if selected_species:
+            try:
+                species_id = int(selected_species)
+                species_data = FishDetails.objects.filter(species=species_id).annotate(
+                    year=ExtractYear('collectdate'),
+                    week=ExtractWeek('collectdate')
+                )
+                
+                for value in species_data:
+                    for field in value.__class__._meta.fields:
+                        if getattr(value, field.name) is None:
+                            setattr(value, field.name, "")  # Set to empty string if None
+                
+            except (ValueError, FishDetails.DoesNotExist):
+                species_data = None
+        
     
     else:
         # If no year is selected, show all records and no week or range filtering
-        data = DataCollection.objects.all()
+        data = FishDetails.objects.all()
         collect_numbers = []
         range_groups = []
-
-    return render(request, 'fishdetails.html', {
+    
+    # Create a context dictionary for the sorting values used to sort by year etc.
+    context = {
         'data': data,
         'years': years,
         'weeks': weeks,
+        'range_groups': range_groups,
+        'species_data' : species_data,
         'selected_year': selected_year,
         'selected_week': selected_week,
-        'selected_range' : selected_range,
-        'range_groups': range_groups,  # Pass the collect ranges to the template
-    })
+        'selected_range': selected_range,
+        'selected_species' : selected_species,
+    }
+    
+    return render(request, 'fishdetails.html', context)
 
 
 # Fykelocations
