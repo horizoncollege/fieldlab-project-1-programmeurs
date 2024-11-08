@@ -55,7 +55,7 @@ def new_user(request):
             )
 
             messages.success(request, "User and associated profile created successfully!")
-            return redirect('login')  # Redirect to a login page or another view after creation
+            return redirect('users_view')  # Redirect to a login page or another view after creation
     else:
         form = CustomUserCreationForm()
 
