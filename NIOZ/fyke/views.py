@@ -4,6 +4,7 @@ from datetime import datetime
 from .forms import DataCollectionForm
 from django.db.models.functions import ExtractYear, ExtractWeek
 from math import ceil
+from urllib.parse import urlencode
 
 # Index
 def index(request):
@@ -148,9 +149,9 @@ def fishdetails(request):
     selected_range = request.GET.get('range')
     selected_species = request.GET.get('species')
     
-    # Initialize species_data
+    # Initialize species_data for later use
     species_data = None
-    
+
     # Start with filtering by year
     if selected_year:
         selected_year = int(selected_year)  # Convert to int for comparison
@@ -198,7 +199,6 @@ def fishdetails(request):
             range_start, range_end = map(int, selected_range.split('-'))
             data = data.filter(collectno__gte=range_start, collectno__lte=range_end)
             
-            
         if selected_species:
             try:
                 species_id = int(selected_species)
@@ -214,13 +214,46 @@ def fishdetails(request):
                 
             except (ValueError, FishDetails.DoesNotExist):
                 species_data = None
-        
-    
+
     else:
         # If no year is selected, show all records and no week or range filtering
         data = FishDetails.objects.all()
         collect_numbers = []
         range_groups = []
+    
+    # Handle the form submission
+    if request.method == 'POST':
+        # Get the fish_id from the POST data
+        fish_id = request.POST.get('fish_id')
+        
+        # Retrieve the FishDetails object or raise a 404 if it doesn't exist
+        fish = get_object_or_404(FishDetails, id=fish_id)
+
+        # Define the fields that need to be updated
+        fields_to_update = [
+            'species', 'total_length', 'fork_length', 'standard_length',
+            'fresh_weight', 'total_wet_mass', 'stomach_content', 'gonad_mass',
+            'ripeness', 'otolith', 'total_length_frozen', 'fork_length_frozen',
+            'standard_length_frozen', 'frozen_mass', 'height', 'age', 'rings',
+            'ogew1', 'ogew2', 'comment'
+        ]
+        
+        # Update the fields dynamically
+        for field in fields_to_update:
+            value = request.POST.get(field, getattr(fish, field))
+            setattr(fish, field, value)
+        
+        # Special handling for boolean fields
+        fish.dna_sample = 'dna_sample' in request.POST
+        fish.micro_plastic = 'micro_plastic' in request.POST
+        
+        # Save the updated fish object
+        fish.save()
+        
+        # Build the redirect URL with existing query parameters
+        current_url = request.path
+        query_params = request.GET.copy()  # Get the current query parameters
+        return redirect(f'{current_url}?{urlencode(query_params)}')  # Redirect with the query parameters
     
     # Create a context dictionary for the sorting values used to sort by year etc.
     context = {
@@ -236,7 +269,6 @@ def fishdetails(request):
     }
     
     return render(request, 'fishdetails.html', context)
-
 
 # Fykelocations
 def fykelocations(request):

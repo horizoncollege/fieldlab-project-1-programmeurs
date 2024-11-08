@@ -91,9 +91,11 @@
     </table>
       
     <table class="form-table fyke-table">
-      <form method="post"></form>
+      <form method="post">
+        {% csrf_token %}
         {% if selected_year and selected_week and range_groups and selected_species %}
         {% for fish in species_data %}
+        <input type="hidden" name="fish_id" value="{{ fish.id }}">  
         <tbody>
           <tr>
             <th></th>
@@ -115,31 +117,31 @@
           </tr>
           <tr>
             <td>Total length:</td>
-            <td><input type="text" value="{{ fish.total_length }}"> cm </td>
+            <td><input type="text" name="total_length" value="{{ fish.total_length }}"> cm </td>
           </tr>
           <tr>
             <td>Fork length:</td>
-            <td><input type="text" value="{{ fish.fork_length }}"> cm </td>
+            <td><input type="text" name="fork_length" value="{{ fish.fork_length }}"> cm </td>
           </tr>
           <tr>
             <td>Standard length:</td>
-            <td><input type="text" value="{{ fish.standard_length }}"> cm </td>
+            <td><input type="text" name="standard_length" value="{{ fish.standard_length }}"> cm </td>
           </tr>
           <tr>
             <td>Fresh weight:</td>
-            <td><input type="text" value="{{ fish.fresh_weight }}"> g </td>
+            <td><input type="text" name="fresh_weight" value="{{ fish.fresh_weight }}"> g </td>
           </tr>
           <tr>
             <td>Total wet mass:</td>
-            <td><input type="text" value="{{ fish.total_wet_mass }}"> g </td>
+            <td><input type="text" name="total_wet_mass" value="{{ fish.total_wet_mass }}"> g </td>
           </tr>
           <tr>
             <td>Stomach content:</td>
-            <td><input type="text" value="{{ fish.stomach_content }}"> g </td>
+            <td><input type="text" name="stomach_content" value="{{ fish.stomach_content }}"> g </td>
           </tr>
           <tr>
             <td>Gonad mass:</td>
-            <td><input type="text" value="{{ fish.gonad_mass }}"> g </td>
+            <td><input type="text" name="gonad_mass" value="{{ fish.gonad_mass }}"> g </td>
           </tr>
           <tr>
             <td>Sexe:</td>
@@ -147,47 +149,47 @@
           </tr>
           <tr>
             <td>Ripeness:</td>
-            <td><input type="text" value="{{ fish.ripeness }}"></td>
+            <td><input type="text" name="ripeness" value="{{ fish.ripeness }}"></td>
           </tr>
           <tr>
             <td>Otolith label:</td>
-            <td><input type="text" value="{{ fish.otolith }}"></td>
+            <td><input type="text" name="otolith" value="{{ fish.otolith }}"></td>
           </tr>
           <tr>
             <td>Total length (frozen):</td>
-            <td><input type="text" value="{{ fish.total_length_frozen }}"> cm </td>
+            <td><input type="text" name="total_length_frozen" value="{{ fish.total_length_frozen }}"> cm </td>
           </tr>
           <tr>
             <td>Fork length (frozen):</td>
-            <td><input type="text" value="{{ fish.fork_length_frozen }}"> cm </td>
+            <td><input type="text" name="fork_length_frozen" value="{{ fish.fork_length_frozen }}"> cm </td>
           </tr>
           <tr>
             <td>Standard length (frozen):</td>
-            <td><input type="text" value="{{ fish.standard_length_frozen }}"> cm </td>
+            <td><input type="text" name="standard_length_frozen" value="{{ fish.standard_length_frozen }}"> cm </td>
           </tr>
           <tr>
             <td>Frozen mass:</td>
-            <td><input type="text" value="{{ fish.frozen_mass }}"> g </td>
+            <td><input type="text" name="frozen_mass" value="{{ fish.frozen_mass }}"> g </td>
           </tr>
           <tr>
             <td>Height:</td>
-            <td><input type="text" value="{{ fish.height }}"></td>
+            <td><input type="text" name="height" value="{{ fish.height }}"></td>
           </tr>
           <tr>
             <td>Age:</td>
-            <td><input type="text" value="{{ fish.age }}"></td>
+            <td><input type="text" name="age" value="{{ fish.age }}"></td>
           </tr>
           <tr>
             <td>Rings:</td>
-            <td><input type="text" value="{{ fish.rings }}"></td>
+            <td><input type="text" name="rings" value="{{ fish.rings }}"></td>
           </tr>
           <tr>
             <td>Ogew1:</td>
-            <td><input type="text" value="{{ fish.ogew1 }}"></td>
+            <td><input type="text" name="ogew1" value="{{ fish.ogew1 }}"></td>
           </tr>
           <tr>
             <td>Ogew2</td>
-            <td><input type="text" value="{{ fish.ogew2 }}"></td>
+            <td><input type="text" name="ogew2" value="{{ fish.ogew2 }}"></td>
           </tr>
           <tr>
             <td>isotopes</td>
@@ -195,19 +197,19 @@
           </tr>
           <tr>
             <td>DNA sample</td>
-            <td><input type="text" value="{{ fish.dna_sample }}"></td>
+            <td><input type="checkbox" name="dna_sample" id="dna_sample" {% if fish.dna_sample %}checked{% endif %}></td>
           </tr>
           <tr>
             <td>Comment</td>
-            <td><textarea name="comment" value="{{ fish.comment }}" cols="40" rows="3"></textarea></td>
+            <td><textarea name="comment" cols="40" rows="3">{{ fish.comment }}</textarea></td>
           </tr>
           <tr>
             <td>Micro plastic:</td>
-            <td><input type="text" value="{{ fish.micro_plastic }}"></td>
+            <td><input type="checkbox" name="micro_plastic" id="micro_plastic" {% if fish.micro_plastic %}checked{% endif %}></td>
           </tr>
           <tr>
             <td></td>
-            <td><input type="submit" value="Save"></td>
+            <td><button class="btn btn-secondary" type="submit">Save</button></td>
           </tr>
         </tbody>
         {% endfor %}
