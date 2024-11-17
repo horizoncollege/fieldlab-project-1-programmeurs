@@ -5,7 +5,6 @@ from . import views
 urlpatterns = [
     # Standaard URL's
     path('', views.index, name='index'),
-    path('fishdetails/', views.fishdetails, name='fishdetails'),
     path('exportdata/', views.exportdata, name='exportdata'),
     
     
@@ -19,4 +18,8 @@ urlpatterns = [
     path('fykelocations/', views.fykelocations, name='fykelocations'),
     path('fykelocations/new_location/', views.new_location, name='new_location'),
     path('fykelocations/edit_location/<int:pk>/', views.edit_location, name='edit_location'), 
+    
+    # Fishdetails URL's
+    path('fishdetails/', views.fishdetails, name='fishdetails'),
+    path('fishdetails/live-species-search/', views.species_search, name='species_search'),
 ]

@@ -62,10 +62,6 @@ class DataCollection(models.Model):
     def __str__(self):
         return f"DataCollection on {self.date} by {self.observer}"
     
-        
-# class Fishdetails(models.Model):
-#     collectdate = models.DateField()
-#     species = models.CharField(max_length=50)
 
 class FykeLocations(models.Model):
     name = models.CharField(max_length=50)
@@ -87,3 +83,57 @@ class FykeLocations(models.Model):
         
     def __str__(self):
         return f"Fykelocations"
+
+
+class FishDetails(models.Model):
+    collectdate = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
+    registrationtime = models.DateTimeField(auto_now=False, auto_now_add=True, blank=True, null=True)
+    collectno = models.IntegerField(blank=True, null=True)
+    species = models.CharField(max_length=50, blank=True, null=True)
+    condition = models.CharField(max_length=50, blank=True, null=True)
+    total_length = models.FloatField(blank=True, null=True)
+    fork_length = models.FloatField(blank=True, null=True)
+    standard_length = models.FloatField(blank=True, null=True)
+    fresh_weight = models.FloatField(blank=True, null=True)
+    total_wet_mass = models.FloatField(blank=True, null=True)
+    stomach_content = models.CharField(max_length=255, blank=True, null=True)
+    gonad_mass = models.FloatField(blank=True, null=True)
+    sexe = models.CharField(max_length=50, blank=True, null=True)
+    ripeness = models.IntegerField(blank=True, null=True)
+    otolith = models.CharField(max_length=50, blank=True, null=True)
+    isotopeflag = models.IntegerField(blank=True, null=True)
+    total_length_frozen = models.FloatField(blank=True, null=True)
+    fork_length_frozen = models.FloatField(blank=True, null=True)
+    standard_length_frozen = models.FloatField(blank=True, null=True)
+    frozen_mass = models.FloatField(blank=True, null=True)
+    height = models.FloatField(blank=True, null=True)
+    age = models.IntegerField(blank=True, null=True)
+    rings = models.IntegerField(blank=True, null=True)
+    ogew1 = models.CharField(max_length=50, blank=True, null=True)
+    ogew2 = models.CharField(max_length=50, blank=True, null=True)
+    tissue_type = models.CharField(max_length=50, blank=True, null=True)
+    vial = models.CharField(max_length=50, blank=True, null=True)
+    dna_sample = models.BooleanField(blank=True, null=True)
+    comment = models.TextField(max_length=255, blank=True, null=True)
+    micro_plastic = models.BooleanField(blank=True, null=True)
+    
+    class Meta:
+        db_table = 'fyke_fishdetails'
+    
+    def save(self, *args, **kwargs):
+        # Normalize floating-point fields
+        for field in self._meta.fields:
+            value = getattr(self, field.name)
+
+            # Convert empty strings to None
+            if value == '':
+                setattr(self, field.name, None)
+            
+            # Convert ',' to '.' for FloatField inputs
+            if isinstance(value, str) and ',' in value:
+                try:
+                    setattr(self, field.name, float(value.replace(',', '.')))
+                except ValueError:
+                    setattr(self, field.name, None)
+
+        super().save(*args, **kwargs)
