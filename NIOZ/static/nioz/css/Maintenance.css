@@ -6,7 +6,10 @@
 
 .maintenance .but11 {
     background-color: #F3BD3C;
+
 }
+
+
 
 .maintenance .text {
     color: #000000;
@@ -28,12 +31,14 @@
     background-color: black;
 }
 
-.maintenance th {
+.maintenance td {
     background-color: #f0f0f0;
 }
 
+
 .maintenance th {
     size: 30px;
+    background-color: #f0f0f0;
 }
 
 .maintenance .btn {
@@ -41,7 +46,7 @@
     border-radius: 0px !important;
     background-color: #f3bd3c;
     margin: 0px !important;
-  
+
 
 }
 
@@ -71,21 +76,18 @@
     text-align: center;
 }
 
+.maintenance .left-align-cell {
+    text-align: left;
+    padding: 5px;
+}
+
+
 
 
 .maintenance table {
     width: 100%;
-    /* Zorg ervoor dat de tabel de volle breedte gebruikt */
     border-collapse: collapse;
-    /* Zorg ervoor dat de randen van de cellen samenkomen */
-}
 
-.maintenance .sorted-asc {
-    background-color: #00FF00;
-}
-
-.maintenance .sorted-desc {
-    background-color: #FF0000;
 }
 
 .maintenance .form2 {
@@ -94,4 +96,26 @@
 
 .maintenance .form2 td:first-child {
     background-color: #e0e0e0;
+}
+
+
+
+.maintenance .green {
+    background-color: #00FF00 !important;   /* Groene kleur */
+    color: white;                /* Witte tekst voor contrast */
+}
+
+.maintenance .red {
+    background-color: #FF0000 !important;   /* Rode kleur */
+    color: white;                /* Witte tekst voor contrast */
+}
+
+.maintenance .color1 {
+    background-color: #d0d0d0 !important;
+}
+
+.maintenance .color2 {
+    background-color: #e0e0e0 !important;
+    width: 300px;
+  
 }

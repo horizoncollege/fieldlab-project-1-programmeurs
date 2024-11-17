@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from maintenance import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -10,4 +11,5 @@ urlpatterns = [
     path('options/', include('optionsApp.urls')),
     path('help/', include('helpApp.urls')),
     path('adminMenu/', include('adminMenu.urls')),
+
 ]

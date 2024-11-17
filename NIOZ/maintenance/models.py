@@ -1,6 +1,8 @@
 from django.db import models
 
 class MaintenanceSpeciesList(models.Model):
+    id = models.AutoField(primary_key=True)
+    species_id = models.IntegerField()
     active = models.BooleanField(default=True)
     nl_name = models.CharField(max_length=255)
     name = models.CharField(max_length=255)

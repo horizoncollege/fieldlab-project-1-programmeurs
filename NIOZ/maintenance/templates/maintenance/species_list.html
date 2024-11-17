@@ -2,65 +2,126 @@
 
 {% block content %}
 <div class="maintenance species_list">
+    <!-- Eerste tabel (met de gesorteerde kolommen) -->
     <table cellspacing="0" cellpadding="5" class="text">
         <tbody>
             <tr>
-                <th>Species&nbsp;&nbsp;<a href="#" id="new-species-btn" class="but11">&nbsp;new&nbsp;</a></th>
+                <th>Species&nbsp;&nbsp;<a href="{% url 'species_create' %}" class="but11">&nbsp;new&nbsp;</a></th>
             </tr>
             <tr>
                 <td class="background">
                     <table border="1" cellspacing="0" cellpadding="2" class="text" id="table">
                         <thead>
                             <tr>
-                                <th class="bok11">
-                                    <a href="#" id="sort-id-btn" class="center" data-sort="id">SpeciesID</a>
+                                <th class="bok11 {% if sort == 'species_id' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=species_id&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">SpeciesID</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="#" id="sort-active-btn" class="center" data-sort="active">Active</a>
+                                <th class="bok11 {% if sort == 'active' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=active&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Active</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="#" id="sort-nl_name-btn" class="center" data-sort="nl_name">NL name</a>
+                                <th class="bok11 {% if sort == 'nl_name' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=nl_name&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">NL name</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="#" id="sort-en_name-btn" class="center" data-sort="name">EN name</a>
+                                <th class="bok11 {% if sort == 'name' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=name&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">EN name</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="#" id="sort-latin_name-btn" class="center" data-sort="latin_name">LATIN
-                                        name</a>
+                                <th class="bok11 {% if sort == 'latin_name' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=latin_name&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Latin name</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="#" id="sort-worms-btn" class="center" data-sort="WoRMS">WoRMS</a>
+                                <th class="bok11 {% if sort == 'WoRMS' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=WoRMS&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">WoRMS</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="#" id="sort-paulytrophiclevel-btn" class="center"
-                                        data-sort="pauly_trophic_level">PaulyTrophicLevel</a>
+                                <th class="bok11 {% if sort == 'pauly_trophic_level' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=pauly_trophic_level&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Pauly Trophic Level</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="#" id="sort-varx-btn" class="center" data-sort="var_x">Var X</a>
+                                <th class="bok11 {% if sort == 'var_x' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=var_x&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Var X</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="#" id="sort-fish-btn" class="center" data-sort="fishflag">Fishflag</a>
+                                <th class="bok11 {% if sort == 'fishflag' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=fishflag&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Fishflag</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="#" id="sort-coll/wk-btn" class="center"
-                                        data-sort="collecting_per_week">Coll/wk</a>
+                                <th class="bok11 {% if sort == 'collecting_per_week' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=collecting_per_week&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Coll/wk</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="#" id="sort-alw.coll-btn" class="center"
-                                        data-sort="always_collecting">Alw.Coll</a>
+                                <th class="bok11 {% if sort == 'always_collecting' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=always_collecting&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Alw.Coll</a>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for specie in species %}
                             <tr>
-                                <td class="center" data-id="{{ specie.id }}">
-                                    <a href="#" class="btn btn-primary species-edit-btn"
-                                        data-specie-id="{{ specie.id }}">{{ specie.id }}</a>
+                                <td class="center">
+                                    <a href="{% url 'species_edit' specie.species_id %}">{{ specie.species_id }}</a>
                                 </td>
                                 <td class="center">
-                                    <img src="{% if specie.active %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}"
-                                        alt="Active Checkbox" style="width: 15px; height: 15px;">
+                                    <img src="{% if specie.active %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}" alt="Active Checkbox" style="width: 15px; height: 15px;">
                                 </td>
                                 <td>{{ specie.nl_name }}</td>
                                 <td>{{ specie.name }}</td>
@@ -69,161 +130,89 @@
                                 <td class="center">{{ specie.pauly_trophic_level }}</td>
                                 <td class="center">{{ specie.var_x }}</td>
                                 <td class="center">
-                                    <img src="{% if specie.fishflag %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}"
-                                        alt="Fishflag Checkbox" style="width: 15px; height: 15px;">
+                                    <img src="{% if specie.fishflag %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}" alt="Fishflag Checkbox" style="width: 15px; height: 15px;">
                                 </td>
                                 <td class="center">{{ specie.collecting_per_week }}</td>
                                 <td class="center">
-                                    <img src="{% if specie.always_collecting %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}"
-                                        alt="Always Collecting Checkbox" style="width: 15px; height: 15px;">
+                                    <img src="{% if specie.always_collecting %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}" alt="Always Collecting Checkbox" style="width: 15px; height: 15px;">
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
 
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <div id="species-edit-form" style="display:none;">
-        <form method="POST" action="" id="edit-form" class="form2">
+    <!-- Tweede tabel (formulier voor het bewerken of toevoegen van een soort) -->
+    {% if form %}
+    <div style="text-align: center; background-color: #f0f0f0; font-size: 12px;" id="species-edit-form">
+        <p><strong>New record</strong></p>
+        <form method="POST"
+            action="{% if form.instance.id %}{% url 'species_edit' form.instance.species_id %}{% else %}{% url 'species_create' %}{% endif %}">
             {% csrf_token %}
             <table border="1" cellspacing="0" cellpadding="2" class="text">
-                <tbody>
+                <thead>
+                    <th class="color1">Variable</th>
+                    <th class="color1">Value</th>
                     <tr>
-                        <th colspan="2">Edit Species</th>
+                        <td class="color2">SpeciesID</th>
+                        <td  class="left-align-cell">{{ form.species_id }}</td>
                     </tr>
                     <tr>
-                        <th>Variable</th>
-                        <th>Value</th>
+                        <td class="color2">Active</th>
+                        <td  class="left-align-cell">{{ form.active }}</td>
                     </tr>
-                    <div class="background2">
-                        <tr>
-                            <td>Species ID:</td>
-                            <td><input type="hidden" name="species_id" value=""></td>
-                        </tr>
-
-                        <tr>
-                            <td>Active:</td>
-                            <td><input type="checkbox" name="active"></td>
-                        </tr>
-                        <tr>
-                            <td>NL Name:</td>
-                            <td><input type="text" name="nl_name" value=""></td>
-                        </tr>
-                        <tr>
-                            <td>EN Name:</td>
-                            <td><input type="number" name="name" value=""></td>
-                        </tr>
-                        <tr>
-                            <td>Latin Name:</td>
-                            <td><input type="number" name="latin_name" value=""></td>
-                        </tr>
-                        <tr>
-                            <td>WoRMS:</td>
-                            <td><input type="number" name="WoRMS" value=""></td>
-                        </tr>
-                        <tr>
-                            <td>Pauly Trophic Level:</td>
-                            <td><input type="number" name="pauly_trophic_level" value=""></td>
-                        </tr>
-                        <tr>
-                            <td>Var X:</td>
-                            <td><input type="number" name="var_x" value=""></td>
-                        </tr>
-                        <tr>
-                            <td>Fishflag:</td>
-                            <td><input type="number" name="fishflag" value=""></td>
-                        </tr>
-                        <tr>
-                            <td>Collecting/Week:</td>
-                            <td><input type="number" name="collecting_per_week" value=""></td>
-                        </tr>
-                        <tr>
-                            <td>Always Collecting:</td>
-                            <td><input type="number" name="always_collecting" value=""></td>
-                        </tr>
-                    </div>
                     <tr>
-                        <td colspan="2" align="center">
-                            <button name="btn1" value="update" type="submit">Update</button>
-                        </td>
+                        <td class="color2">NL name</th>
+                        <td  class="left-align-cell">{{ form.nl_name }}</td>
                     </tr>
-                </tbody>
+                    <tr>
+                        <td class="color2">EN name</th>
+                        <td  class="left-align-cell">{{ form.name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="color2">Latin name</th>
+                        <td  class="left-align-cell">{{ form.latin_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="color2">WoRMS</th>
+                        <td  class="left-align-cell">{{ form.WoRMS }}</td>
+                    </tr>
+                    <tr>
+                        <td class="color2">Pauly Trophic Level</th>
+                        <td  class="left-align-cell">{{ form.pauly_trophic_level }}</td>
+                    </tr>
+                    <tr>
+                        <td class="color2">Var X</th>
+                        <td  class="left-align-cell">{{ form.var_x }}</td>
+                    </tr>
+                    <tr>
+                        <td class="color2">Fishflag</th>
+                        <td  class="left-align-cell">{{ form.fishflag }}</td>
+                    </tr>
+                    <tr>
+                        <td class="color2">collecting/week</th>
+                        <td  class="left-align-cell">{{ form.collecting_per_week }}</td>
+                    </tr>
+                    <tr>
+                        <td class="color2">Always collecting</th>
+                        <td  class="left-align-cell">{{ form.always_collecting }}</td>
+                    </tr>
+                </thead>
             </table>
+            <input type="submit" value="Store" >
         </form>
     </div>
-</div>
+    {% endif %}
 
-<script>
-   document.querySelectorAll('.species-edit-btn').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const speciesId = this.dataset.specieId;  // Pak de juiste species ID
-        const form = document.getElementById('species-edit-form');
-        form.style.display = 'block';
-        
-        // Haal de data van de geselecteerde soort op
-        fetch(`/species/${speciesId}/`)
-        .then(response => response.json())
-        .then(data => {
-            // Vul de form met de opgehaalde data
-            form.querySelector('input[name="species_id"]').value = data.id;
-            form.querySelector('input[name="active"]').checked = data.active;
-            form.querySelector('input[name="nl_name"]').value = data.nl_name;
-            form.querySelector('input[name="name"]').value = data.name;
-            form.querySelector('input[name="latin_name"]').value = data.latin_name;
-            form.querySelector('input[name="WoRMS"]').value = data.WoRMS;
-            form.querySelector('input[name="pauly_trophic_level"]').value = data.pauly_trophic_level;
-            form.querySelector('textarea[name="var_x"]').value = data.var_x;
-            form.querySelector('input[name="fishflag"]').checked = data.fishflag;
-            form.querySelector('input[name="collecting_per_week"]').value = data.collecting_per_week;
-            form.querySelector('input[name="always_collecting"]').checked = data.always_collecting;
-            
-            // Zet de actie van het formulier naar de juiste URL voor bewerken
-            form.action = `/species/edit/${speciesId}/`;
-        });
-    });
-});
-
-
-
-    // Functionaliteit voor de "New" knop
-    document.getElementById('new-species-btn').addEventListener('click', function (e) {
-        e.preventDefault();
-        const form = document.getElementById('species-edit-form');
-        form.style.display = 'block';
-        form.action = "{% url 'species_list' %}";  // Zet de actie voor nieuw item
-        form.querySelectorAll('input, textarea').forEach(input => input.value = '');  // Leeg alle velden voor een nieuwe invoer
-    });
-
-    // Voeg CSRF-token toe aan het formulier
-    document.querySelector('.form2').onsubmit = function () {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = 'csrfmiddlewaretoken';
-        csrfInput.value = csrfToken;
-        this.appendChild(csrfInput);
-    };
-
-    // Sorteerfunctionaliteit
-    document.querySelectorAll('a[data-sort]').forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            const sortField = this.getAttribute('data-sort');
-            const currentOrder = new URLSearchParams(window.location.search).get('order') || 'asc';
-            const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
-
-            // Redirect naar de gesorteerde URL
-            window.location.href = `?sort=${sortField}&order=${newOrder}`;
-        });
-    });
-</script>
-
-
-
-{% endblock %}
+    {% endblock content %}
