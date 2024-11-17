@@ -86,8 +86,7 @@
               style="text-align: left"
               data-species="{{ fish.species }}"
               href="?year={{ selected_year }}&week={{ selected_week }}&range={{ selected_range }}&species={{ fish.species }}"
-
-              >{{ fish.year }} - {{ fish.week }} - {{ fish.collectno }} * {{ fish.species }}</a>
+              >{{ fish.year }} - {{ fish.week }} - {{ fish.collectno }} * {{ fish.nl_name }}</a>
           </td>
         </tr>
         {% endfor %}
@@ -113,11 +112,11 @@
           <tr>
             <td>Species:</td>
             <td>
-              <input type="text" id="speciesSearch" placeholder="Search species..." autocomplete="off">
+              <input type="text" name="search" id="speciesSearch" placeholder="Search species..." autocomplete="off">
               <div id="searchResults" style="position: absolute; background: white; border: 1px solid #ddd; display: none;"></div>
               <input type="hidden" name="species" value="{{ fish.species }}">
               <div id="speciesDisplay">
-              {{ fish.species }}
+              {{ fish.species }}-{{ fish.nl_name}}
             </div>
             </td>
           </tr>
@@ -250,6 +249,7 @@
   </div>
 </div>
 
+<!-- Styling for selected 'collectno' -->
 <style>
   a[data-range="{{ selected_range }}"] {
     background-color: var(--secondary-color);
@@ -259,6 +259,7 @@
   }
 </style>
 
+<!-- Javascript for live species search -->
 <script>
   document.getElementById('speciesSearch').addEventListener('input', function () {
     const query = this.value;
@@ -286,6 +287,9 @@
 
                             // Update the species display text dynamically
                             document.getElementById('speciesDisplay').innerText = `${speciesid}-${item.name}`;
+
+                            // Clear the input field after selection (optional)
+                            document.getElementById('speciesSearch').value = '';  // Clear search input
 
                             resultsDiv.style.display = 'none';  // Hide the search results
                         };
@@ -328,7 +332,7 @@
         var value = field.value.trim();
 
         // Skip validation for 'vial' and 'otolith' fields
-        if (field.name === 'vial' || field.name === 'otolith') {
+        if (field.name === 'vial' || field.name === 'otolith' || field.name === 'search') {
             return; // Skip validation for these fields
         }
 

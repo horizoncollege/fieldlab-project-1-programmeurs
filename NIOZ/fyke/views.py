@@ -150,8 +150,9 @@ def fishdetails(request):
     selected_range = request.GET.get('range')
     selected_species = request.GET.get('species')
     
-    # Initialize species_data for later use
+    # Initialize variables for later use
     species_data = None
+    species_list_data = None
 
     # Start with filtering by year
     if selected_year:
@@ -197,22 +198,50 @@ def fishdetails(request):
 
         # If range filter is applied, filter collect numbers by range
         if selected_range:
+            # Split the range into start and end values
             range_start, range_end = map(int, selected_range.split('-'))
+
+            # Filter the data based on collectno range
             data = data.filter(collectno__gte=range_start, collectno__lte=range_end)
-            
+
+            # Loop through the data and add the species' nl_name based on the species id
+            for record in data:
+                species_id = record.species  # Get species ID from the data
+                
+                species_id = int(species_id) + 1
+        
+                # Query the species_list table to retrieve the species name (nl_name)
+                try:
+                    species = MaintenanceSpeciesList.objects.get(id=species_id)
+                    record.nl_name = species.nl_name  # Add nl_name to the record
+                except MaintenanceSpeciesList.DoesNotExist:
+                    record.nl_name = "Unknown species"  # Handle case where species ID is not found
+        
         if selected_species:
             try:
-                species_id = int(selected_species)
+                species_id = int(selected_species)  # Get the species ID from the selected_species value
+        
+                # Retrieve species data for the given species_id
                 species_data = FishDetails.objects.filter(species=species_id).annotate(
                     year=ExtractYear('collectdate'),
                     week=ExtractWeek('collectdate')
                 )
-                
+        
+                # Loop through the species_data to add the nl_name for each record
                 for value in species_data:
+                    # Check if any field is None and set it to an empty string
                     for field in value.__class__._meta.fields:
                         if getattr(value, field.name) is None:
                             setattr(value, field.name, "")  # Set to empty string if None
-                
+
+                    # Retrieve the species nl_name based on the species ID
+                    try:
+                        # Get the species from the MaintenanceSpeciesList table using species_id
+                        species = MaintenanceSpeciesList.objects.get(id=species_id + 1)  # Increment ID as required
+                        value.nl_name = species.nl_name  # Add nl_name to the record
+                    except MaintenanceSpeciesList.DoesNotExist:
+                        value.nl_name = "Unknown species"  # Handle case where species ID is not found
+        
             except (ValueError, FishDetails.DoesNotExist):
                 species_data = None
 
@@ -226,7 +255,7 @@ def fishdetails(request):
     if request.method == 'POST':
         # Get the fish_id from the POST data
         fish_id = request.POST.get('fish_id')
-        
+    
         # Retrieve the FishDetails object or raise a 404 if it doesn't exist
         fish = get_object_or_404(FishDetails, id=fish_id)
 
@@ -238,24 +267,31 @@ def fishdetails(request):
             'standard_length_frozen', 'frozen_mass', 'height', 'age', 'rings',
             'ogew1', 'ogew2', 'tissue_type', 'vial', 'comment'
         ]
-        
+    
         # Update the fields dynamically
         for field in fields_to_update:
             value = request.POST.get(field, getattr(fish, field))
             setattr(fish, field, value)
-        
+    
         # Special handling for boolean fields
         fish.dna_sample = 'dna_sample' in request.POST
         fish.micro_plastic = 'micro_plastic' in request.POST
-        
+
         # Save the updated fish object
         fish.save()
-        
+
         # Build the redirect URL with existing query parameters
         current_url = request.path
         query_params = request.GET.copy()  # Get the current query parameters
-        return redirect(f'{current_url}?{urlencode(query_params)}')  # Redirect with the query parameters
     
+        # Add the updated species value to the query parameters
+        updated_species = request.POST.get('species')  # Get the new species value
+        if updated_species:
+            query_params['species'] = updated_species  # Add or update the species in the query params
+
+        # Redirect to the current URL with the updated query parameters
+        return redirect(f'{current_url}?{urlencode(query_params)}')
+        
     # Create a context dictionary for the sorting values used to sort by year etc.
     context = {
         'data': data,
@@ -263,6 +299,7 @@ def fishdetails(request):
         'weeks': weeks,
         'range_groups': range_groups,
         'species_data' : species_data,
+        'species_list_data' : species_list_data,
         'selected_year': selected_year,
         'selected_week': selected_week,
         'selected_range': selected_range,
