@@ -91,22 +91,22 @@ class FishDetails(models.Model):
     collectno = models.IntegerField(blank=True, null=True)
     species = models.CharField(max_length=50, blank=True, null=True)
     condition = models.CharField(max_length=50, blank=True, null=True)
-    total_length = models.IntegerField(blank=True, null=True)
-    fork_length = models.IntegerField(blank=True, null=True)
-    standard_length = models.IntegerField(blank=True, null=True)
-    fresh_weight = models.IntegerField(blank=True, null=True)
-    total_wet_mass = models.IntegerField(blank=True, null=True)
+    total_length = models.FloatField(blank=True, null=True)
+    fork_length = models.FloatField(blank=True, null=True)
+    standard_length = models.FloatField(blank=True, null=True)
+    fresh_weight = models.FloatField(blank=True, null=True)
+    total_wet_mass = models.FloatField(blank=True, null=True)
     stomach_content = models.CharField(max_length=255, blank=True, null=True)
-    gonad_mass = models.IntegerField(blank=True, null=True)
+    gonad_mass = models.FloatField(blank=True, null=True)
     sexe = models.CharField(max_length=50, blank=True, null=True)
     ripeness = models.IntegerField(blank=True, null=True)
     otolith = models.CharField(max_length=50, blank=True, null=True)
     isotopeflag = models.IntegerField(blank=True, null=True)
-    total_length_frozen = models.IntegerField(blank=True, null=True)
-    fork_length_frozen = models.IntegerField(blank=True, null=True)
-    standard_length_frozen = models.IntegerField(blank=True, null=True)
-    frozen_mass = models.IntegerField(blank=True, null=True)
-    height = models.IntegerField(blank=True, null=True)
+    total_length_frozen = models.FloatField(blank=True, null=True)
+    fork_length_frozen = models.FloatField(blank=True, null=True)
+    standard_length_frozen = models.FloatField(blank=True, null=True)
+    frozen_mass = models.FloatField(blank=True, null=True)
+    height = models.FloatField(blank=True, null=True)
     age = models.IntegerField(blank=True, null=True)
     rings = models.IntegerField(blank=True, null=True)
     ogew1 = models.CharField(max_length=50, blank=True, null=True)
@@ -120,5 +120,20 @@ class FishDetails(models.Model):
     class Meta:
         db_table = 'fyke_fishdetails'
     
-    def __str__(self):
-        return f"Fish-details for {self.species or 'Unknown species'}"
+    def save(self, *args, **kwargs):
+        # Normalize floating-point fields
+        for field in self._meta.fields:
+            value = getattr(self, field.name)
+
+            # Convert empty strings to None
+            if value == '':
+                setattr(self, field.name, None)
+            
+            # Convert ',' to '.' for FloatField inputs
+            if isinstance(value, str) and ',' in value:
+                try:
+                    setattr(self, field.name, float(value.replace(',', '.')))
+                except ValueError:
+                    setattr(self, field.name, None)
+
+        super().save(*args, **kwargs)

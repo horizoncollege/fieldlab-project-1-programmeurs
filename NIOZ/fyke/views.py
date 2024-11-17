@@ -274,11 +274,17 @@ def fishdetails(request):
 def species_search(request):
     query = request.GET.get('q', '')
     if query:
-        # Try to match the query with the id (exact match) or the nl_name (case-insensitive search)
-        if query.isdigit():  # If the query is a number, search by id
-            results = MaintenanceSpeciesList.objects.filter(id=query)[:10]  # Search by ID
+        # If the query is a number, search by id (id = speciesid + 1)
+        if query.isdigit():
+            # Convert the query to an integer (assuming it's the speciesid)
+            speciesid = int(query)
+            # Search by id (speciesid + 1)
+            results = MaintenanceSpeciesList.objects.filter(id=speciesid + 1)[:10]  # Search by ID
         else:
-            results = MaintenanceSpeciesList.objects.filter(nl_name__icontains=query)[:10]  # Search by nl_name
+            # Search by 'nl_name' if it's not a number
+            results = MaintenanceSpeciesList.objects.filter(nl_name__icontains=query)[:10]
+        
+        # Return the name and the adjusted id (which is speciesid + 1)
         results_data = [{'name': species.nl_name, 'id': species.id} for species in results]
     else:
         results_data = []
