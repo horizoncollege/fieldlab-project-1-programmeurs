@@ -5,6 +5,8 @@ from .forms import DataCollectionForm
 from django.db.models.functions import ExtractYear, ExtractWeek
 from math import ceil
 from urllib.parse import urlencode
+from django.http import JsonResponse
+from maintenance.models import MaintenanceSpeciesList
 
 # Index
 def index(request):
@@ -136,9 +138,8 @@ def fishdetails(request):
     # Extract the year and week from the 'collectdate' field in the database
     data = FishDetails.objects.annotate(
         year=ExtractYear('collectdate'),
-        week=ExtractWeek('collectdate')
-    )
-
+        week=ExtractWeek('collectdate'))
+    
     # Get distinct years based on the 'collectdate' field
     years = data.values_list('year', flat=True).distinct().order_by('year')
     weeks = []
@@ -231,11 +232,11 @@ def fishdetails(request):
 
         # Define the fields that need to be updated
         fields_to_update = [
-            'species', 'total_length', 'fork_length', 'standard_length',
+            'species', 'condition', 'total_length', 'fork_length', 'standard_length',
             'fresh_weight', 'total_wet_mass', 'stomach_content', 'gonad_mass',
-            'ripeness', 'otolith', 'total_length_frozen', 'fork_length_frozen',
+            'sexe', 'ripeness', 'otolith', 'total_length_frozen', 'fork_length_frozen',
             'standard_length_frozen', 'frozen_mass', 'height', 'age', 'rings',
-            'ogew1', 'ogew2', 'comment'
+            'ogew1', 'ogew2', 'tissue_type', 'vial', 'comment'
         ]
         
         # Update the fields dynamically
@@ -269,6 +270,20 @@ def fishdetails(request):
     }
     
     return render(request, 'fishdetails.html', context)
+
+def species_search(request):
+    query = request.GET.get('q', '')
+    if query:
+        # Try to match the query with the id (exact match) or the nl_name (case-insensitive search)
+        if query.isdigit():  # If the query is a number, search by id
+            results = MaintenanceSpeciesList.objects.filter(id=query)[:10]  # Search by ID
+        else:
+            results = MaintenanceSpeciesList.objects.filter(nl_name__icontains=query)[:10]  # Search by nl_name
+        results_data = [{'name': species.nl_name, 'id': species.id} for species in results]
+    else:
+        results_data = []
+
+    return JsonResponse({'results': results_data})
 
 # Fykelocations
 def fykelocations(request):

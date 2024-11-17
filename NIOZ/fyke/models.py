@@ -90,6 +90,7 @@ class FishDetails(models.Model):
     registrationtime = models.DateTimeField(auto_now=False, auto_now_add=True, blank=True, null=True)
     collectno = models.IntegerField(blank=True, null=True)
     species = models.CharField(max_length=50, blank=True, null=True)
+    condition = models.CharField(max_length=50, blank=True, null=True)
     total_length = models.IntegerField(blank=True, null=True)
     fork_length = models.IntegerField(blank=True, null=True)
     standard_length = models.IntegerField(blank=True, null=True)
@@ -115,7 +116,6 @@ class FishDetails(models.Model):
     dna_sample = models.BooleanField(blank=True, null=True)
     comment = models.TextField(max_length=255, blank=True, null=True)
     micro_plastic = models.BooleanField(blank=True, null=True)
-    # test = models.CharField(max_length=50)
     
     class Meta:
         db_table = 'fyke_fishdetails'

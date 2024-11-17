@@ -60,7 +60,7 @@
             <a
               href="?year={{ selected_year }}&week={{ selected_week }}&range={{ group.start }}-{{ group.end }}"
               class="btn btn-primary"
-              id="{{ group.start }}-{{ group.end }}"
+              data-range="{{ group.start }}-{{ group.end }}"
             >
               {% if group.label == 'All' %}All{% else %}{{ group.start }}-{{ group.end }}{% endif %}
             </a>
@@ -81,7 +81,12 @@
         {% for fish in data %}
         <tr>
           <td>
-            <a class="btn btn-primary" style="text-align: left" href="?year={{ selected_year }}&week={{ selected_week }}&range={{ selected_range }}&species={{ fish.species }}"
+            <a
+              class="btn btn-primary"
+              style="text-align: left"
+              data-species="{{ fish.species }}"
+              href="?year={{ selected_year }}&week={{ selected_week }}&range={{ selected_range }}&species={{ fish.species }}"
+
               >{{ fish.year }} - {{ fish.week }} - {{ fish.collectno }} * {{ fish.species }}</a>
           </td>
         </tr>
@@ -108,12 +113,23 @@
           <tr>
             <td>Species:</td>
             <td>
-              <input type="text"><br>
-              {{ fish.species }}</td>
+              <input type="text" id="speciesSearch" placeholder="Search species..." autocomplete="off">
+              <div id="searchResults" style="position: absolute; background: white; border: 1px solid #ddd; display: none;"></div>
+              <input type="hidden" name="species" value="{{ fish.species }}">
+              <div id="speciesDisplay">
+              {{ fish.species }}
+            </div>
+            </td>
           </tr>
           <tr>
             <td>Condition:</td>
-            <td>{{ fish.condition }}</td>
+            <td><select name="condition">
+              <option value="fresh" {% if fish.condition == 'fresh' %}selected{% endif %}>Fresh</option>
+              <option value="alcohol" {% if fish.condition == 'alcohol' %}selected{% endif %}>Alcohol</option>
+              <option value="formalin" {% if fish.condition == 'formalin' %}selected{% endif %}>Formalin</option>
+              <option value="frozen" {% if fish.condition == 'frozen' %}selected{% endif %}>Frozen</option>
+              <option value="unknown" {% if fish.condition == 'unknown' %}selected{% endif %}>Unknown</option>
+            </select></td>
           </tr>
           <tr>
             <td>Total length:</td>
@@ -145,7 +161,10 @@
           </tr>
           <tr>
             <td>Sexe:</td>
-            <td>{{ fish.sexe }}</td>
+            <td><select name="sexe">
+              <option value="male" {% if fish.sexe == 'male' %}selected{% endif %}>Male</option>
+              <option value="female" {% if fish.sexe == 'female' %}selected{% endif %}>Female</option>
+            </select></td>
           </tr>
           <tr>
             <td>Ripeness:</td>
@@ -193,7 +212,7 @@
           </tr>
           <tr>
             <td>isotopes</td>
-            <td>Tissue type:<input type="text"> Vial: <input type="text"></td>
+            <td>Tissue type:<input type="text" name="tissue_type" value="{{ fish.tissue_type }}"> Vial: <input type="text" name="vial" value="{{ fish.vial }}"></td>
           </tr>
           <tr>
             <td>DNA sample</td>
@@ -221,7 +240,59 @@
 </div>
 
 <style>
-  /* Specefieke styling voor de geselecteerde opties */
-  a#\3{{ selected_range }} { background-color: var(--secondary-color) }
+a[data-range="{{ selected_range }}"] {
+  background-color: var(--secondary-color);
+}
+a[data-species="{{ selected_species}}"] {
+  background-color: var(--secondary-color);
+}
 </style>
+
+<script>
+  document.getElementById('speciesSearch').addEventListener('input', function () {
+    const query = this.value;
+    if (query.length > 1) {  // Start search after 2 characters
+        fetch(`/fyke/fishdetails/live-species-search/?q=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('searchResults');
+                resultsDiv.innerHTML = '';  // Clear previous results
+                if (data.results.length) {
+                    resultsDiv.style.display = 'block';
+                    data.results.forEach(item => {
+                        const div = document.createElement('div');
+                        // Show only the species name in the results list
+                        div.innerText = item.name;
+                        div.style.cursor = 'pointer';
+                        div.onclick = function() {
+                            // Set the search input to the format: "id-speciesname"
+                            document.getElementById('speciesSearch').value = `${item.id}-${item.name}`;
+                            // Set the hidden input's value to the selected species id
+                            document.querySelector('input[name="species"]').value = item.id;
+                            // Update the species display text dynamically
+                            document.getElementById('speciesDisplay').innerText = `${item.id}-${item.name}`;
+                            resultsDiv.style.display = 'none';  // Hide the search results
+                            // Clear the search input after selection
+                            document.getElementById('speciesSearch').value = '';
+                        };
+                        resultsDiv.appendChild(div);
+                    });
+                } else {
+                    resultsDiv.style.display = 'none';
+                }
+            });
+    } else {
+        document.getElementById('searchResults').style.display = 'none';
+    }
+});
+
+// Hide the search results when clicking outside
+document.addEventListener('click', function (e) {
+    const resultsDiv = document.getElementById('searchResults');
+    if (!resultsDiv.contains(e.target) && e.target.id !== 'speciesSearch') {
+        resultsDiv.style.display = 'none';
+    }
+});
+</script>
+
 {% endblock %}
