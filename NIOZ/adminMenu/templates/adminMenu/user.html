@@ -2,13 +2,10 @@
 
 {% block title %}Administrator{{ block.super }}{% endblock %}
 
-
 {% block submenu %}
 <ul>
-    <li class="adminMenuBar">admin menu:</li>
-    <li><a href="/adminMenu/adminMenuUser">Users</a></li>
-    <li><a href="/adminMenu/adminMenuUser">New user</a></li>
-    <li><a href="/adminMenu/adminMenuUser">Djangoinfo</a></li>
+    <li><a href="{% url 'users_view' %}">Users</a></li>
+    <li><a href="{% url 'new_user' %}">New User</a></li>
 </ul>
 {% endblock %}
 
@@ -42,18 +39,18 @@
                                 <th>Year range access</th>
                             </tr>
                             <tr>
-                                <td>{{ record.username }}</td>
+                                <td>{{ record.user.username }}</td>
                                 <td align="CENTER"></td>
-                                <td>{{ record.realName }}</td>
-                                <td align="center">{{ record.yearFrom }}</td>
+                                <td>{{ record.user.first_name }}</td>
+                                <td align="center">from {{ record.yearFrom }}</td>
                             </tr>
                         </tbody>
                     </table>
-                            <div class="adminMenuBarSize">
-                                <a href="#"class="but11">Change password</a>
-                                <a href="#"class="but11">Change name</a>
-                                <a href="#"class="but11">Change year range</a>
-                            </div>
+                    <div class="adminMenuBarSize">
+                        <a href="{% url 'change_password' record.pk %}" class="but11">Change password</a>
+                        <a href="#" class="but11">Change name</a>
+                        <a href="#" class="but11">Change year range</a>
+                    </div>
                     <form method="POST">
                         {% csrf_token %}
                     <table border="1" cellspacing="0" cellpadding="2" class="text"
@@ -335,27 +332,6 @@
                                 <td>
                                     <label>
                                         <input {% if record.fykeLocations == 3  %}checked{% endif %} type="radio" name="fykeLocations" value="3">
-                                        <span class="custom-radio"></span>
-                                    </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Help</td>
-                                <td>
-                                    <label>
-                                        <input {% if record.help == 1  %}checked{% endif %} type="radio" name="help" value="1">
-                                        <span class="custom-radio"></span>
-                                    </label>
-                                </td>
-                                <td>
-                                    <label>
-                                        <input {% if record.help == 2  %}checked{% endif %} type="radio" name="help" value="2">
-                                        <span class="custom-radio"></span>
-                                    </label>
-                                </td>
-                                <td>
-                                    <label>
-                                        <input {% if record.help == 3  %}checked{% endif %} type="radio" name="help" value="3">
                                         <span class="custom-radio"></span>
                                     </label>
                                 </td>
