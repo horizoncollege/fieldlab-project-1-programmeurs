@@ -29,8 +29,12 @@ def species_list(request):
         order = default_order
 
     # Verkrijg de vorige sorteerinstellingen uit de sessie
-    last_sort = request.session.get('last_sort', None)
-    last_order = request.session.get('last_order', 'asc')
+    last_sort = request.session.get('last_sort', default_sort)
+    last_order = request.session.get('last_order', default_order)
+    
+    print("Ophalen Sessiewaarden:", last_sort, last_order)
+
+
 
     # Als de kolom hetzelfde is als de vorige keer, wissel de volgorde
     if sort_by == last_sort:
@@ -43,6 +47,9 @@ def species_list(request):
     # Sla de huidige sorteerinstellingen op in de sessie
     request.session['last_sort'] = sort_by
     request.session['last_order'] = order
+    print("Sessiewaarden:", request.session.get('last_sort'), request.session.get('last_order'))
+
+    
 
     # Haal de records op en pas de sortering toe
     species = MaintenanceSpeciesList.objects.all()
@@ -50,7 +57,10 @@ def species_list(request):
     # Specifieke sortering voor 'WoRMS' als numerieke waarde
     if sort_by == 'WoRMS':
         species = species.annotate(WoRMS_as_int=Cast('WoRMS', IntegerField()))
+        display_sort_by = 'WoRMS'  # Houd bij wat de gebruiker heeft geselecteerd
         sort_by = 'WoRMS_as_int'
+    else:
+        display_sort_by = sort_by
 
     # Pas de sortering toe afhankelijk van de volgorde
     if order == 'desc':
@@ -66,11 +76,12 @@ def species_list(request):
         'species': species,
         'form': form,
         'show_form': show_form,
-        'sort': sort_by,
+        'sort': display_sort_by,  # Gebruik de originele kolomnaam voor consistentie
         'order': order,
-        'last_sort': last_sort,  # Zorg ervoor dat de sessie-instellingen worden doorgegeven
-        'last_order': last_order,  # Zorg ervoor dat de sessie-instellingen worden doorgegeven
+        'last_sort': last_sort,
+        'last_order': last_order,
     })
+
 
 
 
