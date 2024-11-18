@@ -3,6 +3,7 @@
 <div class="fyke-wrapper fishdetails">
   <span>Fish details</span>
   <div class="fyke-wrapper-inner">
+
     <table class="year-table fyke-table">
       <tbody>
         <tr>
@@ -29,7 +30,8 @@
         <tr>
           <th>week:</th>
         </tr>
-        {% if selected_year %} {% for week in weeks %}
+        {% if selected_year %}
+        {% for week in weeks %}
         <tr>
           <td>
             <a
@@ -40,7 +42,8 @@
             </a>
           </td>
         </tr>
-        {% endfor %} {% endif %}
+        {% endfor %}
+        {% endif %}
       </tbody>
     </table>
 
@@ -49,30 +52,23 @@
         <tr>
           <th>Collectno:</th>
         </tr>
-        {% if selected_year %}{% if selected_week %}
-        <tr>
-          <td>
-            <a
-              href="?year={{ selected_year }}&week={{ selected_week }}"
-              class="btn {% if selected_range %}btn-primary{% else %}btn-secondary{% endif %}"
-              >All
-            </a>
-          </td>
-        </tr>
-        <!-- Loop through range groups -->
-        {% for group in range_groups %} {% if group.collect_in_range %}
+        {% if selected_year and selected_week %}
+        {% for group in range_groups %}
+        {% if group.collect_in_range %}
         <tr>
           <td>
             <a
               href="?year={{ selected_year }}&week={{ selected_week }}&range={{ group.start }}-{{ group.end }}"
               class="btn btn-primary"
-              id="{{ group.start }}-{{ group.end }}"
+              data-range="{{ group.start }}-{{ group.end }}"
             >
-              {{ group.start }}-{{ group.end }}
+              {% if group.label == 'All' %}All{% else %}{{ group.start }}-{{ group.end }}{% endif %}
             </a>
           </td>
         </tr>
-        {% endif %} {% endfor %} {% endif %} {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% endif %}
       </tbody>
     </table>
 
@@ -81,17 +77,284 @@
         <tr>
           <th>N# * Name</th>
         </tr>
+        {% if selected_year and selected_week and selected_range %}
+        {% for fish in data %}
         <tr>
-          <td></td>
+          <td>
+            <a
+              class="btn btn-primary"
+              style="text-align: left"
+              data-species="{{ fish.species }}"
+              href="?year={{ selected_year }}&week={{ selected_week }}&range={{ selected_range }}&species={{ fish.species }}"
+              >{{ fish.year }} - {{ fish.week }} - {{ fish.collectno }} * {{ fish.nl_name }}</a>
+          </td>
         </tr>
+        {% endfor %}
+        {% endif %}
       </tbody>
+    </table>
+      
+    <table class="form-table fyke-table">
+      <form method="post" id="fishdetails-form">
+        {% csrf_token %}
+        {% if selected_year and selected_week and range_groups and selected_species %}
+        {% for fish in species_data %}
+        <input type="hidden" name="fish_id" value="{{ fish.id }}">  
+        <tbody>
+          <tr>
+            <th></th>
+            <th>N#: {{ fish.year }} - {{ fish.week }} - {{ fish.collectno }}</th>
+          </tr>
+          <tr>
+            <td>Collectdate:</td>
+            <td>{{ fish.collectdate }}</td>
+          </tr>
+          <tr>
+            <td>Species:</td>
+            <td>
+              <input type="text" name="search" id="speciesSearch" placeholder="Search species..." autocomplete="off">
+              <div id="searchResults" style="position: absolute; background: white; border: 1px solid #ddd; display: none;"></div>
+              <input type="hidden" name="species" value="{{ fish.species }}">
+              <div id="speciesDisplay">
+              {{ fish.species }}-{{ fish.nl_name}}
+            </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Condition:</td>
+            <td><select name="condition">
+              <option value="fresh" {% if fish.condition == 'fresh' %}selected{% endif %}>Fresh</option>
+              <option value="alcohol" {% if fish.condition == 'alcohol' %}selected{% endif %}>Alcohol</option>
+              <option value="formalin" {% if fish.condition == 'formalin' %}selected{% endif %}>Formalin</option>
+              <option value="frozen" {% if fish.condition == 'frozen' %}selected{% endif %}>Frozen</option>
+              <option value="unknown" {% if fish.condition == 'unknown' %}selected{% endif %}>Unknown</option>
+            </select></td>
+          </tr>
+          <tr>
+            <td>Total length:</td>
+            <td><input type="text" name="total_length" value="{{ fish.total_length }}"> cm</td>
+          </tr>
+          <tr>
+            <td>Fork length:</td>
+            <td><input type="text" name="fork_length" value="{{ fish.fork_length }}"> cm </td>
+          </tr>
+          <tr>
+            <td>Standard length:</td>
+            <td><input type="text" name="standard_length" value="{{ fish.standard_length }}"> cm</td>
+          </tr>
+          <tr>
+            <td>Fresh weight:</td>
+            <td><input type="text" name="fresh_weight" value="{{ fish.fresh_weight }}"> g </td>
+          </tr>
+          <tr>
+            <td>Total wet mass:</td>
+            <td><input type="text" name="total_wet_mass" value="{{ fish.total_wet_mass }}"> g </td>
+          </tr>
+          <tr>
+            <td>Stomach content:</td>
+            <td><input type="text" name="stomach_content" value="{{ fish.stomach_content }}"> g </td>
+          </tr>
+          <tr>
+            <td>Gonad mass:</td>
+            <td><input type="text" name="gonad_mass" value="{{ fish.gonad_mass }}"> g </td>
+          </tr>
+          <tr>
+            <td>Sexe:</td>
+            <td><select name="sexe">
+              <option value="male" {% if fish.sexe == 'male' %}selected{% endif %}>Male</option>
+              <option value="female" {% if fish.sexe == 'female' %}selected{% endif %}>Female</option>
+            </select></td>
+          </tr>
+          <tr>
+            <td>Ripeness:</td>
+            <td><input type="text" name="ripeness" value="{{ fish.ripeness }}"></td>
+          </tr>
+          <tr>
+            <td>Otolith label:</td>
+            <td><input type="text" name="otolith" value="{{ fish.otolith }}"></td>
+          </tr>
+          <tr>
+            <td>Total length (frozen):</td>
+            <td><input type="text" name="total_length_frozen" value="{{ fish.total_length_frozen }}"> cm </td>
+          </tr>
+          <tr>
+            <td>Fork length (frozen):</td>
+            <td><input type="text" name="fork_length_frozen" value="{{ fish.fork_length_frozen }}"> cm </td>
+          </tr>
+          <tr>
+            <td>Standard length (frozen):</td>
+            <td><input type="text" name="standard_length_frozen" value="{{ fish.standard_length_frozen }}"> cm </td>
+          </tr>
+          <tr>
+            <td>Frozen mass:</td>
+            <td><input type="text" name="frozen_mass" value="{{ fish.frozen_mass }}"> g </td>
+          </tr>
+          <tr>
+            <td>Height:</td>
+            <td><input type="text" name="height" value="{{ fish.height }}"></td>
+          </tr>
+          <tr>
+            <td>Age:</td>
+            <td><input type="text" name="age" value="{{ fish.age }}"></td>
+          </tr>
+          <tr>
+            <td>Rings:</td>
+            <td><input type="text" name="rings" value="{{ fish.rings }}"></td>
+          </tr>
+          <tr>
+            <td>Ogew1:</td>
+            <td><input type="text" name="ogew1" value="{{ fish.ogew1 }}"></td>
+          </tr>
+          <tr>
+            <td>Ogew2</td>
+            <td><input type="text" name="ogew2" value="{{ fish.ogew2 }}"></td>
+          </tr>
+          <tr>
+            <td>isotopes</td>
+            <td>Tissue type:<input type="text" name="tissue_type" value="{{ fish.tissue_type }}"> Vial: <input type="text" name="vial" value="{{ fish.vial }}"></td>
+          </tr>
+          <tr>
+            <td>DNA sample</td>
+            <td><input type="checkbox" name="dna_sample" id="dna_sample" {% if fish.dna_sample %}checked{% endif %}></td>
+          </tr>
+          <tr>
+            <td>Comment</td>
+            <td><textarea name="comment" cols="40" rows="3">{{ fish.comment }}</textarea></td>
+          </tr>
+          <tr>
+            <td>Micro plastic:</td>
+            <td><input type="checkbox" name="micro_plastic" id="micro_plastic" {% if fish.micro_plastic %}checked{% endif %}></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><button class="btn btn-secondary" type="submit">Save</button></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div id="global-error-message" style="color:red; display:none;">
+                One or more inputs are invalid.
+              </div>
+            </td>
+          </tr>
+          
+        </tbody>
+
+        
+
+        {% endfor %}
+        {% endif %}
+      </form>
     </table>
   </div>
 </div>
 
+<!-- Styling for selected 'collectno' -->
 <style>
-  a#\3{{ selected_range}} {background-color: var(--secondary-color)}
+  a[data-range="{{ selected_range }}"] {
+    background-color: var(--secondary-color);
+  }
+  a[data-species="{{ selected_species}}"] {
+    background-color: var(--secondary-color);
+  }
 </style>
 
-{% endblock %}
+<!-- Javascript for live species search -->
+<script>
+  document.getElementById('speciesSearch').addEventListener('input', function () {
+    const query = this.value;
+    if (query.length > 1) {  // Start search after 2 characters
+        fetch(`/fyke/fishdetails/live-species-search/?q=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('searchResults');
+                resultsDiv.innerHTML = '';
+                if (data.results.length) {
+                    resultsDiv.style.display = 'block';
+                    data.results.forEach(item => {
+                        const div = document.createElement('div');
+                        div.innerText = item.name;
+                        div.style.cursor = 'pointer';
+                        div.onclick = function() {
+                            // Calculate speciesid as id - 1
+                            const speciesid = item.id - 1;
 
+                            // Set the search input to the format: "id-speciesname"
+                            document.getElementById('speciesSearch').value = `${speciesid}-${item.name}`;
+
+                            // Set the hidden input's value to the selected species id (speciesid)
+                            document.querySelector('input[name="species"]').value = speciesid;
+
+                            // Update the species display text dynamically
+                            document.getElementById('speciesDisplay').innerText = `${speciesid}-${item.name}`;
+
+                            // Clear the input field after selection (optional)
+                            document.getElementById('speciesSearch').value = '';  // Clear search input
+
+                            resultsDiv.style.display = 'none';  // Hide the search results
+                        };
+                        resultsDiv.appendChild(div);
+                    });
+                } else {
+                    resultsDiv.style.display = 'none';
+                }
+            });
+    } else {
+        document.getElementById('searchResults').style.display = 'none';
+    }
+  });
+
+  // Hide the search results when clicking outside
+  document.addEventListener('click', function (e) {
+    const resultsDiv = document.getElementById('searchResults');
+    if (!resultsDiv.contains(e.target) && e.target.id !== 'speciesSearch') {
+        resultsDiv.style.display = 'none';
+    }
+  });
+</script>
+
+<!-- Javascript for form error validation -->
+<script>
+  document.getElementById('fishdetails-form').addEventListener('submit', function(event) {
+    // Get all input fields for validation
+    var fields = document.querySelectorAll('input[type="text"]');
+    var isValid = true; // Assume inputs are valid initially
+
+    // Regular expression to allow both decimal separators (either . or ,)
+    var numberRegex = /^[0-9]+([.,][0-9]+)?$/;
+
+    // Hide the global error message initially
+    var globalErrorMessage = document.getElementById('global-error-message');
+    globalErrorMessage.style.display = 'none';
+
+    // Loop through all fields and validate
+    fields.forEach(function(field) {
+        var value = field.value.trim();
+
+        // Skip validation for 'vial' and 'otolith' fields
+        if (field.name === 'vial' || field.name === 'otolith' || field.name === 'search') {
+            return; // Skip validation for these fields
+        }
+
+        // Check if the field is valid
+        if (value !== "" && !numberRegex.test(value)) {
+            // Invalid input: apply styles
+            field.style.border = '1px red solid';
+            field.style.backgroundColor = 'pink';
+            isValid = false;
+        } else {
+            // Valid input: reset styles
+            field.style.border = '';
+            field.style.backgroundColor = '';
+        }
+    });
+
+    // If any field is invalid, show the global error message
+    if (!isValid) {
+        event.preventDefault(); // Prevent form submission
+        globalErrorMessage.style.display = 'block'; // Show the global error message
+    }
+  });
+</script>
+
+{% endblock %}
