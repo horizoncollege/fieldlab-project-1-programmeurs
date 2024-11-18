@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'maintenance',
     'optionsApp',
     'helpApp',
+    
 ]
 
 MIDDLEWARE = [

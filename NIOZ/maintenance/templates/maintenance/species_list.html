@@ -2,58 +2,123 @@
 
 {% block content %}
 <div class="maintenance species_list">
+    <!-- Eerste tabel (met de gesorteerde kolommen) -->
     <table cellspacing="0" cellpadding="5" class="text">
         <tbody>
             <tr>
-                <th>Species&nbsp;&nbsp;<a href="#" id="new-species-btn" class="but11">&nbsp;new&nbsp;</a></th>
+                <th>Species&nbsp;&nbsp;<a href="{% url 'species_create' %}" class="but11">&nbsp;new&nbsp;</a></th>
             </tr>
             <tr>
                 <td class="background">
                     <table border="1" cellspacing="0" cellpadding="2" class="text" id="table">
                         <thead>
                             <tr>
-                                <th class="bok11">
-                                    <a href="?sort=id" class="center">SpeciesID</a>
+                                <th class="bok11 {% if sort == 'species_id' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=species_id&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">SpeciesID</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="?sort=active&order={% if sort_field == 'active' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Active</a>
+                                <th class="bok11 {% if sort == 'active' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=active&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Active</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="?sort=nl_name&order={% if sort_field == 'nl_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">NL name</a>
+                                <th class="bok11 {% if sort == 'nl_name' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=nl_name&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">NL name</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="?sort=name&order={% if sort_field == 'name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">EN name</a>
+                                <th class="bok11 {% if sort == 'name' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=name&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">EN name</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="?sort=latin_name&order={% if sort_field == 'latin_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">LATIN name</a>
+                                <th class="bok11 {% if sort == 'latin_name' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=latin_name&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Latin name</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="?sort=WoRMS&order={% if sort_field == 'WoRMS' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">WoRMS</a>
+                                <th class="bok11 {% if sort == 'WoRMS' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=WoRMS&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">WoRMS</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="?sort=pauly_trophic_level&order={% if sort_field == 'pauly_trophic_level' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">PaulyTrophicLevel</a>
+                                <th class="bok11 {% if sort == 'pauly_trophic_level' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=pauly_trophic_level&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Pauly Trophic Level</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="?sort=var_x&order={% if sort_field == 'var_x' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Var X</a>
+                                <th class="bok11 {% if sort == 'var_x' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=var_x&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Var X</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="?sort=fishflag&order={% if sort_field == 'fishflag' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Fishflag</a>
+                                <th class="bok11 {% if sort == 'fishflag' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=fishflag&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Fishflag</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="?sort=collecting_per_week&order={% if sort_field == 'collecting_per_week' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Coll/wk</a>
+                                <th class="bok11 {% if sort == 'collecting_per_week' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=collecting_per_week&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Coll/wk</a>
                                 </th>
-                                <th class="bok11">
-                                    <a href="?sort=always_collecting&order={% if sort_field == 'always_collecting' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Alw.Coll</a>
+                                <th class="bok11 {% if sort == 'always_collecting' %}
+                                    {% if order == 'asc' %}
+                                        green
+                                    {% else %}
+                                        red
+                                    {% endif %}
+                                {% endif %}">
+                                    <a href="?sort=always_collecting&order={% if order == 'asc' %}desc{% else %}asc{% endif %}" class="center">Alw.Coll</a>
                                 </th>
                             </tr>
                         </thead>
-                        
-                        
                         <tbody>
                             {% for specie in species %}
                             <tr>
-                                <td class="center" data-id="{{ specie.id }}">
-                                    <a href="{% url 'species_edit' specie.id %}" class="btn btn-primary">{{ specie.id }}</a>
+                                <td class="center">
+                                    <a href="{% url 'species_edit' specie.species_id %}">{{ specie.species_id }}</a>
                                 </td>
                                 <td class="center">
                                     <img src="{% if specie.active %}../../../../../static/img/checkbox.png{% else %}../../../../../static/img/checkbox_empty.png{% endif %}" alt="Active Checkbox" style="width: 15px; height: 15px;">
@@ -75,71 +140,79 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <form method="POST" action="{% url 'species_list' %}" class="form2">
-        {% csrf_token %}
-        <table border="1" cellspacing="0" cellpadding="2" class="text" style="display: none;" id="species-form">
-            <tbody>
-                <tr><th colspan="2">New record</th></tr>
-                <tr><th>Variable</th><th>Value</th></tr>
-                <div class="background2">
+    <!-- Tweede tabel (formulier voor het bewerken of toevoegen van een soort) -->
+    {% if form %}
+    <div style="text-align: center; background-color: #f0f0f0; font-size: 12px;" id="species-edit-form">
+        <p><strong>New record</strong></p>
+        <form method="POST"
+            action="{% if form.instance.id %}{% url 'species_edit' form.instance.species_id %}{% else %}{% url 'species_create' %}{% endif %}">
+            {% csrf_token %}
+            <table border="1" cellspacing="0" cellpadding="2" class="text">
+                <thead>
+                    <th class="color1">Variable</th>
+                    <th class="color1">Value</th>
                     <tr>
-                        <td>Species ID:</td>
-                        <td>{{ form.species_id }} {{ form.species_id.errors }}</td>
+                        <td class="color2">SpeciesID</th>
+                        <td  class="left-align-cell">{{ form.species_id }}</td>
                     </tr>
                     <tr>
-                        <td>Active:</td>
-                        <td>{{ form.active }} {{ form.active.errors }}</td>
+                        <td class="color2">Active</th>
+                        <td  class="left-align-cell">{{ form.active }}</td>
                     </tr>
                     <tr>
-                        <td>NL Name:</td>
-                        <td>{{ form.nl_name }} {{ form.nl_name.errors }}</td>
+                        <td class="color2">NL name</th>
+                        <td  class="left-align-cell">{{ form.nl_name }}</td>
                     </tr>
                     <tr>
-                        <td>EN Name:</td>
-                        <td>{{ form.name }} {{ form.name.errors }}</td>
+                        <td class="color2">EN name</th>
+                        <td  class="left-align-cell">{{ form.name }}</td>
                     </tr>
                     <tr>
-                        <td>Latin Name:</td>
-                        <td>{{ form.latin_name }} {{ form.latin_name.errors }}</td>
+                        <td class="color2">Latin name</th>
+                        <td  class="left-align-cell">{{ form.latin_name }}</td>
                     </tr>
                     <tr>
-                        <td>WoRMS:</td>
-                        <td>{{ form.WoRMS }} {{ form.WoRMS.errors }}</td>
+                        <td class="color2">WoRMS</th>
+                        <td  class="left-align-cell">{{ form.WoRMS }}</td>
                     </tr>
                     <tr>
-                        <td>Pauly Trophic Level:</td>
-                        <td>{{ form.pauly_trophic_level }} {{ form.pauly_trophic_level.errors }}</td>
+                        <td class="color2">Pauly Trophic Level</th>
+                        <td  class="left-align-cell">{{ form.pauly_trophic_level }}</td>
                     </tr>
                     <tr>
-                        <td>Var X:</td>
-                        <td>{{ form.var_x }} {{ form.var_x.errors }}</td>
+                        <td class="color2">Var X</th>
+                        <td  class="left-align-cell">{{ form.var_x }}</td>
                     </tr>
                     <tr>
-                        <td>Fishflag:</td>
-                        <td>{{ form.fishflag }} {{ form.fishflag.errors }}</td>
+                        <td class="color2">Fishflag</th>
+                        <td  class="left-align-cell">{{ form.fishflag }}</td>
                     </tr>
                     <tr>
-                        <td>Collecting/Week:</td>
-                        <td>{{ form.collecting_per_week }} {{ form.collecting_per_week.errors }}</td>
+                        <td class="color2">collecting/week</th>
+                        <td  class="left-align-cell">{{ form.collecting_per_week }}</td>
                     </tr>
                     <tr>
-                        <td>Always Collecting:</td>
-                        <td>{{ form.always_collecting }} {{ form.always_collecting.errors }}</td>
+                        <td class="color2">Always collecting</th>
+                        <td  class="left-align-cell">{{ form.always_collecting }}</td>
                     </tr>
-                </div>
-                <tr>
-                    <td colspan="2" align="center">
-                        <button name="btn1" value="store" type="submit">Store</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </form>
-</div>
+                </thead>
+            </table>
+            <input type="submit" value="Store" >
+        </form>
+    </div>
+    {% endif %}
 
-{% endblock %}
+    {% endblock content %}
