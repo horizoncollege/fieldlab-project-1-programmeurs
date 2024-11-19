@@ -7,7 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token }}">
 
+    <!-- Favicon icon-->
+    <link rel="icon" type="image/x-icon" href="{% static 'img\NIOZ_favicon_2023.ico' %}">
 
+    <!-- Title -->
     <title>{% block title %} - NIOZ FISH{% endblock %}</title>
 
     <!-- Standard css -->
@@ -52,6 +55,6 @@
     </div>
 
     <!-- Achtergrondplaatje -->
-     <div class='background-img'></div>
+    <div class='background-logo'><img src="{% static 'img\NIOZ-LOGO.png' %}"></div>
   </body>
 </html>
