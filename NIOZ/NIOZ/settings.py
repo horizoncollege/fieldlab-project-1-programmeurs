@@ -43,9 +43,6 @@ INSTALLED_APPS = [
     'adminMenu',
     'fyke',
     'maintenance',
-    'optionsApp',
-    'helpApp',
-    
 ]
 
 MIDDLEWARE = [

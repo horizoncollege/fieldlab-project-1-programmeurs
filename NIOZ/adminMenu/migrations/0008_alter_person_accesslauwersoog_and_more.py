@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('adminMenu', '0007_delete_accesschoice'),
+        ('adminMenu', '0005_person_accesslauwersoog_person_accesstexel_and_more'),
     ]
 
     operations = [
