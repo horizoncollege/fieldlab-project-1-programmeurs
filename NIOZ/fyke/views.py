@@ -328,20 +328,20 @@ def species_search(request):
 
     return JsonResponse({'results': results_data})
 
-# Fykelocations
-def fykelocations(request):
+# Catchlocations
+def catchlocations(request):
     # Retrieve all records from the FykeLocations table
     data = FykeLocations.objects.all()  # This gets all entries in the table
     
-    return render(request, 'fykelocations.html', {
+    return render(request, 'catchlocations.html', {
         'data': data  # Pass the data to the template
     })
 
 def new_location(request):
-    return render(request, 'fykelocations/new_location.html')
+    return render(request, 'catchlocations/new_location.html')
     
 def edit_location(request, pk):
-    return render(request, 'fykelocations/edit_location.html')
+    return render(request, 'catchlocations/edit_location.html')
 
 
 # Exportdata

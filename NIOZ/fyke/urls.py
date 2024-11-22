@@ -14,10 +14,10 @@ urlpatterns = [
     path('datacollection/edit/<int:pk>/', views.edit_record_view, name='edit_record'),  # URL for editing a record
     path('datacollection/biotic/<int:pk>/', views.biotic, name='biotic'),  # Record biotic page
     
-    # Fykelocations URL's
-    path('fykelocations/', views.fykelocations, name='fykelocations'),
-    path('fykelocations/new_location/', views.new_location, name='new_location'),
-    path('fykelocations/edit_location/<int:pk>/', views.edit_location, name='edit_location'), 
+    # Catchlocations URL's
+    path('catchlocations/', views.catchlocations, name='catchlocations'),
+    path('catchlocations/new_location/', views.new_location, name='new_location'),
+    path('catchlocations/edit_location/<int:pk>/', views.edit_location, name='edit_location'), 
     
     # Fishdetails URL's
     path('fishdetails/', views.fishdetails, name='fishdetails'),

@@ -82,7 +82,7 @@ class FykeLocations(models.Model):
         db_table = 'fyke_fykelocations'  # Set the name to your existing database table
         
     def __str__(self):
-        return f"Fykelocations"
+        return f"catchlocations"
 
 
 class FishDetails(models.Model):
