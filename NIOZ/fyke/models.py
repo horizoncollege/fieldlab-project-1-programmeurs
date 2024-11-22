@@ -95,6 +95,7 @@ class FishDetails(models.Model):
     fork_length = models.FloatField(blank=True, null=True)
     standard_length = models.FloatField(blank=True, null=True)
     fresh_weight = models.FloatField(blank=True, null=True)
+    liver_weight = models.FloatField(blank=True, null=True)
     total_wet_mass = models.FloatField(blank=True, null=True)
     stomach_content = models.CharField(max_length=255, blank=True, null=True)
     gonad_mass = models.FloatField(blank=True, null=True)

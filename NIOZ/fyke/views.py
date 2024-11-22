@@ -7,6 +7,7 @@ from math import ceil
 from urllib.parse import urlencode
 from django.http import JsonResponse
 from maintenance.models import MaintenanceSpeciesList
+from django.db.models import Q
 
 # Index
 def index(request):
@@ -152,7 +153,6 @@ def fishdetails(request):
     
     # Initialize variables for later use
     species_data = None
-    species_list_data = None
 
     # Start with filtering by year
     if selected_year:
@@ -207,12 +207,10 @@ def fishdetails(request):
             # Loop through the data and add the species' nl_name based on the species id
             for record in data:
                 species_id = record.species  # Get species ID from the data
-                
-                species_id = int(species_id) + 1
         
                 # Query the species_list table to retrieve the species name (nl_name)
                 try:
-                    species = MaintenanceSpeciesList.objects.get(id=species_id)
+                    species = MaintenanceSpeciesList.objects.get(species_id=species_id)  # Use species_id directly
                     record.nl_name = species.nl_name  # Add nl_name to the record
                 except MaintenanceSpeciesList.DoesNotExist:
                     record.nl_name = "Unknown species"  # Handle case where species ID is not found
@@ -220,13 +218,13 @@ def fishdetails(request):
         if selected_species:
             try:
                 species_id = int(selected_species)  # Get the species ID from the selected_species value
-        
+    
                 # Retrieve species data for the given species_id
                 species_data = FishDetails.objects.filter(species=species_id).annotate(
                     year=ExtractYear('collectdate'),
                     week=ExtractWeek('collectdate')
                 )
-        
+
                 # Loop through the species_data to add the nl_name for each record
                 for value in species_data:
                     # Check if any field is None and set it to an empty string
@@ -234,14 +232,14 @@ def fishdetails(request):
                         if getattr(value, field.name) is None:
                             setattr(value, field.name, "")  # Set to empty string if None
 
-                    # Retrieve the species nl_name based on the species ID
+                    # Retrieve the species nl_name based on the species_id
                     try:
                         # Get the species from the MaintenanceSpeciesList table using species_id
-                        species = MaintenanceSpeciesList.objects.get(id=species_id + 1)  # Increment ID as required
+                        species = MaintenanceSpeciesList.objects.get(species_id=species_id)  # Use species_id directly
                         value.nl_name = species.nl_name  # Add nl_name to the record
                     except MaintenanceSpeciesList.DoesNotExist:
                         value.nl_name = "Unknown species"  # Handle case where species ID is not found
-        
+    
             except (ValueError, FishDetails.DoesNotExist):
                 species_data = None
 
@@ -255,24 +253,24 @@ def fishdetails(request):
     if request.method == 'POST':
         # Get the fish_id from the POST data
         fish_id = request.POST.get('fish_id')
-    
+
         # Retrieve the FishDetails object or raise a 404 if it doesn't exist
         fish = get_object_or_404(FishDetails, id=fish_id)
 
         # Define the fields that need to be updated
         fields_to_update = [
             'species', 'condition', 'total_length', 'fork_length', 'standard_length',
-            'fresh_weight', 'total_wet_mass', 'stomach_content', 'gonad_mass',
+            'fresh_weight', 'liver_weight', 'total_wet_mass', 'stomach_content', 'gonad_mass',
             'sexe', 'ripeness', 'otolith', 'total_length_frozen', 'fork_length_frozen',
             'standard_length_frozen', 'frozen_mass', 'height', 'age', 'rings',
             'ogew1', 'ogew2', 'tissue_type', 'vial', 'comment'
         ]
-    
+
         # Update the fields dynamically
         for field in fields_to_update:
             value = request.POST.get(field, getattr(fish, field))
             setattr(fish, field, value)
-    
+
         # Special handling for boolean fields
         fish.dna_sample = 'dna_sample' in request.POST
         fish.micro_plastic = 'micro_plastic' in request.POST
@@ -283,11 +281,11 @@ def fishdetails(request):
         # Build the redirect URL with existing query parameters
         current_url = request.path
         query_params = request.GET.copy()  # Get the current query parameters
-    
-        # Add the updated species value to the query parameters
-        updated_species = request.POST.get('species')  # Get the new species value
+
+        # Add or update the species_id in the query parameters
+        updated_species = request.POST.get('species')  # Get the new species_id value
         if updated_species:
-            query_params['species'] = updated_species  # Add or update the species in the query params
+            query_params['species'] = updated_species  # Add or update the species_id in the query params
 
         # Redirect to the current URL with the updated query parameters
         return redirect(f'{current_url}?{urlencode(query_params)}')
@@ -299,7 +297,6 @@ def fishdetails(request):
         'weeks': weeks,
         'range_groups': range_groups,
         'species_data' : species_data,
-        'species_list_data' : species_list_data,
         'selected_year': selected_year,
         'selected_week': selected_week,
         'selected_range': selected_range,
@@ -311,22 +308,25 @@ def fishdetails(request):
 def species_search(request):
     query = request.GET.get('q', '')
     if query:
-        # If the query is a number, search by id (id = speciesid + 1)
+        # If the query is a number, search by species_id
         if query.isdigit():
-            # Convert the query to an integer (assuming it's the speciesid)
             speciesid = int(query)
-            # Search by id (speciesid + 1)
-            results = MaintenanceSpeciesList.objects.filter(id=speciesid + 1)[:10]  # Search by ID
+            results = MaintenanceSpeciesList.objects.filter(species_id=speciesid)[:10]
         else:
-            # Search by 'nl_name' if it's not a number
-            results = MaintenanceSpeciesList.objects.filter(nl_name__icontains=query)[:10]
-        
-        # Return the name and the adjusted id (which is speciesid + 1)
-        results_data = [{'name': species.nl_name, 'id': species.id} for species in results]
+            # Search by 'nl_name' or 'latin_name' if it's not a number
+            results = MaintenanceSpeciesList.objects.filter(
+                Q(nl_name__icontains=query) | Q(latin_name__icontains=query)
+            )[:10]
+            
+        results_data = [
+            {'species_id': species.species_id, 'nl_name': species.nl_name, 'latin_name': species.latin_name} 
+            for species in results
+        ]
     else:
         results_data = []
 
     return JsonResponse({'results': results_data})
+
 
 # Fykelocations
 def fykelocations(request):
