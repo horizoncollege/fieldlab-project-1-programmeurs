@@ -26,7 +26,7 @@
       </tr>
       <tr>
         <td>Fishing duration:</td>
-        <td><input type="text" name="duration" id="id_duration" value="{{ form.duration.value }}"></td>
+        <td><input type="number" name="duration" id="id_duration" value="{{ form.duration.value }}"></td>
       </tr>
       <tr>
         <td>Tidal phase:</td>
@@ -59,7 +59,7 @@
       <tr>
         <td>Remarks:</td>
         <td>
-          <textarea name="remarks" rows="4" cols="50">
+          <textarea name="remarks" id="id_remarks" rows="4" cols="50">
           {{ form.remarks.value }}</textarea>
         </td>
       </tr>
@@ -80,12 +80,31 @@
 </form>
 
 <script>
-  // Initialize Flatpickr with custom format
+  var today = new Date();
+  var formattedDate = today.toISOString().split('T')[0]; // Get the date part in YYYY-MM-DD format
+  
   document.addEventListener('DOMContentLoaded', function () {
     flatpickr("#id_date", {
+      maxDate: formattedDate,
       dateFormat: "d-m-Y", // Format as dd/mm/yyyy
       defaultDate: new Date(), // Set default to today's date
     });
+  });
+</script>
+
+<script>
+  var fishingDurationInput = document.getElementById('id_duration');
+  var lastFishingDuration = fishingDurationInput.value; // initial value
+  var remarksInput = document.getElementById('id_remarks');
+
+  fishingDurationInput.addEventListener('input', function () {
+    var newFishingDuration = fishingDurationInput.value;
+    if (newFishingDuration != lastFishingDuration) {
+        var userName = "{{ user.username }}";  // Get the logged-in username
+        remarksInput.value = userName + " changed fishing duration from '" + lastFishingDuration + "'' to '" + newFishingDuration + "'";
+    } else {
+        remarksInput.value = "";  // Clear remarks if no change
+    }
   });
 </script>
 {% endblock %}
