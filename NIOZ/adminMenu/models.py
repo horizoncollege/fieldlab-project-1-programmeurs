@@ -34,8 +34,10 @@ class Person(models.Model):
     optionsUserSettings = models.IntegerField(default=3)
 
 
-def __str__(self):
+    def __str__(self):
         return f"{self.user.username} Profile"
 
-class Meta:
-      db_table = 'adminmenu_person'
+    class Meta:
+        db_table = 'adminmenu_person'
+        verbose_name = "Gebruiker"
+        verbose_name_plural = "Gebruikers"
