@@ -6,11 +6,15 @@
     <tbody>
       <tr>
         <td>Date:</td>
-        <td><input type="text" value="{{ form.date.value|date:"Y-m-d" }}" disabled></td>
+        <td>
+          <input type="text" value="{{ form.date.value|date:"d-m-Y" }}" disabled>
+        </td>
       </tr>
       <tr>
         <td>Time:</td>
-        <td>{{ form.time }} (HH:MM[:SS])</td>
+        <td>
+          <input type="time" value="{{ form.time.value }}">
+        </td>
       </tr>
       <tr>
         <td>Observer:</td>
@@ -58,8 +62,8 @@
         <td>Remarks:</td>
         <td>
           <textarea name="remarks" rows="4" cols="50">
-{{ form.remarks.value }}</textarea
-          >
+            {{ form.remarks.value }}
+          </textarea>
         </td>
       </tr>
       <tr>
@@ -70,8 +74,6 @@
   </table>
 
   <input type="hidden" name="date" value="{{ form.date.value|date:"Y-m-d" }}">
-  {% comment %} <input type="hidden" name="year" value="{{ form.year.value }}"> {% endcomment %}
-  {% comment %} <input type="hidden" name="week" value="{{ form.week.value }}"> {% endcomment %}
   <input type="hidden" name="fishingday" value="{{ form.fishingday.value }}">
   <input type="hidden" name="version" value="3.0">
 
