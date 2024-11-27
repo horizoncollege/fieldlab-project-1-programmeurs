@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class DataCollection(models.Model):
     tidal_phase = models.CharField(max_length=50, blank=True, null=True)
@@ -10,6 +11,9 @@ class DataCollection(models.Model):
     fu_scale = models.CharField(max_length=10, blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
     observer = models.CharField(max_length=255, blank=True, null=True)
+    
+    changed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    last_change = models.DateTimeField(auto_now=True)
 
     date = models.DateField()
     time = models.TimeField()
@@ -62,6 +66,10 @@ class DataCollection(models.Model):
     def __str__(self):
         return f"DataCollection on {self.date} by {self.observer}"
     
+    def save(self, *args, **kwargs):
+        if not self.changed_by and hasattr(self, 'user') and self.user:
+            self.changed_by = self.user  # This assumes you're passing the user as part of the save
+        super().save(*args, **kwargs)
 
 class FykeLocations(models.Model):
     name = models.CharField(max_length=50)
@@ -117,6 +125,9 @@ class FishDetails(models.Model):
     comment = models.TextField(max_length=255, blank=True, null=True)
     micro_plastic = models.BooleanField(blank=True, null=True)
     
+    changed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    last_change = models.DateTimeField(auto_now=True)
+    
     class Meta:
         db_table = 'fyke_fishdetails'
     
@@ -135,5 +146,9 @@ class FishDetails(models.Model):
                     setattr(self, field.name, float(value.replace(',', '.')))
                 except ValueError:
                     setattr(self, field.name, None)
+                    
+        # Automatically set the changed_by and last_change fields
+        if not self.changed_by and hasattr(self, 'user') and self.user:
+            self.changed_by = self.user  # This assumes you're passing the user as part of the save
 
         super().save(*args, **kwargs)

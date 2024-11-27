@@ -1,5 +1,5 @@
 {% extends 'index.html' %} {% block content %}
-<form method="POST" class="fyke-form">
+<form method="POST" id="form" class="fyke-form">
   {% csrf_token %}
   <span>Datacollection record (edit)</span>
   <table>
@@ -7,13 +7,13 @@
       <tr>
         <td>Date:</td>
         <td>
-          <input type="text" value="{{ form.date.value|date:"d-m-Y" }}" disabled>
+          <input type="text" name="date" value="{{ form.date.value|date:"d-m-Y" }}" readonly>
         </td>
       </tr>
       <tr>
         <td>Time:</td>
         <td>
-          <input type="time" value="{{ form.time.value }}">
+          <input type="text" name="time" value="{{ form.time.value }}" readonly>
         </td>
       </tr>
       <tr>
@@ -22,9 +22,7 @@
       </tr>
       <tr>
         <td>Fyke:</td>
-        <td>
-            {{ form.fyke }}
-        </td>
+        <td>{{ form.fyke }}</td>
       </tr>
       <tr>
         <td>Fishing duration:</td>
@@ -70,6 +68,14 @@
         <td>Collect species/week:</td>
         <td>{{ form.collect }}</td>
       </tr>
+      <tr>
+        <td></td>
+        <td>
+          <div id="global-error-message" style="color:red; display:none;">
+            One or more inputs are invalid.
+          </div>
+        </td>
+      </tr>
     </tbody>
   </table>
 
@@ -82,4 +88,46 @@
     <button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'datacollection' %}'">Cancel</button>
   </div>
 </form>
+
+<script>
+  document.getElementById('form').addEventListener('submit', function(event) {
+    // Get all input fields for validation
+    var fields = document.querySelectorAll('input[type="text"]');
+    var isValid = true; // Assume inputs are valid initially
+
+    // Regular expression to allow both decimal separators (either . or ,)
+    var numberRegex = /^[0-9]+([.,][0-9]+)?$/;
+
+    // Hide the global error message initially
+    var globalErrorMessage = document.getElementById('global-error-message');
+    globalErrorMessage.style.display = 'none';
+
+    // Loop through all fields and validate
+    fields.forEach(function(field) {
+        var value = field.value.trim();
+
+        if (field.name === 'date' || field.name === 'time' || field.name === 'observer') {
+            return;
+        }
+
+        // Check if the field is valid
+        if (value !== "" && !numberRegex.test(value)) {
+            // Invalid input: apply styles
+            field.style.border = '1px red solid';
+            field.style.backgroundColor = 'pink';
+            isValid = false;
+        } else {
+            // Valid input: reset styles
+            field.style.border = '';
+            field.style.backgroundColor = '';
+        }
+    });
+
+    // If any field is invalid, show the global error message
+    if (!isValid) {
+        event.preventDefault(); // Prevent form submission
+        globalErrorMessage.style.display = 'block'; // Show the global error message
+    }
+  });
+</script>
 {% endblock %}

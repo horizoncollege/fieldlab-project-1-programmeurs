@@ -75,6 +75,7 @@ def new_record_view(request):
         if form.is_valid():
             # Save the form but do not commit yet
             new_record = form.save(commit=False)
+            new_record.changed_by = request.user  # This will set the user who is logged in
 
             # Get the selected date and calculate derived fields
             date_input = form.cleaned_data.get('date')  # Use cleaned_data to get the parsed date
@@ -111,7 +112,15 @@ def edit_record_view(request, pk):
     if request.method == 'POST':
         form = DataCollectionForm(request.POST, instance=record)  # Bind the form with the existing record
         if form.is_valid():
-            form.save()  # Save the updated record
+            # Set the user who made the change
+            record.changed_by = request.user
+
+            # Repopulate missing fields if needed
+            if not form.cleaned_data.get('time'):
+                form.cleaned_data['time'] = record.time
+            
+            # Save the updated record
+            form.save()
             return redirect('datacollection')  # Redirect after successful edit
         else:
             print(form.errors)
@@ -121,7 +130,6 @@ def edit_record_view(request, pk):
     # Render the edit form template
     return render(request, 'datacollection/edit_record.html', {
         'form': form,
-        # 'record': record,
     })
 
 def biotic(request, pk):
@@ -134,7 +142,8 @@ def biotic(request, pk):
     return render(request, 'datacollection/biotic.html', {
         'record': record,  # Pass the record to the template
     })
-    
+
+
 # Fishdetails
 def fishdetails(request):
     # Extract the year and week from the 'collectdate' field in the database
@@ -260,6 +269,8 @@ def fishdetails(request):
     
         # Retrieve the FishDetails object or raise a 404 if it doesn't exist
         fish = get_object_or_404(FishDetails, id=fish_id)
+        
+        fish.changed_by = request.user  # This will set the user who is logged in
 
         # Define the fields that need to be updated
         fields_to_update = [
@@ -329,6 +340,7 @@ def species_search(request):
         results_data = []
 
     return JsonResponse({'results': results_data})
+
 
 # Catchlocations
 def catchlocations(request):
