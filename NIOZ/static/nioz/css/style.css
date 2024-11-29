@@ -26,13 +26,18 @@ body {
   right: 50px;
 }
 
+@media only screen and (max-width: 1919px) {
+  .background-logo {
+    display: none;
+  }
+}
+
 .background-logo img {
   max-height: 50vh;
   z-index: 0;
 }
 
 .btn {
-  border-radius: 5px;
   padding: 2px 8px;
   margin-right: 8px;
   color: black;

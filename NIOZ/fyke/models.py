@@ -126,7 +126,7 @@ class FishDetails(models.Model):
     comment = models.TextField(max_length=255, blank=True, null=True)
     micro_plastic = models.BooleanField(blank=True, null=True)
     
-    changed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    # changed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     last_change = models.DateTimeField(auto_now=True)
     
     class Meta:

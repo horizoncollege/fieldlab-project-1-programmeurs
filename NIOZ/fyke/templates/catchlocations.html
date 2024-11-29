@@ -23,7 +23,7 @@
       <tbody>
         {% for location in data %}
         <tr>
-          <td><a href="{% url 'edit_location' location.pk %}">edit</a></td>
+          <td><a class="btn btn-primary" href="{% url 'edit_location' location.pk %}">edit</a></td>
           <td>{{ location.id }}</td>
           <td>{{ location.name }}</td>
           <td>{{ location.type }}</td>
