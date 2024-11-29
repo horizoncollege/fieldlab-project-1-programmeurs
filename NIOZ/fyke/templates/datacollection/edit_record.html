@@ -26,7 +26,7 @@
       </tr>
       <tr>
         <td>Fishing duration:</td>
-        <td>{{ form.duration }}</td>
+        <td><input type="number" name="duration" id="id_duration" value="{{ form.duration.value }}"></td>
       </tr>
       <tr>
         <td>Tidal phase:</td>
@@ -59,9 +59,7 @@
       <tr>
         <td>Remarks:</td>
         <td>
-          <textarea name="remarks" rows="4" cols="50">
-            {{ form.remarks.value }}
-          </textarea>
+          <textarea name="remarks" id="id_remarks" rows="4" cols="50">{{ form.remarks.value }}</textarea>
         </td>
       </tr>
       <tr>
@@ -106,7 +104,7 @@
     fields.forEach(function(field) {
         var value = field.value.trim();
 
-        if (field.name === 'date' || field.name === 'time' || field.name === 'observer' || field.name 'wind_direction') {
+        if (field.name === 'date' || field.name === 'time' || field.name === 'observer' || field.name === 'wind_direction') {
             return;
         }
 
@@ -129,5 +127,22 @@
         globalErrorMessage.style.display = 'block'; // Show the global error message
     }
   });
+</script>
+
+<script>
+    var fishingDurationInput = document.getElementById('id_duration');
+    var lastFishingDuration = fishingDurationInput.value; // initial value
+    var remarksInput = document.getElementById('id_remarks');
+    var remarksValue = remarksInput.value;
+
+    fishingDurationInput.addEventListener('input', function () {
+      var newFishingDuration = fishingDurationInput.value;
+      if (newFishingDuration != lastFishingDuration) {
+        var userName = "{{ user.username }}";  // Get the logged-in username
+        remarksInput.value = remarksValue + "\r\n\r\nUser '" + userName + "' changed fishing duration from '" + lastFishingDuration + "' to '" + newFishingDuration + "'";
+      } else {
+        remarksInput.value = "";  // Clear remarks if no change
+      }
+    });
 </script>
 {% endblock %}
