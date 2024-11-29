@@ -346,4 +346,14 @@ def edit_location(request, pk):
 
 # Exportdata
 def exportdata(request):
-    return render(request, 'exportdata.html')
+    data = DataCollection.objects.annotate(
+        year=ExtractYear('date'),  # Extract year from the date
+        week=ExtractWeek('date')    # Extract week from the date
+    )
+
+    # Get distinct years based on the 'date' field
+    years = data.values_list('year', flat=True).distinct().order_by('year')
+
+    return render(request, 'exportdata.html', {
+        'years': years  # Pass the data to the template
+    })
