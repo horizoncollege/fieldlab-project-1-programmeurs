@@ -113,6 +113,14 @@
             <td>Species:</td>
             <td>
               <input type="text" name="search" id="speciesSearch" placeholder="Search species..." autocomplete="off">
+
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">
+                  Je kan hier species zoeken met de Nederlandse en latijnse naam en ook op speciesID
+                </span>
+              </div>
+
               <div id="searchResults" style="position: absolute; background: white; border: 1px solid #ddd; display: none;"></div>
               <input type="hidden" name="species" value="{{ fish.species }}">
               <div id="speciesDisplay">
@@ -145,6 +153,10 @@
           <tr>
             <td>Fresh weight:</td>
             <td><input type="text" name="fresh_weight" value="{{ fish.fresh_weight }}"> g </td>
+          </tr>
+          <tr>
+            <td>Liver weight:</td>
+            <td><input type="text" name="liver_weight" value="{{ fish.liver_weight }}"> g </td>
           </tr>
           <tr>
             <td>Total wet mass:</td>
@@ -237,11 +249,7 @@
               </div>
             </td>
           </tr>
-          
         </tbody>
-
-        
-
         {% endfor %}
         {% endif %}
       </form>
@@ -249,7 +257,6 @@
   </div>
 </div>
 
-<!-- Styling for selected 'collectno' -->
 <style>
   a[data-range="{{ selected_range }}"] {
     background-color: var(--secondary-color);
@@ -259,8 +266,13 @@
   }
 </style>
 
-<!-- Javascript for live species search -->
 <script>
+  function decodeHtml(html) {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = html;
+    return textarea.value;
+  }
+
   document.getElementById('speciesSearch').addEventListener('input', function () {
     const query = this.value;
     if (query.length > 1) {  // Start search after 2 characters
@@ -273,23 +285,24 @@
                     resultsDiv.style.display = 'block';
                     data.results.forEach(item => {
                         const div = document.createElement('div');
-                        div.innerText = item.name;
+                        // Decode HTML entities before displaying
+                        const nlName = decodeHtml(item.nl_name);
+                        const latinName = decodeHtml(item.latin_name);
+                        div.innerText = `${item.species_id} - ${nlName} (${latinName})`;
                         div.style.cursor = 'pointer';
                         div.onclick = function() {
-                            // Calculate speciesid as id - 1
-                            const speciesid = item.id - 1;
+                            // Use species_id directly
+                            const speciesid = item.species_id;  // Ensure this is set correctly
+                            console.log(item)
 
-                            // Set the search input to the format: "id-speciesname"
-                            document.getElementById('speciesSearch').value = `${speciesid}-${item.name}`;
+                            // Set the search input to the format: "species_id-speciesname"
+                            document.getElementById('speciesSearch').value = ``;
 
-                            // Set the hidden input's value to the selected species id (speciesid)
+                            // Set the hidden input's value to the selected species_id
                             document.querySelector('input[name="species"]').value = speciesid;
 
                             // Update the species display text dynamically
-                            document.getElementById('speciesDisplay').innerText = `${speciesid}-${item.name}`;
-
-                            // Clear the input field after selection (optional)
-                            document.getElementById('speciesSearch').value = '';  // Clear search input
+                            document.getElementById('speciesDisplay').innerText = `${speciesid}-${nlName}`;
 
                             resultsDiv.style.display = 'none';  // Hide the search results
                         };
@@ -313,7 +326,6 @@
   });
 </script>
 
-<!-- Javascript for form error validation -->
 <script>
   document.getElementById('fishdetails-form').addEventListener('submit', function(event) {
     // Get all input fields for validation
