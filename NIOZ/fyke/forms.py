@@ -17,27 +17,37 @@ class DataCollectionForm(forms.ModelForm):
             'fishingday',
             'fyke',
             'duration',
-            'collect', 
+            'collect',
             'remarks',
             'observer',
-            'version'
+            'version',
         ]
-        widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),  # Should render as <input type="date">
-        }
+
+        # widgets = {
+        #     'date': forms.DateInput(
+        #         attrs={
+        #             'type': 'date',
+        #         },
+        #         format='%d/%m/%Y'
+        #     ),
+            
+        #     'time': forms.TimeInput(
+        #         attrs={
+        #             'type': 'time',
+        #         },
+        #     )
+        # }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         # Set specific fields to not be required
-        self.fields['observer'].required = False
-        self.fields['tidal_phase'].required = False
-        self.fields['salinity'].required = False
-        self.fields['temperature'].required = False
-        self.fields['wind_direction'].required = False
-        self.fields['wind_speed'].required = False
-        self.fields['secchi_depth'].required = False
-        self.fields['fu_scale'].required = False
-        self.fields['remarks'].required = False
-        
+        for field in [
+            'observer', 'tidal_phase', 'salinity', 'temperature',
+            'wind_direction', 'wind_speed', 'secchi_depth', 'fu_scale', 'remarks'
+        ]:
+            self.fields[field].required = False
+
+        # Set initial value for new records
         if not self.instance.pk:  # Check if it's a new instance
             self.fields['remarks'].initial = ""  # Set initial value to empty for new records

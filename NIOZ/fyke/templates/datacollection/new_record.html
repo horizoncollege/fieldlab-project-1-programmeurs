@@ -6,15 +6,19 @@
     <tbody>
       <tr>
         <td>Date:</td>
-        <td>{{ form.date }}</td>
+        <td>
+          <input type="text" name="date" placeholder="dd/mm/yyyy" id="id_date" value="{{ current_date }}" required>
+        </td>
       </tr>
       <tr>
         <td>Time:</td>
-        <td>{{ form.time }} (HH:MM[:SS])</td>
+        <td>
+          <input type="time" name="time" id="id_time" value="{{ current_time }}" required>
+        </td>
       </tr>
       <tr>
         <td>Observer:</td>
-        <td>{{ form.observer }}</td>
+        <td><input type="text" name="observer" maxlength="255" id="id_observer" value="{{ user.username }}"></td>
       </tr>
       <tr>
         <td>Fyke:</td>
@@ -22,7 +26,7 @@
       </tr>
       <tr>
         <td>Fishing duration:</td>
-        <td>{{ form.duration }}</td>
+        <td><input type="number" name="duration" id="id_duration" value="{{ form.duration.value }}"></td>
       </tr>
       <tr>
         <td>Tidal phase:</td>
@@ -55,9 +59,8 @@
       <tr>
         <td>Remarks:</td>
         <td>
-          <textarea name="remarks" rows="4" cols="50">
-{{ form.remarks.value }}</textarea
-          >
+          <textarea name="remarks" id="id_remarks" rows="4" cols="50">
+          {{ form.remarks.value }}</textarea>
         </td>
       </tr>
       <tr>
@@ -67,8 +70,6 @@
     </tbody>
   </table>
 
-  {% comment %} <input type="hidden" name="year" value="{{ form.year.value|default:current_year }}"> {% endcomment %}
-  {% comment %} <input type="hidden" name="week" value="{{ form.week.value|default:current_week }}"> {% endcomment %}
   <input type="hidden" name="fishingday" value="{{ form.fishingday.value|default:fishingday }}">
   <input type="hidden" name="version" value="3.0">
 
@@ -77,4 +78,33 @@
     <a href="{% url 'datacollection' %}" class="btn btn-primary">Cancel</a>
   </div>
 </form>
+
+<script>
+  var today = new Date();
+  var formattedDate = today.toISOString().split('T')[0]; // Get the date part in YYYY-MM-DD format
+  
+  document.addEventListener('DOMContentLoaded', function () {
+    flatpickr("#id_date", {
+      maxDate: formattedDate,
+      dateFormat: "d-m-Y", // Format as dd/mm/yyyy
+      defaultDate: new Date(), // Set default to today's date
+    });
+  });
+
+  //
+  
+  var fishingDurationInput = document.getElementById('id_duration');
+  var lastFishingDuration = fishingDurationInput.value; // initial value
+  var remarksInput = document.getElementById('id_remarks');
+
+  fishingDurationInput.addEventListener('input', function () {
+    var newFishingDuration = fishingDurationInput.value;
+    if (newFishingDuration != lastFishingDuration) {
+        var userName = "{{ user.username }}";  // Get the logged-in username
+        remarksInput.value = "User " + userName + " changed fishing duration from '" + lastFishingDuration + "' to '" + newFishingDuration + "'";
+    } else {
+        remarksInput.value = "";  // Clear remarks if no change
+    }
+  });
+</script>
 {% endblock %}

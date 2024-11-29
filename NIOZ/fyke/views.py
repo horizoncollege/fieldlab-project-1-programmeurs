@@ -40,67 +40,70 @@ def datacollection_view(request):
     })
 
 def new_record_view(request):
-    # Initialize variables
-    form = DataCollectionForm()  # Initialize an empty form
-    reference_date = datetime(1899, 12, 30)  # Set reference date to Dec 30, 1899
+    reference_date = datetime(1899, 12, 30).date()  # Use .date() to get just the date part
+    
+    now = datetime.now()  # Get the full datetime object for date and time
+    formatted_date = now.strftime('%d/%m/%Y')  # Format date as dd/mm/yyyy
+    current_time = now.strftime('%H:%M')  # Format time as HH:mm (24-hour format)
+
+    # Calculate the initial fishingday (number of days since the reference date)
+    today = datetime.now().date()  # Ensure it's a date object
+    fishingday = (today - reference_date).days
+
+    # Get the last record (previous entry) to calculate the duration
+    last_record = DataCollection.objects.order_by('-date', '-time').first()  # Get the most recent record
+
+    if last_record:
+        # Combine last record's date and time to create a datetime object
+        last_datetime = datetime.combine(last_record.date, last_record.time)
+        # Calculate the time difference between now and the last record's timestamp
+        time_difference = now - last_datetime
+        # Convert the difference to hours, round to the nearest whole number
+        duration = round(time_difference.total_seconds() / 3600)  # No decimal places, rounding to the nearest hour
+    else:
+        # If there is no previous record, set the duration to 0
+        duration = 0
+
+    # Initialize the form with initial values
+    form = DataCollectionForm(initial={
+        'fishingday': fishingday,
+        'duration': duration,  # Set the initial value of duration
+    })
 
     if request.method == 'POST':
-        # Get the form data, including the fyke dropdown and date
-        fyke = request.POST.get('fyke')  # Get the value from the custom dropdown
-        date_input = request.POST.get('date')  # Get the date input from the form
-        observer = request.POST.get('observer')  # Get the observer input
-
-        # Create a form instance with the POST data
         form = DataCollectionForm(request.POST)
-
+        
         if form.is_valid():
-            # Create the record but do not save it yet
+            # Save the form but do not commit yet
             new_record = form.save(commit=False)
+            new_record.changed_by = request.user  # This will set the user who is logged in
 
-            # If a date is provided, extract the year and week
+            # Get the selected date and calculate derived fields
+            date_input = form.cleaned_data.get('date')  # Use cleaned_data to get the parsed date
             if date_input:
-                selected_date = datetime.strptime(date_input, '%Y-%m-%d')  # Parse the date input
-                new_record.year = selected_date.year  # Extract year from date
-                new_record.week = selected_date.isocalendar()[1]  # Extract ISO week number from date
-                
-                # Calculate fishingday based on the entered date
-                new_record.fishingday = (selected_date - reference_date).days  # Calculate fishing days from reference date
+                new_record.year = date_input.year
+                new_record.week = date_input.isocalendar()[1]
+                new_record.fishingday = (date_input - reference_date).days
             else:
-                # Fallback to current date values if no date is provided
-                today = datetime.now()
+                # Default to the current date if no date is provided
                 new_record.year = today.year
                 new_record.week = today.isocalendar()[1]
-                new_record.fishingday = (today - reference_date).days  # Calculate fishing days from reference date
-                
-            new_record.fyke = fyke  # Set the fyke field from the dropdown
-        
-            if observer:  # Only set if observer is not empty
-                new_record.observer = observer
-            else:
-                new_record.observer = ''  # Explicitly set to empty if no input
+                new_record.fishingday = fishingday
 
-            new_record.save()  # Save the instance to the database
-            return redirect('datacollection')  # Redirect after successful submission
+            # Save the record to the database
+            new_record.save()
+
+            # Redirect after successful submission
+            return redirect('datacollection')
         else:
+            # Log errors for debugging
             print(form.errors)
 
-    else:
-        # For GET request, initialize default form values (no more year/week since it's derived from date)
-        today = datetime.now()
-        
-        # Calculate fishingday based on the current date
-        fishingday = (today - reference_date).days  # Calculate fishing days from reference date
-
-        # Set the initial values for the form
-        form = DataCollectionForm(initial={
-            'fishingday': fishingday,
-            # 'version': '3.0',  # Set the version (if it's always static)
-        })
-
-    # Pass the variables to the template context
     return render(request, 'datacollection/new_record.html', {
-        'form': form,
         'fishingday': fishingday,
+        'form': form,
+        'current_date': formatted_date,
+        'current_time': current_time,  # Pass formatted time to template
     })
     
 def edit_record_view(request, pk):
@@ -110,7 +113,15 @@ def edit_record_view(request, pk):
     if request.method == 'POST':
         form = DataCollectionForm(request.POST, instance=record)  # Bind the form with the existing record
         if form.is_valid():
-            form.save()  # Save the updated record
+            # Set the user who made the change
+            record.changed_by = request.user
+
+            # Repopulate missing fields if needed
+            if not form.cleaned_data.get('time'):
+                form.cleaned_data['time'] = record.time
+            
+            # Save the updated record
+            form.save()
             return redirect('datacollection')  # Redirect after successful edit
         else:
             print(form.errors)
@@ -120,7 +131,6 @@ def edit_record_view(request, pk):
     # Render the edit form template
     return render(request, 'datacollection/edit_record.html', {
         'form': form,
-        # 'record': record,
     })
 
 def biotic(request, pk):
@@ -133,7 +143,8 @@ def biotic(request, pk):
     return render(request, 'datacollection/biotic.html', {
         'record': record,  # Pass the record to the template
     })
-    
+
+
 # Fishdetails
 def fishdetails(request):
     # Extract the year and week from the 'collectdate' field in the database
@@ -256,6 +267,8 @@ def fishdetails(request):
 
         # Retrieve the FishDetails object or raise a 404 if it doesn't exist
         fish = get_object_or_404(FishDetails, id=fish_id)
+        
+        fish.changed_by = request.user  # This will set the user who is logged in
 
         # Define the fields that need to be updated
         fields_to_update = [
@@ -326,6 +339,7 @@ def species_search(request):
         results_data = []
 
     return JsonResponse({'results': results_data})
+
 
 # Catchlocations
 def catchlocations(request):
