@@ -8,7 +8,7 @@ class MaintenanceSpeciesListForm(forms.ModelForm):
             'species_id',  
             'active',  # Checkbox voor actief/inactief
             'nl_name',  # Nederlandse naam
-            'name',  # Engelse naam
+            'en_name',  # Engelse naam
             'latin_name',  # Latijnse naam
             'WoRMS',  # WoRMS nummer
             'pauly_trophic_level',  # Pauly Trophic Level
@@ -23,7 +23,7 @@ class MaintenanceSpeciesListForm(forms.ModelForm):
             'fishflag': forms.CheckboxInput(),  # Widget voor fishflag checkbox
             'always_collecting': forms.CheckboxInput(),  # Widget voor always_collecting checkbox
             'nl_name': forms.TextInput(attrs={'placeholder': 'Voer de Nederlandse naam in'}),
-            'name': forms.TextInput(attrs={'placeholder': 'Voer de Engelse naam in'}),
+            'en_name': forms.TextInput(attrs={'placeholder': 'Voer de Engelse naam in'}),
             'latin_name': forms.TextInput(attrs={'placeholder': 'Voer de Latijnse naam in'}),
             'WoRMS': forms.TextInput(attrs={'placeholder': 'Voer het WoRMS nummer in'}),
             'pauly_trophic_level': forms.NumberInput(attrs={'placeholder': 'Voer het Pauly Trophic Level in'}),

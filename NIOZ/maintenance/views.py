@@ -84,8 +84,6 @@ def species_list(request):
 
 
 
-
-
 def species_create(request):
     if request.method == 'POST':
         form = MaintenanceSpeciesListForm(request.POST)
