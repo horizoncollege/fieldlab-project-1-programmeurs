@@ -101,7 +101,7 @@
     var newFishingDuration = fishingDurationInput.value;
     if (newFishingDuration != lastFishingDuration) {
         var userName = "{{ user.username }}";  // Get the logged-in username
-        remarksInput.value = userName + " changed fishing duration from '" + lastFishingDuration + "'' to '" + newFishingDuration + "'";
+        remarksInput.value = "User " + userName + " changed fishing duration from '" + lastFishingDuration + "' to '" + newFishingDuration + "'";
     } else {
         remarksInput.value = "";  // Clear remarks if no change
     }
