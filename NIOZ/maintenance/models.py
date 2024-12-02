@@ -25,7 +25,7 @@ class MaintenanceSpeciesList(models.Model):
     
 class FykeLocation(models.Model):
     no = models.AutoField(primary_key=True)  # Auto-incrementing 'no'
-    location = models.CharField(max_length=255)
+    location = models.CharField(max_length=254)
     comment = models.TextField(blank=True, null=True)
 
     class Meta:
