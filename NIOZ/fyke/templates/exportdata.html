@@ -1,1 +1,45 @@
 {% extends 'index.html' %}
+
+{% block content %}
+
+    <table class="year-table fyke-table">
+      <tbody>
+        <tr>
+          <th>Years</th>
+          <th>Export Data</th>
+        </tr>
+        <tr>
+          <td>ALL</td>
+          <td>
+            <a href="#" class="btn btn-primary ">Abiotic</a>
+            <a href="#" class="btn btn-primary ">Biotic</a>
+            <a href="#" class="btn btn-primary ">Cutting</a>
+            <a href="#" class="btn btn-primary ">Stomach</a>
+          </td>
+        </tr>
+        {% for year in years %}
+        <tr>
+          <td>{{ year }}</td>
+          <td>
+            <a href="#" class="btn btn-primary ">Abiotic</a>
+            <a href="#" class="btn btn-primary ">Biotic</a>
+            <a href="#" class="btn btn-primary ">Cutting</a>
+            <a href="#" class="btn btn-primary ">Stomach</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+<!-- Optional CSS for styling consistency -->
+<style>
+
+
+  .fyke-table th, .fyke-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+</style>
+{% endblock %}
