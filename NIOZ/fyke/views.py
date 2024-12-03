@@ -223,8 +223,6 @@ def fishdetails(request):
                     week=ExtractWeek('collectdate')
                 )
                 
-                print(species_data)
-
                 # Loop through the species_data to add the nl_name for each record
                 for value in species_data:
                     # Check if any field is None and set it to an empty string
