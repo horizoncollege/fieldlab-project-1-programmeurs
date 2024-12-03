@@ -97,7 +97,11 @@ class FishDetails(models.Model):
     collectdate = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     registrationtime = models.DateTimeField(auto_now=False, auto_now_add=True, blank=True, null=True)
     collectno = models.IntegerField(blank=True, null=True)
-    species = models.CharField(max_length=50, blank=True, null=True)
+    species = models.ForeignKey(
+        'maintenance.MaintenanceSpeciesList',
+        on_delete=models.CASCADE,  # Use CASCADE or your preferred option
+        related_name='data_collections',  # Optional: for reverse lookup
+    )
     condition = models.CharField(max_length=50, blank=True, null=True)
     total_length = models.FloatField(blank=True, null=True)
     fork_length = models.FloatField(blank=True, null=True)

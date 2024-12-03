@@ -85,8 +85,8 @@
               class="btn btn-primary"
               style="text-align: left"
               data-species="{{ fish.species }}"
-              href="?year={{ selected_year }}&week={{ selected_week }}&range={{ selected_range }}&species={{ fish.species }}"
-              >{{ fish.year }} - {{ fish.week }} - {{ fish.collectno }} * {{ fish.nl_name }}</a>
+              href="?year={{ selected_year }}&week={{ selected_week }}&range={{ selected_range }}&species={{ fish.species.species_id }}"
+              >{{ fish.year }} - {{ fish.week }} - {{ fish.collectno }} * {{ fish.species.nl_name }}</a>
           </td>
         </tr>
         {% endfor %}
@@ -124,7 +124,7 @@
               <div id="searchResults" style="position: absolute; background: white; border: 1px solid #ddd; display: none;"></div>
               <input type="hidden" name="species" value="{{ fish.species }}">
               <div id="speciesDisplay">
-              {{ fish.species }}-{{ fish.nl_name}}
+              {{ fish.species.species_id }}-{{ fish.species.nl_name}}
             </div>
             </td>
           </tr>

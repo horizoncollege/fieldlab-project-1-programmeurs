@@ -189,14 +189,12 @@ def fishdetails(request):
         for i in range(1, ceil(max_collect / 5) + 1):
             start = (i - 1) * 5 + 1
             end = i * 5
-            # Collect numbers in the current range
             range_groups.append({
                 'start': start,
                 'end': end,
                 'collect_in_range': [c for c in collect_numbers if start <= c <= end]
             })
 
-        # Add the all-inclusive range group as the first item
         if collect_numbers:
             min_collect = min(collect_numbers)
             max_collect = max(collect_numbers)
@@ -207,7 +205,6 @@ def fishdetails(request):
                 'label': 'All'  # Add a label for easier HTML handling
             })
 
-        # If range filter is applied, filter collect numbers by range
         if selected_range:
             # Split the range into start and end values
             range_start, range_end = map(int, selected_range.split('-'))
@@ -215,26 +212,18 @@ def fishdetails(request):
             # Filter the data based on collectno range
             data = data.filter(collectno__gte=range_start, collectno__lte=range_end)
 
-            # Loop through the data and add the species' nl_name based on the species id
-            for record in data:
-                species_id = record.species  # Get species ID from the data
-        
-                # Query the species_list table to retrieve the species name (nl_name)
-                try:
-                    species = MaintenanceSpeciesList.objects.get(species_id=species_id)  # Use species_id directly
-                    record.nl_name = species.nl_name  # Add nl_name to the record
-                except MaintenanceSpeciesList.DoesNotExist:
-                    record.nl_name = "Unknown species"  # Handle case where species ID is not found
-        
         if selected_species:
             try:
                 species_id = int(selected_species)  # Get the species ID from the selected_species value
     
+                
                 # Retrieve species data for the given species_id
-                species_data = FishDetails.objects.filter(species=species_id).annotate(
+                species_data = FishDetails.objects.filter(species=species_id + 1).annotate(
                     year=ExtractYear('collectdate'),
                     week=ExtractWeek('collectdate')
                 )
+                
+                print(species_data)
 
                 # Loop through the species_data to add the nl_name for each record
                 for value in species_data:
@@ -243,14 +232,6 @@ def fishdetails(request):
                         if getattr(value, field.name) is None:
                             setattr(value, field.name, "")  # Set to empty string if None
 
-                    # Retrieve the species nl_name based on the species_id
-                    try:
-                        # Get the species from the MaintenanceSpeciesList table using species_id
-                        species = MaintenanceSpeciesList.objects.get(species_id=species_id)  # Use species_id directly
-                        value.nl_name = species.nl_name  # Add nl_name to the record
-                    except MaintenanceSpeciesList.DoesNotExist:
-                        value.nl_name = "Unknown species"  # Handle case where species ID is not found
-    
             except (ValueError, FishDetails.DoesNotExist):
                 species_data = None
 
@@ -303,8 +284,10 @@ def fishdetails(request):
         # Redirect to the current URL with the updated query parameters
         return redirect(f'{current_url}?{urlencode(query_params)}')
         
-    # Create a context dictionary for the sorting values used to sort by year etc.
-    context = {
+    # Sort the data based on 'collectno'
+    # data = data.order_by('collectno')
+    
+    return render(request, 'fishdetails.html', {
         'data': data,
         'years': years,
         'weeks': weeks,
@@ -313,10 +296,8 @@ def fishdetails(request):
         'selected_year': selected_year,
         'selected_week': selected_week,
         'selected_range': selected_range,
-        'selected_species' : selected_species,
-    }
-    
-    return render(request, 'fishdetails.html', context)
+        'selected_species' : selected_species,                                        
+    })
 
 def species_search(request):
     query = request.GET.get('q', '')
