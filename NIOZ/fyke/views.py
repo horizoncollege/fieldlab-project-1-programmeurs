@@ -32,13 +32,12 @@ def datacollection_view(request):
     if selected_year:
         selected_year = int(selected_year)  # Convert to int for comparison
         data = data.filter(year=selected_year)  # Filter data based on extracted year
-
+        
     return render(request, 'datacollection.html', {
         'data': data,
         'years': years,  # Pass the dynamically calculated years
         'selected_year': selected_year
     })
-
 def new_record_view(request):
     reference_date = datetime(1899, 12, 30).date()  # Use .date() to get just the date part
     

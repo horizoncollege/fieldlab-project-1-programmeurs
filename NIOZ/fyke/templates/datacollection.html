@@ -27,7 +27,7 @@
       </tbody>
     </table>
     <div>
-      <table border="1" cellpadding="4" class="fyke-table">
+      <table border="1" cellpadding="4" id="data-table" class="fyke-table">
         <tbody>
           <tr>
             <th>options</th>
@@ -58,11 +58,11 @@
             <td>{{ item.week }}</td>
             <td>{{ item.fishingday }}</td>
             <td>{{ item.fyke }}</td>
-            <td>{{ item.duration }}</td>
-            <td>{{ item.collect }}</td>
+            <td>{{ item.duration|default:'' }}</td>
+            <td>{{ item.collect|default:'' }}</td>
             <td>{{ item.remarks }}</td>
             <td>{{ item.observer }}</td>
-            <td>{{ item.version }}</td>
+            <td>{{ item.version|default:'' }}</td>
           </tr>
           {% empty %}
           <tr>
@@ -75,5 +75,19 @@
   </div>
 </div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Get all the <td> elements
+      const cells = document.querySelectorAll('#data-table td');
+      
+      cells.forEach(function(cell) {
+          // Check if the cell's text content is 'NA'
+          if (cell.textContent.trim() === 'NA') {
+              // Apply the background color to the cell
+              cell.style.backgroundColor = 'yellow';
+          }
+      });
+  });
+</script>
 
 {% endblock %}
