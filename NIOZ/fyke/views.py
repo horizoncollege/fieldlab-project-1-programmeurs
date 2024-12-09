@@ -216,7 +216,6 @@ def fishdetails(request):
             try:
                 species_id = int(selected_species)  # Get the species ID from the selected_species value
     
-                
                 # Retrieve species data for the given species_id
                 species_data = FishDetails.objects.filter(species=species_id + 1).annotate(
                     year=ExtractYear('collectdate'),
@@ -251,7 +250,7 @@ def fishdetails(request):
 
         # Define the fields that need to be updated
         fields_to_update = [
-            'species', 'condition', 'total_length', 'fork_length', 'standard_length',
+            'condition', 'total_length', 'fork_length', 'standard_length',
             'fresh_weight', 'liver_weight', 'total_wet_mass', 'stomach_content', 'gonad_mass',
             'sexe', 'ripeness', 'otolith', 'total_length_frozen', 'fork_length_frozen',
             'standard_length_frozen', 'frozen_mass', 'height', 'age', 'rings',
@@ -281,9 +280,6 @@ def fishdetails(request):
 
         # Redirect to the current URL with the updated query parameters
         return redirect(f'{current_url}?{urlencode(query_params)}')
-        
-    # Sort the data based on 'collectno'
-    # data = data.order_by('collectno')
     
     return render(request, 'fishdetails.html', {
         'data': data,

@@ -84,7 +84,7 @@
             <a
               class="btn btn-primary"
               style="text-align: left"
-              data-species="{{ fish.species }}"
+              data-species="{{ fish.species.species_id }}"
               href="?year={{ selected_year }}&week={{ selected_week }}&range={{ selected_range }}&species={{ fish.species.species_id }}"
               >{{ fish.year }} - {{ fish.week }} - {{ fish.collectno }} * {{ fish.species.nl_name }}</a>
           </td>
@@ -122,7 +122,7 @@
               </div>
 
               <div id="searchResults" style="position: absolute; background: white; border: 1px solid #ddd; display: none;"></div>
-              <input type="hidden" name="species" value="{{ fish.species }}">
+              <input type="hidden" name="species" value="{{ fish.species.species_id }}">
               <div id="speciesDisplay">
               {{ fish.species.species_id }}-{{ fish.species.nl_name}}
             </div>
@@ -261,7 +261,7 @@
   a[data-range="{{ selected_range }}"] {
     background-color: var(--secondary-color);
   }
-  a[data-species="{{ selected_species}}"] {
+  a[data-species="{{ selected_species }}"] {
     background-color: var(--secondary-color);
   }
 </style>
