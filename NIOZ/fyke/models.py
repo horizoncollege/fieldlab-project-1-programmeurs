@@ -2,13 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class DataCollection(models.Model):
-    tidal_phase = models.CharField(max_length=50, blank=True, null=True)
-    salinity = models.IntegerField(blank=True, null=True)
-    temperature = models.IntegerField(blank=True, null=True)
-    wind_direction = models.CharField(max_length=10, blank=True, null=True)
-    wind_speed = models.IntegerField(blank=True, null=True)
-    secchi_depth = models.IntegerField(blank=True, null=True)
-    fu_scale = models.CharField(max_length=10, blank=True, null=True)
+    tidal_phase = models.CharField(max_length=255, blank=True, null=True)
+    salinity = models.CharField(max_length=8, blank=True, null=True)
+    temperature = models.CharField(max_length=8, blank=True, null=True)
+    wind_direction = models.CharField(max_length=255, blank=True, null=True)
+    wind_speed = models.CharField(max_length=8, blank=True, null=True)
+    secchi_depth = models.CharField(max_length=8, blank=True, null=True)
+    fu_scale = models.CharField(max_length=255, blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
     observer = models.CharField(max_length=255, blank=True, null=True)
     
@@ -17,11 +17,10 @@ class DataCollection(models.Model):
 
     date = models.DateField()
     time = models.TimeField()
-    fishingday = models.IntegerField()
-    fyke = models.CharField()
-    duration = models.IntegerField()
-    collect = models.IntegerField()
-    version = models.CharField(max_length=255)
+    fishingday = models.CharField(max_length=8, blank=True, null=True)
+    duration = models.CharField(max_length=8, blank=True, null=True)
+    collect = models.CharField(max_length=8, blank=True, null=True)
+    version = models.CharField(max_length=3)
     
     FYKE_CHOICES = [
         ('Stuifdijk', 'Stuifdijk'),
@@ -67,8 +66,25 @@ class DataCollection(models.Model):
         return f"DataCollection on {self.date} by {self.observer}"
     
     def save(self, *args, **kwargs):
+        # Normalize floating-point fields
+        for field in self._meta.fields:
+            value = getattr(self, field.name)
+
+            # Convert empty strings to None
+            if value == '':
+                setattr(self, field.name, None)
+            
+            # Convert ',' to '.' for FloatField inputs
+            if isinstance(value, str) and ',' in value:
+                try:
+                    setattr(self, field.name, float(value.replace(',', '.')))
+                except ValueError:
+                    setattr(self, field.name, None)
+                    
+        # Automatically set the changed_by and last_change fields
         if not self.changed_by and hasattr(self, 'user') and self.user:
             self.changed_by = self.user  # This assumes you're passing the user as part of the save
+
         super().save(*args, **kwargs)
 
 class FykeLocations(models.Model):
@@ -91,7 +107,28 @@ class FykeLocations(models.Model):
         
     def __str__(self):
         return f"catchlocations"
+    
+    def save(self, *args, **kwargs):
+        # Normalize floating-point fields
+        for field in self._meta.fields:
+            value = getattr(self, field.name)
 
+            # Convert empty strings to None
+            if value == '':
+                setattr(self, field.name, None)
+            
+            # Convert ',' to '.' for FloatField inputs
+            if isinstance(value, str) and ',' in value:
+                try:
+                    setattr(self, field.name, float(value.replace(',', '.')))
+                except ValueError:
+                    setattr(self, field.name, None)
+                    
+        # Automatically set the changed_by and last_change fields
+        # if not self.changed_by and hasattr(self, 'user') and self.user:
+        #     self.changed_by = self.user  # This assumes you're passing the user as part of the save
+
+        super().save(*args, **kwargs)
 
 class FishDetails(models.Model):
     collectdate = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
@@ -99,25 +136,25 @@ class FishDetails(models.Model):
     collectno = models.IntegerField(blank=True, null=True)
     species = models.CharField(max_length=50, blank=True, null=True)
     condition = models.CharField(max_length=50, blank=True, null=True)
-    total_length = models.FloatField(blank=True, null=True)
-    fork_length = models.FloatField(blank=True, null=True)
-    standard_length = models.FloatField(blank=True, null=True)
-    fresh_weight = models.FloatField(blank=True, null=True)
-    liver_weight = models.FloatField(blank=True, null=True)
-    total_wet_mass = models.FloatField(blank=True, null=True)
+    total_length = models.CharField(max_length=50, blank=True, null=True)
+    fork_length = models.CharField(max_length=50, blank=True, null=True)
+    standard_length = models.CharField(max_length=50, blank=True, null=True)
+    fresh_weight = models.CharField(max_length=50, blank=True, null=True)
+    liver_weight = models.CharField(max_length=50, blank=True, null=True)
+    total_wet_mass = models.CharField(max_length=50, blank=True, null=True)
     stomach_content = models.CharField(max_length=255, blank=True, null=True)
-    gonad_mass = models.FloatField(blank=True, null=True)
+    gonad_mass = models.CharField(max_length=50, blank=True, null=True)
     sexe = models.CharField(max_length=50, blank=True, null=True)
-    ripeness = models.IntegerField(blank=True, null=True)
+    ripeness = models.CharField(max_length=50, blank=True, null=True)
     otolith = models.CharField(max_length=50, blank=True, null=True)
-    isotopeflag = models.IntegerField(blank=True, null=True)
-    total_length_frozen = models.FloatField(blank=True, null=True)
-    fork_length_frozen = models.FloatField(blank=True, null=True)
-    standard_length_frozen = models.FloatField(blank=True, null=True)
-    frozen_mass = models.FloatField(blank=True, null=True)
-    height = models.FloatField(blank=True, null=True)
-    age = models.IntegerField(blank=True, null=True)
-    rings = models.IntegerField(blank=True, null=True)
+    isotopeflag = models.CharField(max_length=50, blank=True, null=True)
+    total_length_frozen = models.CharField(max_length=50, blank=True, null=True)
+    fork_length_frozen = models.CharField(max_length=50, blank=True, null=True)
+    standard_length_frozen = models.CharField(max_length=50, blank=True, null=True)
+    frozen_mass = models.CharField(max_length=50, blank=True, null=True)
+    height = models.CharField(max_length=50, blank=True, null=True)
+    age = models.CharField(max_length=50, blank=True, null=True)
+    rings = models.CharField(max_length=50, blank=True, null=True)
     ogew1 = models.CharField(max_length=50, blank=True, null=True)
     ogew2 = models.CharField(max_length=50, blank=True, null=True)
     tissue_type = models.CharField(max_length=50, blank=True, null=True)

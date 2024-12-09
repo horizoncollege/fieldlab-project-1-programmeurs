@@ -343,8 +343,8 @@
     fields.forEach(function(field) {
         var value = field.value.trim();
 
-        // Skip validation for 'vial' and 'otolith' fields
-        if (field.name === 'vial' || field.name === 'otolith' || field.name === 'search') {
+        // Skip validation for 'vial', 'otolith', 'search', or 'NA' value
+        if (field.name === 'vial' || field.name === 'otolith' || field.name === 'search' || value.toUpperCase() === 'NA') {
             return; // Skip validation for these fields
         }
 
@@ -366,7 +366,8 @@
         event.preventDefault(); // Prevent form submission
         globalErrorMessage.style.display = 'block'; // Show the global error message
     }
-  });
+});
+
 </script>
 
 {% endblock %}

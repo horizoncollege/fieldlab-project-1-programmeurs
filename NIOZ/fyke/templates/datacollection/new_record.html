@@ -1,5 +1,5 @@
 {% extends 'index.html' %} {% block content %}
-<form method="POST" class="fyke-form">
+<form method="POST" id="new-record-form" class="fyke-form">
   {% csrf_token %}
   <span>Datacollection record (new)</span>
   <table>
@@ -59,13 +59,20 @@
       <tr>
         <td>Remarks:</td>
         <td>
-          <textarea name="remarks" id="id_remarks" rows="4" cols="50">
-          {{ form.remarks.value }}</textarea>
+          <textarea name="remarks" id="id_remarks" rows="4" cols="50">{{ form.remarks.value }}</textarea>
         </td>
       </tr>
       <tr>
         <td>Collect species/week:</td>
         <td>{{ form.collect }}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <div id="global-error-message" style="color:red; display:none;">
+            One or more inputs are invalid.
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -104,6 +111,49 @@
         remarksInput.value = "User " + userName + " changed fishing duration from '" + lastFishingDuration + "' to '" + newFishingDuration + "'";
     } else {
         remarksInput.value = "";  // Clear remarks if no change
+    }
+  });
+</script>
+
+<script>
+  document.getElementById('new-record-form').addEventListener('submit', function(event) {
+    // Get all input fields for validation
+    var fields = document.querySelectorAll('input[type="text"]');
+    var isValid = true; // Assume inputs are valid initially
+
+    // Regular expression to allow both decimal separators (either . or ,)
+    var numberRegex = /^[0-9]+([.,][0-9]+)?$/;
+
+    // Hide the global error message initially
+    var globalErrorMessage = document.getElementById('global-error-message');
+    globalErrorMessage.style.display = 'none';
+
+    // Loop through all fields and validate
+    fields.forEach(function(field) {
+        var value = field.value.trim();
+
+        // Skip validation for these fields
+        if (field.name === 'date' || field.name === 'observer' || field.name === 'time' || value.toUpperCase() === 'NA') {
+            return; // Skip validation for these fields
+        }
+
+        // Check if the field is valid
+        if (value !== "" && !numberRegex.test(value)) {
+            // Invalid input: apply styles
+            field.style.border = '1px red solid';
+            field.style.backgroundColor = 'pink';
+            isValid = false;
+        } else {
+            // Valid input: reset styles
+            field.style.border = '';
+            field.style.backgroundColor = '';
+        }
+    });
+
+    // If any field is invalid, show the global error message
+    if (!isValid) {
+        event.preventDefault(); // Prevent form submission
+        globalErrorMessage.style.display = 'block'; // Show the global error message
     }
   });
 </script>
