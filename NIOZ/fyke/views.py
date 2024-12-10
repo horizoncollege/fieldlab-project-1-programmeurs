@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import DataCollection, FykeLocations, FishDetails
+from .models import DataCollection, FishDetails
 from datetime import datetime
 from .forms import DataCollectionForm
 from django.db.models.functions import ExtractYear, ExtractWeek
@@ -316,13 +316,13 @@ def species_search(request):
 
 
 # Catchlocations
-def catchlocations(request):
-    # Retrieve all records from the FykeLocations table
-    data = FykeLocations.objects.all()  # This gets all entries in the table
+# def catchlocations(request):
+#     # Retrieve all records from the FykeLocations table
+#     data = FykeLocations.objects.all()  # This gets all entries in the table
     
-    return render(request, 'catchlocations.html', {
-        'data': data  # Pass the data to the template
-    })
+#     return render(request, 'catchlocations.html', {
+#         'data': data  # Pass the data to the template
+#     })
 
 def new_location(request):
     return render(request, 'catchlocations/new_location.html')
