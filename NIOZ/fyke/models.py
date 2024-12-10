@@ -87,49 +87,6 @@ class DataCollection(models.Model):
 
         super().save(*args, **kwargs)
 
-class FykeLocations(models.Model):
-    name = models.CharField(max_length=50)
-    type = models.CharField(max_length=50)
-    remarks = models.CharField(max_length=256)
-    collectgroup = models.CharField(max_length=50)
-    printlabel = models.CharField(max_length=50)
-    
-    OPTIONS = [
-        ('Texel', 'Texel'),
-        ('Lauwersoog', 'Lauwersoog')
-    ]
-    
-    latitude = models.FloatField(choices=OPTIONS)
-    longitude = models.FloatField(choices=OPTIONS)
-    
-    class Meta:
-        db_table = 'fyke_fykelocations'  # Set the name to your existing database table
-        
-    def __str__(self):
-        return f"catchlocations"
-    
-    def save(self, *args, **kwargs):
-        # Normalize floating-point fields
-        for field in self._meta.fields:
-            value = getattr(self, field.name)
-
-            # Convert empty strings to None
-            if value == '':
-                setattr(self, field.name, None)
-            
-            # Convert ',' to '.' for FloatField inputs
-            if isinstance(value, str) and ',' in value:
-                try:
-                    setattr(self, field.name, float(value.replace(',', '.')))
-                except ValueError:
-                    setattr(self, field.name, None)
-                    
-        # Automatically set the changed_by and last_change fields
-        # if not self.changed_by and hasattr(self, 'user') and self.user:
-        #     self.changed_by = self.user  # This assumes you're passing the user as part of the save
-
-        super().save(*args, **kwargs)
-
 class FishDetails(models.Model):
     collectdate = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     registrationtime = models.DateTimeField(auto_now=False, auto_now_add=True, blank=True, null=True)
@@ -192,5 +149,49 @@ class FishDetails(models.Model):
         # Automatically set the changed_by and last_change fields
         if not self.changed_by and hasattr(self, 'user') and self.user:
             self.changed_by = self.user  # This assumes you're passing the user as part of the save
+
+        super().save(*args, **kwargs)
+        
+class CatchLocation(models.Model):
+    LOCATION_CHOICES = [
+        ('Texel', 'Texel'),
+        ('Lauwersoog', 'Lauwersoog'),
+    ]
+
+    name = models.CharField(max_length=100, verbose_name="Fyke name")
+    type = models.CharField(max_length=100, verbose_name="Type")
+    latitude = models.DecimalField(max_digits=9, decimal_places=0, verbose_name="Latitude")
+    longitude = models.DecimalField(max_digits=9, decimal_places=0, verbose_name="Longitude")
+    remarks = models.TextField(blank=True, verbose_name="Remarks")
+    collect_group = models.CharField(
+        max_length=50, 
+        choices=LOCATION_CHOICES, 
+        verbose_name="Collect Group"
+    )
+    print_label = models.CharField(
+        max_length=50, 
+        choices=LOCATION_CHOICES, 
+        verbose_name="Print Label"
+    )
+
+    def save(self, *args, **kwargs):
+        # Normalize floating-point fields
+        for field in self._meta.fields:
+            value = getattr(self, field.name)
+
+            # Convert empty strings to None
+            if value == '':
+                setattr(self, field.name, None)
+            
+            # Convert ',' to '.' for FloatField inputs
+            if isinstance(value, str) and ',' in value:
+                try:
+                    setattr(self, field.name, float(value.replace(',', '.')))
+                except ValueError:
+                    setattr(self, field.name, None)
+                    
+        # Automatically set the changed_by and last_change fields
+        # if not self.changed_by and hasattr(self, 'user') and self.user:
+        #     self.changed_by = self.user  # This assumes you're passing the user as part of the save
 
         super().save(*args, **kwargs)
