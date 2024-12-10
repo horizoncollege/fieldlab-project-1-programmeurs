@@ -152,17 +152,18 @@ class FishDetails(models.Model):
 
         super().save(*args, **kwargs)
         
-class CatchLocation(models.Model):
+class CatchLocations(models.Model):
     LOCATION_CHOICES = [
         ('Texel', 'Texel'),
         ('Lauwersoog', 'Lauwersoog'),
     ]
 
-    name = models.CharField(max_length=100, verbose_name="Fyke name")
-    type = models.CharField(max_length=100, verbose_name="Type")
+    name = models.CharField(max_length=255, verbose_name="Fyke name")
+    type = models.CharField(max_length=255, verbose_name="Type")
     latitude = models.DecimalField(max_digits=9, decimal_places=0, verbose_name="Latitude")
     longitude = models.DecimalField(max_digits=9, decimal_places=0, verbose_name="Longitude")
     remarks = models.TextField(blank=True, verbose_name="Remarks")
+    
     collect_group = models.CharField(
         max_length=50, 
         choices=LOCATION_CHOICES, 
@@ -173,6 +174,9 @@ class CatchLocation(models.Model):
         choices=LOCATION_CHOICES, 
         verbose_name="Print Label"
     )
+    
+    class Meta:
+        db_table = 'fyke_catchlocations'
 
     def save(self, *args, **kwargs):
         # Normalize floating-point fields
