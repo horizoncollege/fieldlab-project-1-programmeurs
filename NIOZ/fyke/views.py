@@ -8,6 +8,11 @@ from urllib.parse import urlencode
 from django.http import JsonResponse
 from maintenance.models import MaintenanceSpeciesList
 from django.db.models import Q
+import csv
+from django.http import HttpResponse
+from .models import FishDetails
+from django.db.models.functions import ExtractYear
+from datetime import date
 
 # Index
 def index(request):
@@ -335,7 +340,6 @@ def edit_location(request, pk):
 def exportdata(request):
     data = DataCollection.objects.annotate(
         year=ExtractYear('date'),  # Extract year from the date
-        week=ExtractWeek('date')    # Extract week from the date
     )
 
     # Get distinct years based on the 'date' field
@@ -344,3 +348,113 @@ def exportdata(request):
     return render(request, 'exportdata.html', {
         'years': years  # Pass the data to the template
     })
+
+
+# fyke/views.py
+
+def generate_csv_response(filename, headers, rows):
+    """
+    Generate a CSV HttpResponse.
+    :param filename: The name of the file to download.
+    :param headers: List of CSV header fields.
+    :param rows: Iterable of row data.
+    :return: HttpResponse with CSV content.
+    """
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    writer = csv.writer(response)
+    writer.writerow(headers)
+    writer.writerows(rows)
+    
+    return response
+
+
+
+def abiotic_csv(request, year):
+    headers = [
+        'tidal_phase', 'salinity', 'temperature', 'wind_direction', 'wind_speed',
+        'secchi_depth', 'fu_scale', 'date', 'time', 'fishingday', 'fyke', 'duration',
+        'collect', 'remarks', 'observer', 'version', 'changed_by_id', 'last_change'
+    ]
+
+    if year == 0:
+        data_queryset = DataCollection.objects.all()
+    else:
+        data_queryset = DataCollection.objects.annotate(year=ExtractYear('date')).filter(year=year)
+
+    rows = [
+        [
+            data.tidal_phase, data.salinity, data.temperature, data.wind_direction,
+            data.wind_speed, data.secchi_depth, data.fu_scale, data.date, data.time,
+            data.fishingday, data.fyke, data.duration, data.collect, data.remarks,
+            data.observer, data.version, data.changed_by_id, data.last_change
+        ]
+        for data in data_queryset
+    ]
+
+    return generate_csv_response('abiotic_fyke_fishdetails.csv', headers, rows)
+
+
+def biotic_csv(request, year):
+    headers = [
+        # //
+    ]
+
+    if year == 0:
+        data_queryset = DataCollection.objects.all()
+    else:
+        data_queryset = DataCollection.objects.annotate(year=ExtractYear('date')).filter(year=year)
+
+    rows = [
+        [
+            # //
+        ]
+        for data in data_queryset
+    ]
+
+    return generate_csv_response('biotic_fyke_fishdetails.csv', headers, rows)
+
+def cutting_csv(request, year):
+    headers = [
+        'collectdate', 'registrationtime', 'collectno', 'species', 'condition', 'total_length', 'fork_length', 'standard_length',
+        'fresh_weight', 'liver_weight', 'total_wet_mass', 'stomach_content', 'gonad_mass',
+        'sexe', 'ripeness', 'otolith', 'total_length_frozen', 'fork_length_frozen',
+        'standard_length_frozen', 'frozen_mass', 'height', 'age', 'rings',
+        'ogew1', 'ogew2', 'tissue_type', 'vial', 'comment'
+    ]
+
+    if year == 0:
+        fish_queryset = FishDetails.objects.all()
+    else:
+        fish_queryset = FishDetails.objects.annotate(year=ExtractYear('collectdate')).filter(year=year)
+    
+    rows = [
+        [
+            fish.collectdate, fish.registrationtime, fish.collectno, fish.species, fish.condition, fish.total_length, fish.fork_length, fish.standard_length,
+            fish.fresh_weight, fish.liver_weight, fish.total_wet_mass, fish.stomach_content, fish.gonad_mass,
+            fish.sexe, fish.ripeness, fish.otolith, fish.total_length_frozen, fish.fork_length_frozen,
+            fish.standard_length_frozen, fish.frozen_mass, fish.height, fish.age, fish.rings,
+            fish.ogew1, fish.ogew2, fish.tissue_type, fish.vial, fish.comment
+        ]
+        for fish in fish_queryset
+    ]
+    return generate_csv_response('cutting_fyke_fishdetails.csv', headers, rows)
+
+def stomach_csv(request, year):
+    headers = [
+        # //
+    ]
+
+    if year == 0:
+        data_queryset = DataCollection.objects.all()
+    else:
+        data_queryset = DataCollection.objects.annotate(year=ExtractYear('date')).filter(year=year)
+
+    rows = [
+        [
+            # //
+        ]
+        for data in data_queryset
+    ]
+    return generate_csv_response('stomach_fyke_fishdetails.csv', headers, rows)
