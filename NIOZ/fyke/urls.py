@@ -22,4 +22,9 @@ urlpatterns = [
     # Fishdetails URL's
     path('fishdetails/', views.fishdetails, name='fishdetails'),
     path('fishdetails/live-species-search/', views.species_search, name='species_search'),
+
+    path('abiotic_csv/<int:year>', views.abiotic_csv, name='fyke_abiotic'),
+    path('biotic_csv/<int:year>', views.biotic_csv, name='fyke_biotic'),
+    path('cutting_csv/<int:year>', views.cutting_csv, name='fyke_cutting'),
+    path('stomach_csv/<int:year>', views.stomach_csv, name='fyke_stomach'),
 ]
