@@ -1,5 +1,8 @@
 # NIOZ Project
 
+<img src="https://github.com/horizoncollege/fieldlab-project-1-programmeurs/blob/main/NIOZ/static/img/NIOZ-LOGO.png" width="150" alt="NIOZ logo">
+
+
 (Een korte beschrijving van je Django-project hier.)
 
 ## Inhoudsopgave
