@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import DataCollection, CatchLocations, FishDetails
+from .models import DataCollection, CatchLocations, FishDetails, CatchLocations
 from datetime import datetime
-from .forms import DataCollectionForm
+from .forms import DataCollectionForm, CatchLocationsForm
 from django.db.models.functions import ExtractYear, ExtractWeek
 from math import ceil
 from urllib.parse import urlencode
@@ -330,10 +330,40 @@ def catchlocations(request):
     })
 
 def new_location(request):
-    return render(request, 'catchlocations/new_location.html')
+    if request.method == 'POST':
+        # Initialize the form with POST data
+        form = CatchLocationsForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('catchlocations')  # Replace 'datacollection' with your actual URL name
+    else:
+        # Render an empty form for GET requests
+        form = CatchLocationsForm()
+
+    # Pass the form to the context
+    context = {
+        'form': form,
+    }
+    return render(request, 'catchlocations/new_location.html', context)
     
 def edit_location(request, pk):
-    return render(request, 'catchlocations/edit_location.html')
+    record = get_object_or_404(CatchLocations, pk=pk)
+
+    if request.method == 'POST':
+        # Initialize the form with POST data
+        form = CatchLocationsForm(request.POST, instance=record)
+        if form.is_valid():
+            form.save()
+            return redirect('catchlocations')  # Replace 'datacollection' with your actual URL name
+    else:
+        # Render an empty form for GET requests
+        form = CatchLocationsForm(instance=record)
+
+    # Pass the form to the context
+    context = {
+        'form': form,
+    }
+    return render(request, 'catchlocations/edit_location.html', context)
 
 
 # Exportdata
