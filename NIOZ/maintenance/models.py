@@ -2,23 +2,29 @@ from django.db import models
 
 
 class MaintenanceSpeciesList(models.Model):
-    id = models.AutoField(primary_key=True)
-    species_id = models.IntegerField()
-    active = models.BooleanField(default=True)
     nl_name = models.CharField(max_length=255)
-    en_name = models.CharField(max_length=255)
     latin_name = models.CharField(max_length=255)
+    species_id = models.IntegerField()
     WoRMS = models.CharField(max_length=255)
-    pauly_trophic_level = models.FloatField()
-    var_x = models.TextField(blank=True, null=True)
+    var_x = models.TextField(null=True, blank=True)
+    en_name = models.CharField(max_length=255)
     fishflag = models.BooleanField(default=False)
+    oldnrmee = models.TextField(null=True, blank=True)
+    active = models.BooleanField(default=True)
+    pauly_trophic_level = models.CharField(max_length=50)
+    extraction_date = models.CharField(max_length=50, null=True, blank=True)
     collecting_per_week = models.IntegerField()
-    always_collecting = models.BooleanField(default=True)
+    always_collecting = models.BooleanField(default=False)
+    indivweek = models.IntegerField()
 
+    # Meta class for table settings (optional)
     class Meta:
         db_table = 'maintenance_species_list'
-        verbose_name = "Species list"  # Nieuw enkelvoudige naam
-        verbose_name_plural = "Species list"  # Nieuw meervoudige naam
+        verbose_name = 'Maintenance Species'
+        verbose_name_plural = 'Maintenance Species List'
+
+    def __str__(self):
+        return self.nl_name
 
     def __str__(self):
         return self.nl_name
