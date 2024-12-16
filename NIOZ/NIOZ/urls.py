@@ -9,5 +9,6 @@ urlpatterns = [
     path('fyke/', include('fyke.urls')),
     path('maintenance/', include('maintenance.urls')),
     path('adminMenu/', include('adminMenu.urls')),
+    path('help/', include('help.urls')),
 
 ]
