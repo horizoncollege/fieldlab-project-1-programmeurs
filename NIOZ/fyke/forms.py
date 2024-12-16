@@ -1,5 +1,8 @@
 from django import forms
 from .models import DataCollection
+from django.shortcuts import render, redirect
+from django.forms import ModelForm
+from .models import CatchLocations
 
 class DataCollectionForm(forms.ModelForm):
     class Meta:
@@ -51,3 +54,8 @@ class DataCollectionForm(forms.ModelForm):
         # Set initial value for new records
         if not self.instance.pk:  # Check if it's a new instance
             self.fields['remarks'].initial = ""  # Set initial value to empty for new records
+
+class CatchLocationsForm(ModelForm):
+    class Meta:
+        model = CatchLocations
+        fields = ['name', 'type', 'latitude', 'longitude', 'remarks', 'collect_group', 'print_label']
