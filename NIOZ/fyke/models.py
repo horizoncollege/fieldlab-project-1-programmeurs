@@ -96,7 +96,6 @@ class FishDetails(models.Model):
         on_delete=models.CASCADE,  # Use CASCADE or your preferred option
         related_name='data_collections',  # Optional: for reverse lookup
     )
-    species = models.CharField(max_length=50, blank=True, null=True)
     condition = models.CharField(max_length=50, blank=True, null=True)
     total_length = models.CharField(max_length=50, blank=True, null=True)
     fork_length = models.CharField(max_length=50, blank=True, null=True)
