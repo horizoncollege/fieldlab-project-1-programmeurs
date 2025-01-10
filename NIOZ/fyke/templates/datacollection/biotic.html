@@ -14,8 +14,7 @@
     cellpadding="4"
     class="fyke-table"
     style="display: none"
-    id="bioticWeekTable"
-  >
+    id="bioticWeekTable">
     <tbody>
       <tr>
         <td>Catched in week {{record.week}}/{{record.year}}</td>
@@ -76,7 +75,9 @@
       cellpadding="4"
       class="fyke-table"
       id="bioticEntryTable"
+      {% if not form.initial %}
       style="display: none"
+      {% endif %}
     >
       <tbody>
         <tr>
@@ -92,26 +93,25 @@
         </tr>
         <tr>
           <td>
-            <input
-              type="text"
-              name="search"
-              id="speciesSearch"
-              placeholder="Search species..."
-              autocomplete="off"
-            />
-            <div
-              id="searchResults"
-              style="
+            <div>
+              <input type="text" name="search" id="speciesSearch" placeholder="Search species..." autocomplete="off"/>
+              <div class="tooltip">
+                <div class="info-icon">i</div>
+                <div class="tooltiptext">
+                  Je kan hier species zoeken met de Nederlandse en latijnse naam en ook op speciesID
+                </div>
+              </div>
+            </div>
+            <div id="searchResults" style="
                 position: absolute;
                 background: white;
                 border: 1px solid #ddd;
                 display: none;
               "
             ></div>
-            <input type="hidden" name="fishid" value="" required />
+            <input type="hidden" name="fishid" value="{% if form.initial %} {{ biotic_record.fishid.species_id }}{% endif %}" required />
             <div id="speciesDisplay">
-              {{ fish.species.species_id }} {% if fish.species %} - {% endif%}
-              {{ fish.species.nl_name}}
+                {% if form.initial %} {{ biotic_record.fishid.species_id }} - {{ biotic_record.fishid.nl_name }}{% endif %}
             </div>
           </td>
           <td>
@@ -130,9 +130,9 @@
             {{ form.freshweigth }}
           </td>
           <td>
-            <input type="hidden" name="collectno" value="0" />
-            <span id="collectDisplay" style="display: none">
-              {{ record.week }}-{{ nth_record }}
+            <input type="hidden" name="collectno" value="{% if form.initial %}{{ biotic_record.collectno }}{% else %}0{% endif %}" />
+            <span id="collectDisplay" {% if not form.initial or biotic_record.collectno == 0 %}style="display: none"{% endif %}>
+              {{ record.week }} - {% if form.initial %}{{ biotic_record.collectno }}{% else %}{{ nth_record }}{% endif %}
             </span>
           </td>
           <td>
@@ -194,8 +194,8 @@
         </td>
         <td>{{ biotic.remarks }}</td>
         <td>
-          <a class="btn btn-primary" href="#">edit</a>
-          <a class="btn btn-primary" style="display: none" href="#">Label</a>
+          <a class="btn btn-primary" href="{% url 'biotic' record.id %}?biotic={{ biotic.id }}">edit</a>
+          <a class="btn btn-primary" style="{% if not biotic.collectno %}display: none{% endif %}" href="#">Label</a>
         </td>
       </tr>
       {% empty %}
@@ -219,7 +219,7 @@
       } else {
         table.style.display = "none";
       }
-    });
+  });
 
   document
     .getElementById("toggleEntryBtn")
@@ -388,5 +388,18 @@
         globalErrorMessage.style.display = "block"; // Show the global error message
       }
     });
+</script>
+
+<!-- styling script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const cells = document.querySelectorAll('.fyke-table:not(#bioticEntryTable) td');
+      cells.forEach(function(cell) {
+          // Check if the cell's text content is 'NA'
+          if (cell.textContent.trim() === 'NA') {
+              cell.style.backgroundColor = 'yellow';
+          }
+      });
+  });
 </script>
 {% endblock %}

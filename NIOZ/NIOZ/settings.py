@@ -89,7 +89,7 @@ DATABASES = {
         'USER': 'root',  # De MySQL-gebruiker
         'PASSWORD': '',  # Het wachtwoord voor de MySQL-gebruiker
         'HOST': 'localhost',  # Of het IP-adres van je MySQL-server
-        'PORT': '3308',  # De standaardpoort voor MySQL
+        'PORT': '',  # De standaardpoort voor MySQL
     }
 }
 
@@ -139,3 +139,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Authentication settings
 LOGIN_URL = 'login'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}

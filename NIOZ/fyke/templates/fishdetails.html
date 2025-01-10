@@ -273,56 +273,58 @@
     return textarea.value;
   }
 
-  document.getElementById('speciesSearch').addEventListener('input', function () {
-    const query = this.value;
-    if (query.length > 1) {  // Start search after 2 characters
+  try {
+    document.getElementById('speciesSearch').addEventListener('input', function () {
+      const query = this.value;
+      if (query.length > 1) {  // Start search after 2 characters
         fetch(`/fyke/fishdetails/live-species-search/?q=${query}`)
-            .then(response => response.json())
-            .then(data => {
-                const resultsDiv = document.getElementById('searchResults');
-                resultsDiv.innerHTML = '';
-                if (data.results.length) {
-                    resultsDiv.style.display = 'block';
-                    data.results.forEach(item => {
-                        const div = document.createElement('div');
-                        // Decode HTML entities before displaying
-                        const nlName = decodeHtml(item.nl_name);
-                        const latinName = decodeHtml(item.latin_name);
-                        div.innerText = `${item.species_id} - ${nlName} (${latinName})`;
-                        div.style.cursor = 'pointer';
-                        div.onclick = function() {
-                            // Use species_id directly
-                            const speciesid = item.species_id;  // Ensure this is set correctly
+          .then(response => response.json())
+          .then(data => {
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '';
+            if (data.results.length) {
+              resultsDiv.style.display = 'block';
+              data.results.forEach(item => {
+                const div = document.createElement('div');
+                // Decode HTML entities before displaying
+                const nlName = decodeHtml(item.nl_name);
+                const latinName = decodeHtml(item.latin_name);
+                div.innerText = `${item.species_id} - ${nlName} (${latinName})`;
+                div.style.cursor = 'pointer';
+                div.onclick = function() {
+                  // Use species_id directly
+                  const speciesid = item.species_id;  // Ensure this is set correctly
 
-                            // Set the search input to the format: "species_id-speciesname"
-                            document.getElementById('speciesSearch').value = ``;
+                  // Set the search input to the format: "species_id-speciesname"
+                  document.getElementById('speciesSearch').value = ``;
 
-                            // Set the hidden input's value to the selected species_id
-                            document.querySelector('input[name="species"]').value = speciesid;
+                  // Set the hidden input's value to the selected species_id
+                  document.querySelector('input[name="species"]').value = speciesid;
 
-                            // Update the species display text dynamically
-                            document.getElementById('speciesDisplay').innerText = `${speciesid}-${nlName}`;
+                  // Update the species display text dynamically
+                  document.getElementById('speciesDisplay').innerText = `${speciesid}-${nlName}`;
 
-                            resultsDiv.style.display = 'none';  // Hide the search results
-                        };
-                        resultsDiv.appendChild(div);
-                    });
-                } else {
-                    resultsDiv.style.display = 'none';
-                }
-            });
-    } else {
+                  resultsDiv.style.display = 'none';  // Hide the search results
+                };
+                resultsDiv.appendChild(div);
+              });
+            } else {
+              resultsDiv.style.display = 'none';
+            }
+          });
+      } else {
         document.getElementById('searchResults').style.display = 'none';
-    }
-  });
+      }
+    });
 
-  // Hide the search results when clicking outside
-  document.addEventListener('click', function (e) {
-    const resultsDiv = document.getElementById('searchResults');
-    if (!resultsDiv.contains(e.target) && e.target.id !== 'speciesSearch') {
+    // Hide the search results when clicking outside
+    document.addEventListener('click', function (e) {
+      const resultsDiv = document.getElementById('searchResults');
+      if (!resultsDiv.contains(e.target) && e.target.id !== 'speciesSearch') {
         resultsDiv.style.display = 'none';
-    }
-  });
+      }
+    });
+  } catch {}
 </script>
 
 <script>
@@ -365,7 +367,7 @@
         event.preventDefault(); // Prevent form submission
         globalErrorMessage.style.display = 'block'; // Show the global error message
     }
-});
+  });
 
 </script>
 

@@ -140,33 +140,54 @@ def edit_record_view(request, pk):
 
 def biotic(request, pk):
     # Retrieve the specific record from the DataCollection model using the primary key
-    record = get_object_or_404(DataCollection.objects.annotate(
+    datacollectionobject = get_object_or_404(DataCollection.objects.annotate(
         year=ExtractYear('date'),
         week=ExtractWeek('date'),
     ), pk=pk)
     
+    biotic_id = request.GET.get('biotic')
+    
+    # Prepare variables for later use
+    biotic_record = None
+       
+    # Handle the form submission
     if request.method == 'POST':
-        form = BioticDataForm(request.POST)
+        if biotic_id:
+            try:
+                biotic_record = bioticData.objects.get(id=biotic_id)
+                form = BioticDataForm(request.POST, instance=biotic_record)
+            except bioticData.DoesNotExist:
+                form = BioticDataForm(request.POST)
+        else:
+            form = BioticDataForm(request.POST)
+        
         if form.is_valid():
-            new_record = form.save(commit=False)
-            new_record.date = record
-            new_record.fishid = form.cleaned_data['fishid']
-            if new_record.collectno:
-                FishDetails.objects.create(
-                    collectdate=record.date,
-                    collectno=new_record.collectno,
-                    species_id=new_record.fishid.id,
+            record = form.save(commit=False)
+            record.date = datacollectionobject
+            record.fishid = form.cleaned_data['fishid']
+            if record.collectno:
+                FishDetails.objects.update_or_create(
+                    collectdate=datacollectionobject.date,
+                    collectno=record.collectno,
+                    defaults={'species_id': record.fishid.id},
                 )
-            new_record.save()
+            record.save()
 
             return redirect(request.path)
         else:
             print(form.errors)
+            
+    elif biotic_id:
+        try:
+            biotic_record = bioticData.objects.get(id=biotic_id)
+            form = BioticDataForm(instance=biotic_record)
+        except bioticData.DoesNotExist:
+            form = BioticDataForm()
     else:
         form = BioticDataForm()
         
     # Filter bioticData records where the date matches the date of the DataCollection record
-    data = bioticData.objects.filter(date=record).annotate(
+    data = bioticData.objects.filter(date=datacollectionobject).annotate(
         year=ExtractYear('date__date'),
         week=ExtractWeek('date__date'),
     )
@@ -188,11 +209,10 @@ def biotic(request, pk):
         })  
     
     # Calculate the n'th record in the bioticData table for that week
-    week_data = bioticData.objects.filter(
-        date__date__week=record.week,
-        date__date__year=record.year
+    week_data = FishDetails.objects.filter(
+        collectdate__week=datacollectionobject.week,
+        collectdate__year=datacollectionobject.year
     )
-    
     nth_record = week_data.count() + 1
     
     # Check if any field is None and set it to an empty string
@@ -202,7 +222,8 @@ def biotic(request, pk):
                 setattr(value, field.name, "")  # Set to empty string if None
 
     return render(request, 'datacollection/biotic.html', {
-        'record': record, # The DataCollection record
+        'record': datacollectionobject, # The DataCollection record
+        'biotic_record' : biotic_record,
         'species_data': species_data, # The aggregated bioticData records
         'data': data, # The bioticData records
         'form': form, # The form for adding new bioticData records

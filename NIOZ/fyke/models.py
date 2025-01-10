@@ -205,26 +205,26 @@ class CatchLocations(models.Model):
         
 class bioticData(models.Model):
     id = models.AutoField(primary_key=True)
-    fdatex = models.IntegerField(blank=True,null=True)
+    fdatex = models.CharField(max_length=50, blank=True,null=True)
     fishid = models.ForeignKey(
         'maintenance.MaintenanceSpeciesList',
         on_delete=models.CASCADE,
     )
-    measurecode = models.IntegerField(default=10)
+    measurecode = models.CharField(max_length=50, default=10)
     totallength = models.CharField(max_length=255, blank=True, null=True)
-    fdetailx = models.IntegerField(default=0)
+    fdetailx = models.CharField(max_length=50, default=0)
     regtime = models.DateTimeField(auto_now=True)
-    subsample = models.IntegerField(default=1)
+    subsample = models.CharField(max_length=50, default=1)
     date = models.ForeignKey(
         DataCollection,
         on_delete=models.CASCADE,
         # related_name='biotic_data'
     )
-    nspecies = models.IntegerField(default=1)
+    nspecies = models.CharField(max_length=50, default=1)
     collectno = models.IntegerField(default=0)
-    origin = models.IntegerField(default=1)
-    freshweigth = models.CharField(max_length=255, blank=True, null=True)
-    collectlocation = models.IntegerField(default=1)
+    origin = models.CharField(max_length=50, default=1)
+    freshweigth = models.CharField(max_length=50, blank=True, null=True)
+    collectlocation = models.CharField(max_length=50, default=1)
     lengthestimate = models.BooleanField(default=False)
     remarks = models.TextField(blank=True, null=True)
     
