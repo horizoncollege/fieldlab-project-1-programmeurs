@@ -1,17 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import DataCollection, CatchLocations, FishDetails, CatchLocations
-from datetime import datetime
-from .forms import DataCollectionForm, CatchLocationsForm
 from django.db.models.functions import ExtractYear, ExtractWeek
+from django.http import JsonResponse, HttpResponse
+from django.db.models import Q
+from .models import DataCollection, CatchLocations, FishDetails, CatchLocations, bioticData
+from .forms import DataCollectionForm, CatchLocationsForm, BioticDataForm
+from maintenance.models import MaintenanceSpeciesList
+from datetime import datetime, timezone
 from math import ceil
 from urllib.parse import urlencode
-from django.http import JsonResponse
-from maintenance.models import MaintenanceSpeciesList
-from django.db.models import Q
+from collections import defaultdict
+
 import csv
 from django.http import HttpResponse
-from .models import FishDetails
-from django.db.models.functions import ExtractYear
 from datetime import date
 
 # Index
@@ -43,6 +43,7 @@ def datacollection_view(request):
         'years': years,  # Pass the dynamically calculated years
         'selected_year': selected_year
     })
+
 def new_record_view(request):
     reference_date = datetime(1899, 12, 30).date()  # Use .date() to get just the date part
     
@@ -140,12 +141,72 @@ def edit_record_view(request, pk):
 def biotic(request, pk):
     # Retrieve the specific record from the DataCollection model using the primary key
     record = get_object_or_404(DataCollection.objects.annotate(
-        year=ExtractYear('date'),  # Extract year from the date
-        week=ExtractWeek('date')    # Extract week from the date
+        year=ExtractYear('date'),
+        week=ExtractWeek('date'),
     ), pk=pk)
+    
+    if request.method == 'POST':
+        form = BioticDataForm(request.POST)
+        if form.is_valid():
+            new_record = form.save(commit=False)
+            new_record.date = record
+            new_record.fishid = form.cleaned_data['fishid']
+            if new_record.collectno:
+                FishDetails.objects.create(
+                    collectdate=record.date,
+                    collectno=new_record.collectno,
+                    species_id=new_record.fishid.id,
+                )
+            new_record.save()
+
+            return redirect(request.path)
+        else:
+            print(form.errors)
+    else:
+        form = BioticDataForm()
+        
+    # Filter bioticData records where the date matches the date of the DataCollection record
+    data = bioticData.objects.filter(date=record).annotate(
+        year=ExtractYear('date__date'),
+        week=ExtractWeek('date__date'),
+    )
+    
+    # Aggregate data by species
+    species_aggregation = defaultdict(lambda: {'count': 0, 'lengths': defaultdict(int)})
+    for item in data:
+        species_aggregation[item.fishid]['count'] += 1
+        species_aggregation[item.fishid]['lengths'][item.totallength] += 1
+    
+    # Prepare the aggregated data for the template
+    species_data = []
+    for species, details in species_aggregation.items():
+        lengths = ', '.join(f"{length}({count})" if count > 1 else f"{length}" for length, count in details['lengths'].items() if length is not None)
+        species_data.append({
+            'species': species,
+            'count': details['count'],
+            'lengths': lengths
+        })  
+    
+    # Calculate the n'th record in the bioticData table for that week
+    week_data = bioticData.objects.filter(
+        date__date__week=record.week,
+        date__date__year=record.year
+    )
+    
+    nth_record = week_data.count() + 1
+    
+    # Check if any field is None and set it to an empty string
+    for value in data:
+        for field in value.__class__._meta.fields:
+            if getattr(value, field.name) is None:
+                setattr(value, field.name, "")  # Set to empty string if None
 
     return render(request, 'datacollection/biotic.html', {
-        'record': record,  # Pass the record to the template
+        'record': record, # The DataCollection record
+        'species_data': species_data, # The aggregated bioticData records
+        'data': data, # The bioticData records
+        'form': form, # The form for adding new bioticData records
+        'nth_record': nth_record, # The n'th record in the bioticData table for that week
     })
 
 
@@ -164,10 +225,11 @@ def fishdetails(request):
     selected_year = request.GET.get('year')
     selected_week = request.GET.get('week')
     selected_range = request.GET.get('range')
-    selected_species = request.GET.get('species')
+    selected_collectno = request.GET.get('collectno')
     
     # Initialize variables for later use
-    species_data = None
+    fishdetailobject = None
+    range_groups = []
 
     # Start with filtering by year
     if selected_year:
@@ -216,32 +278,20 @@ def fishdetails(request):
             # Filter the data based on collectno range
             data = data.filter(collectno__gte=range_start, collectno__lte=range_end)
 
-        if selected_species:
+        if selected_collectno:
             try:
-                species_id = int(selected_species)  # Get the species ID from the selected_species value
-    
-                # Retrieve species data for the given species_id
-                species_data = FishDetails.objects.filter(species=species_id + 1).annotate(
-                    year=ExtractYear('collectdate'),
-                    week=ExtractWeek('collectdate')
-                )
+                fishdetailobject = data.filter(collectno=selected_collectno)
                 
-                # Loop through the species_data to add the nl_name for each record
-                for value in species_data:
-                    # Check if any field is None and set it to an empty string
+                # Check if any field is None and set it to an empty string
+                for value in fishdetailobject:
                     for field in value.__class__._meta.fields:
                         if getattr(value, field.name) is None:
                             setattr(value, field.name, "")  # Set to empty string if None
 
             except (ValueError, FishDetails.DoesNotExist):
-                species_data = None
+                fishdetailobject = None
+                data = None
 
-    else:
-        # If no year is selected, show all records and no week or range filtering
-        data = FishDetails.objects.all()
-        collect_numbers = []
-        range_groups = []
-    
     # Handle the form submission
     if request.method == 'POST':
         # Get the fish_id from the POST data
@@ -270,6 +320,16 @@ def fishdetails(request):
         fish.dna_sample = 'dna_sample' in request.POST
         fish.micro_plastic = 'micro_plastic' in request.POST
 
+        # Special handling for the species field
+        species_id = request.POST.get('species')
+        if species_id:
+            try:
+                species_instance = MaintenanceSpeciesList.objects.get(species_id=species_id)
+                fish.species = species_instance
+            except MaintenanceSpeciesList.DoesNotExist:
+                # Handle the case where the species_id does not exist
+                fish.species = None
+
         # Save the updated fish object
         fish.save()
 
@@ -290,11 +350,11 @@ def fishdetails(request):
         'years': years,
         'weeks': weeks,
         'range_groups': range_groups,
-        'species_data' : species_data,
         'selected_year': selected_year,
         'selected_week': selected_week,
         'selected_range': selected_range,
-        'selected_species' : selected_species,                                        
+        'selected_collectno' : selected_collectno, 
+        'fishdetailobject': fishdetailobject,                                      
     })
 
 def species_search(request):
@@ -379,9 +439,6 @@ def exportdata(request):
         'years': years  # Pass the data to the template
     })
 
-
-# fyke/views.py
-
 def generate_csv_response(filename, headers, rows):
     """
     Generate a CSV HttpResponse.
@@ -398,8 +455,6 @@ def generate_csv_response(filename, headers, rows):
     writer.writerows(rows)
     
     return response
-
-
 
 def abiotic_csv(request, year):
     headers = [
@@ -424,7 +479,6 @@ def abiotic_csv(request, year):
     ]
 
     return generate_csv_response('abiotic_fyke_fishdetails.csv', headers, rows)
-
 
 def biotic_csv(request, year):
     headers = [

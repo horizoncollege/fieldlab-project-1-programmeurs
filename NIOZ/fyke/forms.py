@@ -1,8 +1,8 @@
 from django import forms
-from .models import DataCollection
 from django.shortcuts import render, redirect
 from django.forms import ModelForm
-from .models import CatchLocations
+from .models import DataCollection, CatchLocations, bioticData
+from maintenance.models import MaintenanceSpeciesList
 
 class DataCollectionForm(forms.ModelForm):
     class Meta:
@@ -59,3 +59,26 @@ class CatchLocationsForm(ModelForm):
     class Meta:
         model = CatchLocations
         fields = ['name', 'type', 'latitude', 'longitude', 'remarks', 'collect_group', 'print_label']
+        
+class BioticDataForm(forms.ModelForm):
+    fishid = forms.IntegerField(label='Species ID')
+
+    class Meta:
+        model = bioticData
+        fields = [
+            'fishid', 'subsample', 'nspecies', 'totallength', 'lengthestimate', 'freshweigth', 'collectno', 'remarks'
+        ]
+        
+        widgets = {
+            'collectno': forms.HiddenInput(),
+            'remarks': forms.Textarea(attrs={'rows': 1, 'cols': 10}),
+            'lengthestimate': forms.CheckboxInput(),
+        }
+
+    def clean_fishid(self):
+        species_id = self.cleaned_data['fishid']
+        try:
+            species = MaintenanceSpeciesList.objects.get(species_id=species_id)
+            return species  # Return the species instance instead of species.id
+        except MaintenanceSpeciesList.DoesNotExist:
+            raise forms.ValidationError(f"Species with ID {species_id} does not exist.")

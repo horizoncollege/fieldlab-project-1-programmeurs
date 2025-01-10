@@ -8,6 +8,11 @@
     gap: 5px;
 }
 
+.fyke-wrapper.biotic {
+    display: flex;
+    align-items: center;
+}
+
 .fyke-inner {
     display: flex;
     align-items: flex-start;
@@ -35,7 +40,6 @@
 
 .fyke-form table {
     background-color: #eee;
-    border: 1px solid black;
 }
 
 .fyke-form td {
@@ -47,11 +51,17 @@
     text-align: right;
 }
 
+.biotic .fyke-form td:first-child {
+    text-align: left;
+    font-weight: normal;
+}
+
 .fyke-form input {
-    COLOR: #000000;
-    FONT-FAMILY: verdana, helvetica, sans-serif;
-    FONT-SIZE: 12px;
+    color: #000000;
+    font-family: verdana, helvetica, sans-serif;
+    font-size: 12px;
     line-height: 16px;
+    max-width: 100px;
 }
 
 .fyke-form span {
@@ -161,4 +171,16 @@
 .fishdetails .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
+}
+
+/* Datacollection/biotic page */
+
+#bioticWeekTable tr td:last-child {
+    max-width: 300px;
+}
+
+.biotic #collectDisplay {
+    background-color: rgb(240, 160, 160);
+    font-weight: bold;
+    padding: 3px;
 }

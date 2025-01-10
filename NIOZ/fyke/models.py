@@ -63,7 +63,7 @@ class DataCollection(models.Model):
         db_table = 'fyke_datacollection'  # Set the name to your existing database table
 
     def __str__(self):
-        return f"DataCollection on {self.date} by {self.observer}"
+        return f"{self.date} by {self.observer}"
     
     def save(self, *args, **kwargs):
         # Normalize floating-point fields
@@ -90,7 +90,7 @@ class DataCollection(models.Model):
 class FishDetails(models.Model):
     collectdate = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     registrationtime = models.DateTimeField(auto_now=False, auto_now_add=True, blank=True, null=True)
-    collectno = models.IntegerField(blank=True, null=True)
+    collectno = models.IntegerField()
     species = models.ForeignKey(
         'maintenance.MaintenanceSpeciesList',
         on_delete=models.CASCADE,  # Use CASCADE or your preferred option
@@ -121,7 +121,7 @@ class FishDetails(models.Model):
     tissue_type = models.CharField(max_length=50, blank=True, null=True)
     vial = models.CharField(max_length=50, blank=True, null=True)
     dna_sample = models.BooleanField(blank=True, null=True)
-    comment = models.TextField(max_length=255, blank=True, null=True)
+    comment = models.TextField(max_length=256, blank=True, null=True)
     micro_plastic = models.BooleanField(blank=True, null=True)
     
     # changed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
@@ -129,6 +129,9 @@ class FishDetails(models.Model):
     
     class Meta:
         db_table = 'fyke_fishdetails'
+    
+    def __str__(self):
+        return f"{self.species} at {self.collectdate}"
     
     def save(self, *args, **kwargs):
         # Normalize floating-point fields
@@ -147,8 +150,8 @@ class FishDetails(models.Model):
                     setattr(self, field.name, None)
                     
         # Automatically set the changed_by and last_change fields
-        if not self.changed_by and hasattr(self, 'user') and self.user:
-            self.changed_by = self.user  # This assumes you're passing the user as part of the save
+        # if not self.changed_by and hasattr(self, 'user') and self.user:
+        #     self.changed_by = self.user
 
         super().save(*args, **kwargs)
         
@@ -197,5 +200,55 @@ class CatchLocations(models.Model):
         # Automatically set the changed_by and last_change fields
         # if not self.changed_by and hasattr(self, 'user') and self.user:
         #     self.changed_by = self.user  # This assumes you're passing the user as part of the save
+
+        super().save(*args, **kwargs)
+        
+class bioticData(models.Model):
+    id = models.AutoField(primary_key=True)
+    fdatex = models.IntegerField(blank=True,null=True)
+    fishid = models.ForeignKey(
+        'maintenance.MaintenanceSpeciesList',
+        on_delete=models.CASCADE,
+    )
+    measurecode = models.IntegerField(default=10)
+    totallength = models.CharField(max_length=255, blank=True, null=True)
+    fdetailx = models.IntegerField(default=0)
+    regtime = models.DateTimeField(auto_now=True)
+    subsample = models.IntegerField(default=1)
+    date = models.ForeignKey(
+        DataCollection,
+        on_delete=models.CASCADE,
+        # related_name='biotic_data'
+    )
+    nspecies = models.IntegerField(default=1)
+    collectno = models.IntegerField(default=0)
+    origin = models.IntegerField(default=1)
+    freshweigth = models.CharField(max_length=255, blank=True, null=True)
+    collectlocation = models.IntegerField(default=1)
+    lengthestimate = models.BooleanField(default=False)
+    remarks = models.TextField(blank=True, null=True)
+    
+    class Meta:
+        db_table = 'fyke_bioticdata'
+    
+    def save(self, *args, **kwargs):
+        # Normalize floating-point fields
+        for field in self._meta.fields:
+            value = getattr(self, field.name)
+
+            # Convert empty strings to None
+            if value == '':
+                setattr(self, field.name, None)
+            
+            # Convert ',' to '.' for FloatField inputs
+            if isinstance(value, str) and ',' in value:
+                try:
+                    setattr(self, field.name, float(value.replace(',', '.')))
+                except ValueError:
+                    setattr(self, field.name, None)
+                    
+        # Automatically set the changed_by and last_change fields
+        # if not self.changed_by and hasattr(self, 'user') and self.user:
+        #     self.changed_by = self.user
 
         super().save(*args, **kwargs)

@@ -84,8 +84,8 @@
             <a
               class="btn btn-primary"
               style="text-align: left"
-              data-species="{{ fish.species.species_id }}"
-              href="?year={{ selected_year }}&week={{ selected_week }}&range={{ selected_range }}&species={{ fish.species.species_id }}"
+              data-species="{{ fish.collectno }}"
+              href="?year={{ selected_year }}&week={{ selected_week }}&range={{ selected_range }}&collectno={{ fish.collectno }}"
               >{{ fish.year }} - {{ fish.week }} - {{ fish.collectno }} * {{ fish.species.nl_name }}</a>
           </td>
         </tr>
@@ -97,8 +97,8 @@
     <table class="form-table fyke-table">
       <form method="post" id="fishdetails-form">
         {% csrf_token %}
-        {% if selected_year and selected_week and range_groups and selected_species %}
-        {% for fish in species_data %}
+        {% if selected_year and selected_week and range_groups and selected_collectno %}
+        {% for fish in fishdetailobject %}
         <input type="hidden" name="fish_id" value="{{ fish.id }}">  
         <tbody>
           <tr>
@@ -261,7 +261,7 @@
   a[data-range="{{ selected_range }}"] {
     background-color: var(--secondary-color);
   }
-  a[data-species="{{ selected_species }}"] {
+  a[data-species="{{ selected_collectno }}"] {
     background-color: var(--secondary-color);
   }
 </style>
@@ -293,7 +293,6 @@
                         div.onclick = function() {
                             // Use species_id directly
                             const speciesid = item.species_id;  // Ensure this is set correctly
-                            console.log(item)
 
                             // Set the search input to the format: "species_id-speciesname"
                             document.getElementById('speciesSearch').value = ``;
