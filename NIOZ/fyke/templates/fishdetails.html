@@ -285,11 +285,13 @@
             if (data.results.length) {
               resultsDiv.style.display = 'block';
               data.results.forEach(item => {
-                const div = document.createElement('div');
+                const div = document.createElement("div");
                 // Decode HTML entities before displaying
                 const nlName = decodeHtml(item.nl_name);
                 const latinName = decodeHtml(item.latin_name);
-                div.innerText = `${item.species_id} - ${nlName} (${latinName})`;
+                const enName = decodeHtml(item.en_name);
+
+                div.innerHTML = `${item.species_id} - ${nlName} - <i>${enName}</i> - (${latinName})`;
                 div.style.cursor = 'pointer';
                 div.onclick = function() {
                   // Use species_id directly

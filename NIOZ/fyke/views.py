@@ -150,7 +150,7 @@ def biotic(request, pk):
     # Prepare variables for later use
     biotic_record = None
        
-    # Handle the form submission
+        # Handle the form submission
     if request.method == 'POST':
         if biotic_id:
             try:
@@ -165,7 +165,12 @@ def biotic(request, pk):
             record = form.save(commit=False)
             record.date = datacollectionobject
             record.fishid = form.cleaned_data['fishid']
-            if record.collectno:
+            if record.collectno == 0:
+                FishDetails.objects.filter(
+                    collectdate=datacollectionobject.date,
+                    collectno=record.collectno
+                ).delete()
+            else:
                 FishDetails.objects.update_or_create(
                     collectdate=datacollectionobject.date,
                     collectno=record.collectno,
@@ -177,14 +182,15 @@ def biotic(request, pk):
         else:
             print(form.errors)
             
-    elif biotic_id:
-        try:
-            biotic_record = bioticData.objects.get(id=biotic_id)
-            form = BioticDataForm(instance=biotic_record)
-        except bioticData.DoesNotExist:
-            form = BioticDataForm()
     else:
-        form = BioticDataForm()
+        if biotic_id:
+            try:
+                biotic_record = bioticData.objects.get(id=biotic_id)
+                form = BioticDataForm(instance=biotic_record)
+            except bioticData.DoesNotExist:
+                form = BioticDataForm()
+        else:
+            form = BioticDataForm()
         
     # Filter bioticData records where the date matches the date of the DataCollection record
     data = bioticData.objects.filter(date=datacollectionobject).annotate(
@@ -388,11 +394,11 @@ def species_search(request):
         else:
             # Search by 'nl_name' or 'latin_name' if it's not a number
             results = MaintenanceSpeciesList.objects.filter(
-                Q(nl_name__icontains=query) | Q(latin_name__icontains=query)
+                Q(nl_name__icontains=query) | Q(latin_name__icontains=query) | Q(en_name__icontains=query)
             )[:10]
             
         results_data = [
-            {'species_id': species.species_id, 'nl_name': species.nl_name, 'latin_name': species.latin_name} 
+            {'species_id': species.species_id, 'nl_name': species.nl_name, 'latin_name': species.latin_name, 'en_name': species.en_name} 
             for species in results
         ]
     else:
