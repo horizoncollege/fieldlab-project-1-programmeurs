@@ -301,12 +301,13 @@ def fishdetails(request):
                 'label': 'all'  # Add a label for easier HTML handling
             })
 
-        if selected_range != 'all':
-            # Split the range into start and end values
-            range_start, range_end = map(int, selected_range.split('-'))
+        if selected_range:
+            if selected_range != 'all':
+                # Split the range into start and end values
+                range_start, range_end = map(int, selected_range.split('-'))
 
-            # Filter the data based on collectno range
-            data = data.filter(collectno__gte=range_start, collectno__lte=range_end)
+                # Filter the data based on collectno range
+                data = data.filter(collectno__gte=range_start, collectno__lte=range_end)
 
         if selected_collectno:
             try:
