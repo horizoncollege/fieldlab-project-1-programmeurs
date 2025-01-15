@@ -58,11 +58,11 @@
         <tr>
           <td>
             <a
-              href="?year={{ selected_year }}&week={{ selected_week }}&range={{ group.start }}-{{ group.end }}"
+              href="?year={{ selected_year }}&week={{ selected_week }}&range={% if group.label == 'all' %}all{% else %}{{ group.start }}-{{ group.end }}{% endif %}"
               class="btn btn-primary"
-              data-range="{{ group.start }}-{{ group.end }}"
+              data-range="{% if group.label == 'all' %}all{% else %}{{ group.start }}-{{ group.end }}{% endif %}"
             >
-              {% if group.label == 'All' %}All{% else %}{{ group.start }}-{{ group.end }}{% endif %}
+              {% if group.label == 'all' %}All{% else %}{{ group.start }}-{{ group.end }}{% endif %}
             </a>
           </td>
         </tr>

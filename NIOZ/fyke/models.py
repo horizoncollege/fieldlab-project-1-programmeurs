@@ -77,7 +77,7 @@ class DataCollection(models.Model):
             # Convert ',' to '.' for FloatField inputs
             if isinstance(value, str) and ',' in value:
                 try:
-                    setattr(self, field.name, float(value.replace(',', '.')))
+                    setattr(self, field.name, float(value.replace('.', ',')))
                 except ValueError:
                     setattr(self, field.name, None)
                     
@@ -91,6 +91,11 @@ class FishDetails(models.Model):
     collectdate = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     registrationtime = models.DateTimeField(auto_now=False, auto_now_add=True, blank=True, null=True)
     collectno = models.IntegerField()
+    biotic = models.ForeignKey(
+        'bioticData',
+        on_delete=models.CASCADE,  # Use CASCADE or your preferred option
+        related_name='fish_details',  # Optional: for reverse lookup
+    )
     species = models.ForeignKey(
         'maintenance.MaintenanceSpeciesList',
         on_delete=models.CASCADE,  # Use CASCADE or your preferred option
@@ -145,7 +150,7 @@ class FishDetails(models.Model):
             # Convert ',' to '.' for FloatField inputs
             if isinstance(value, str) and ',' in value:
                 try:
-                    setattr(self, field.name, float(value.replace(',', '.')))
+                    setattr(self, field.name, float(value.replace('.', ',')))
                 except ValueError:
                     setattr(self, field.name, None)
                     
@@ -193,7 +198,7 @@ class CatchLocations(models.Model):
             # Convert ',' to '.' for FloatField inputs
             if isinstance(value, str) and ',' in value:
                 try:
-                    setattr(self, field.name, float(value.replace(',', '.')))
+                    setattr(self, field.name, float(value.replace('.', ',')))
                 except ValueError:
                     setattr(self, field.name, None)
                     
@@ -243,7 +248,7 @@ class bioticData(models.Model):
             # Convert ',' to '.' for FloatField inputs
             if isinstance(value, str) and ',' in value:
                 try:
-                    setattr(self, field.name, float(value.replace(',', '.')))
+                    setattr(self, field.name, float(value.replace('.', ',')))
                 except ValueError:
                     setattr(self, field.name, None)
                     

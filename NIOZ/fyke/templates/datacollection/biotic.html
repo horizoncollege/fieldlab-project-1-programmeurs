@@ -187,7 +187,7 @@
         <td>{{ biotic.freshweigth }}</td>
         <td>
           {% if biotic.collectno %}
-            <a href="{% url 'fishdetails' %}?year={{ biotic.year}}&week={{ biotic.week }}&range={{ biotic.collectno }}-{{ biotic.collectno }}&collectno={{ biotic.collectno }}" class="btn btn-secondary">
+            <a href="{% url 'fishdetails' %}?year={{ biotic.year}}&week={{ biotic.week }}&range=all&collectno={{ biotic.collectno }}" class="btn btn-secondary">
               {{ biotic.week }} - {{ biotic.collectno }}
             </a>
           {% endif %}

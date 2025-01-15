@@ -150,7 +150,7 @@ def biotic(request, pk):
     # Prepare variables for later use
     biotic_record = None
        
-        # Handle the form submission
+    # Handle the form submission
     if request.method == 'POST':
         if biotic_id:
             try:
@@ -165,23 +165,26 @@ def biotic(request, pk):
             record = form.save(commit=False)
             record.date = datacollectionobject
             record.fishid = form.cleaned_data['fishid']
+            record.save()  # Save the bioticData instance first
+            
             if record.collectno == 0:
                 FishDetails.objects.filter(
                     collectdate=datacollectionobject.date,
-                    collectno=record.collectno
+                    biotic_id=record.id
                 ).delete()
             else:
                 FishDetails.objects.update_or_create(
                     collectdate=datacollectionobject.date,
                     collectno=record.collectno,
-                    defaults={'species_id': record.fishid.id},
+                    defaults={
+                        'species_id': record.fishid.id,
+                        'biotic': record,
+                    },
                 )
-            record.save()
-
+            
             return redirect(request.path)
         else:
             print(form.errors)
-            
     else:
         if biotic_id:
             try:
@@ -191,7 +194,7 @@ def biotic(request, pk):
                 form = BioticDataForm()
         else:
             form = BioticDataForm()
-        
+    
     # Filter bioticData records where the date matches the date of the DataCollection record
     data = bioticData.objects.filter(date=datacollectionobject).annotate(
         year=ExtractYear('date__date'),
@@ -295,10 +298,10 @@ def fishdetails(request):
                 'start': min_collect,
                 'end': max_collect,
                 'collect_in_range': collect_numbers,
-                'label': 'All'  # Add a label for easier HTML handling
+                'label': 'all'  # Add a label for easier HTML handling
             })
 
-        if selected_range:
+        if selected_range != 'all':
             # Split the range into start and end values
             range_start, range_end = map(int, selected_range.split('-'))
 
