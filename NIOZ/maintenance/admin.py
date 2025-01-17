@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import MaintenanceSpeciesList, FykeLocation, FykeProgramme
+from django.contrib.admin.models import LogEntry
 
 
 # Register de MaintenanceSpeciesList admin
@@ -31,3 +32,8 @@ class FykeProgrammeAdmin(admin.ModelAdmin):
     ordering = ('no',)
     
 
+    @admin.register(LogEntry)
+    class LogEntryAdmin(admin.ModelAdmin):
+        list_display = ('action_time', 'user', 'content_type', 'object_id', 'object_repr', 'action_flag', 'change_message')
+        search_fields = ('object_repr', 'change_message')
+        list_filter = ('action_flag', 'content_type')
