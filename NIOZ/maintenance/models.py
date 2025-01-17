@@ -35,7 +35,7 @@ class FykeLocation(models.Model):
     comment = models.TextField(blank=True, null=True)
 
     class Meta:
-        db_table = 'fyke_locations'
+        db_table = 'maintenance_fyke_locations'
         verbose_name = "Fyke Location"
         verbose_name_plural = "Fyke Locations"
 
@@ -48,7 +48,7 @@ class FykeProgramme(models.Model):
     comment = models.TextField(blank=True, null=True)
 
     class Meta:
-        db_table = 'fyke_programmes'
+        db_table = 'maintenance_fyke_programmes'
         verbose_name = "Fyke Programme"
         verbose_name_plural = "Fyke Programmes"
 
