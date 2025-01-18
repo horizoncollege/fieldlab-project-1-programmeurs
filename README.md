@@ -85,7 +85,7 @@ Om de Django-ontwikkelserver te starten, voer je het volgende uit:
 python manage.py runserver
 ```
 
-Bezoek http://127.0.0.1:8000/ in je webbrowser om het project te bekijken.
+Bezoek http://127.0.0.1:8000/ in je webbrowser om het project te bekijken.<br><br><br><br><br>
 
 
 ### Figma design
