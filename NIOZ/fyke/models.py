@@ -19,8 +19,8 @@ class DataCollection(models.Model):
     time = models.TimeField()
     fishingday = models.CharField(max_length=8, blank=True, null=True)
     duration = models.CharField(max_length=8, blank=True, null=True)
-    collect = models.CharField(max_length=8, blank=True, null=True)
-    version = models.CharField(max_length=3)
+    # collect = models.CharField(max_length=8, blank=True, null=True)
+    # version = models.CharField(max_length=3)
     
     FYKE_CHOICES = [
         ('Stuifdijk', 'Stuifdijk'),

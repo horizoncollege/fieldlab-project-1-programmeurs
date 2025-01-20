@@ -45,7 +45,7 @@ def datacollection_view(request):
     })
 
 def new_record_view(request):
-    reference_date = datetime(1899, 12, 30).date()  # Use .date() to get just the date part
+    reference_date = datetime(1899, 12, 30).date()
     
     now = datetime.now()  # Get the full datetime object for date and time
     formatted_date = now.strftime('%d/%m/%Y')  # Format date as dd/mm/yyyy
@@ -152,6 +152,7 @@ def biotic(request, pk):
        
     # Handle the form submission
     if request.method == 'POST':
+        # Check if the biotic_id is provided in the URL
         if biotic_id:
             try:
                 biotic_record = bioticData.objects.get(id=biotic_id)
@@ -161,12 +162,14 @@ def biotic(request, pk):
         else:
             form = BioticDataForm(request.POST)
         
+        # Validate the form and save the data
         if form.is_valid():
             record = form.save(commit=False)
             record.date = datacollectionobject
             record.fishid = form.cleaned_data['fishid']
             record.save()  # Save the bioticData instance first
             
+            # Update or create the FishDetails record based on the bioticData record
             if record.collectno == 0:
                 FishDetails.objects.filter(
                     collectdate=datacollectionobject.date,
@@ -185,6 +188,8 @@ def biotic(request, pk):
             return redirect(request.path)
         else:
             print(form.errors)
+    
+    # if the request method is not POST ()
     else:
         if biotic_id:
             try:
@@ -355,6 +360,7 @@ def fishdetails(request):
         species_id = request.POST.get('species')
         if species_id:
             try:
+                # Retrieve the species object based on the species_id
                 species_instance = MaintenanceSpeciesList.objects.get(species_id=species_id)
                 fish.species = species_instance
             except MaintenanceSpeciesList.DoesNotExist:
@@ -426,7 +432,7 @@ def new_location(request):
         form = CatchLocationsForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('catchlocations')  # Replace 'datacollection' with your actual URL name
+            return redirect('catchlocations')
     else:
         # Render an empty form for GET requests
         form = CatchLocationsForm()
@@ -491,7 +497,7 @@ def abiotic_csv(request, year):
     headers = [
         'tidal_phase', 'salinity', 'temperature', 'wind_direction', 'wind_speed',
         'secchi_depth', 'fu_scale', 'date', 'time', 'fishingday', 'fyke', 'duration',
-        'collect', 'remarks', 'observer', 'version', 'changed_by_id', 'last_change'
+        'remarks', 'observer', 'changed_by_id', 'last_change'
     ]
 
     if year == 0:

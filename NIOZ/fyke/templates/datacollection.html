@@ -38,10 +38,8 @@
             <th>fishingday</th>
             <th>fyke</th>
             <th>duration</th>
-            <th>collect</th>
             <th>remarks</th>
             <th>observer</th>
-            <th>version</th>
           </tr>
           <tr>
             {% for item in data %}
@@ -59,10 +57,8 @@
             <td>{{ item.fishingday }}</td>
             <td>{{ item.fyke }}</td>
             <td>{{ item.duration|default:'' }}</td>
-            <td>{{ item.collect|default:'' }}</td>
             <td>{{ item.remarks }}</td>
             <td>{{ item.observer }}</td>
-            <td>{{ item.version|default:'' }}</td>
           </tr>
           {% empty %}
           <tr>

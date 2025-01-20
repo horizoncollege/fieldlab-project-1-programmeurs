@@ -63,10 +63,6 @@
         </td>
       </tr>
       <tr>
-        <td>Collect species/week:</td>
-        <td>{{ form.collect }}</td>
-      </tr>
-      <tr>
         <td></td>
         <td>
           <div id="global-error-message" style="color:red; display:none;">
@@ -78,7 +74,6 @@
   </table>
 
   <input type="hidden" name="fishingday" value="{{ form.fishingday.value|default:fishingday }}">
-  <input type="hidden" name="version" value="3.0">
 
   <div style="margin-top: 5px">
     <button class="btn btn-secondary" type="submit">Submit</button>

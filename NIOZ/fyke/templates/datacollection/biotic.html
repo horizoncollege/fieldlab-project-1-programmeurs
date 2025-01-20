@@ -48,7 +48,6 @@
         <th>fishingday</th>
         <th>fyke</th>
         <th>duration</th>
-        <th>collect</th>
         <th>observer</th>
       </tr>
       <tr>
@@ -63,7 +62,6 @@
         <td>{{ record.fishingday }}</td>
         <td>{{ record.fyke }}</td>
         <td>{{ record.duration }}</td>
-        <td>{{ record.collect }}</td>
         <td>{{ record.observer }}</td>
       </tr>
     </tbody>
@@ -130,8 +128,15 @@
             {{ form.freshweigth }}
           </td>
           <td>
-            <input type="hidden" name="collectno" value="{% if form.initial %}{{ biotic_record.collectno }}{% else %}0{% endif %}" />
-            <span id="collectDisplay" {% if not form.initial or biotic_record.collectno == 0 %}style="display: none"{% endif %}>
+            <input type="hidden" name="collectno"
+              value="
+              {% if form.initial %}
+                {{ biotic_record.collectno }}
+              {% else %}
+                0
+              {% endif %}
+              "/>
+            <span id="collectDisplay"{% if not form.initial or biotic_record.collectno == 0 %}style="display: none"{% endif %}>
               {{ record.week }} - {% if form.initial %}{{ biotic_record.collectno }}{% else %}{{ nth_record }}{% endif %}
             </span>
           </td>
@@ -356,8 +361,8 @@
           return; // Skip validation for these fields
         }
 
+        // Check if the fishid field is empty
         if (field.name === "fishid" && value === "") {
-          // Invalid input: apply styles
           var searchField = document.querySelector('input[name="search"]');
           if (searchField) {
             searchField.style.border = "1px red solid";

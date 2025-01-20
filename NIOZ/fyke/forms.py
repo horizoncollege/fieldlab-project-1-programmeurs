@@ -20,10 +20,8 @@ class DataCollectionForm(forms.ModelForm):
             'fishingday',
             'fyke',
             'duration',
-            'collect',
             'remarks',
             'observer',
-            'version',
         ]
 
         # widgets = {
