@@ -19,8 +19,6 @@ class DataCollection(models.Model):
     time = models.TimeField()
     fishingday = models.CharField(max_length=8, blank=True, null=True)
     duration = models.CharField(max_length=8, blank=True, null=True)
-    # collect = models.CharField(max_length=8, blank=True, null=True)
-    # version = models.CharField(max_length=3)
     
     FYKE_CHOICES = [
         ('Stuifdijk', 'Stuifdijk'),
@@ -256,4 +254,42 @@ class bioticData(models.Model):
         # if not self.changed_by and hasattr(self, 'user') and self.user:
         #     self.changed_by = self.user
 
+        super().save(*args, **kwargs)
+        
+class FykeStomachData(models.Model):
+    fishdetails = models.ForeignKey(
+        'FishDetails',
+        on_delete=models.CASCADE,
+    )
+    species = models.ForeignKey(
+        'maintenance.MaintenanceSpeciesList',
+        on_delete=models.CASCADE,
+    )
+    number = models.CharField(max_length=255, blank=True, null=True)
+    length = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'fyke_stomachdata'
+        verbose_name = 'Fyke Stomach Data'
+        verbose_name_plural = 'Fyke Stomach Data'
+
+    def __str__(self):
+        return f"StomachData"
+    
+    def save(self, *args, **kwargs):
+        # Normalize floating-point fields
+        for field in self._meta.fields:
+            value = getattr(self, field.name)
+
+            # Convert empty strings to None
+            if value == '':
+                setattr(self, field.name, None)
+            
+            # Convert ',' to '.' for FloatField inputs
+            if isinstance(value, str) and ',' in value:
+                try:
+                    setattr(self, field.name, float(value.replace(',', '.')))
+                except ValueError:
+                    setattr(self, field.name, None)
+                    
         super().save(*args, **kwargs)

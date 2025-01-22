@@ -2,17 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models.functions import ExtractYear, ExtractWeek
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
-from .models import DataCollection, CatchLocations, FishDetails, CatchLocations, bioticData
+from django.db import transaction
+from .models import DataCollection, CatchLocations, FishDetails, bioticData, FykeStomachData
 from .forms import DataCollectionForm, CatchLocationsForm, BioticDataForm
 from maintenance.models import MaintenanceSpeciesList
-from datetime import datetime, timezone
+from datetime import datetime, date
 from math import ceil
 from urllib.parse import urlencode
 from collections import defaultdict
-
 import csv
-from django.http import HttpResponse
-from datetime import date
 
 # Index
 def index(request):
@@ -316,6 +314,7 @@ def fishdetails(request):
 
         if selected_collectno:
             try:
+                # Filter the data based on collectno
                 fishdetailobject = data.filter(collectno=selected_collectno)
                 
                 # Check if any field is None and set it to an empty string
@@ -323,6 +322,16 @@ def fishdetails(request):
                     for field in value.__class__._meta.fields:
                         if getattr(value, field.name) is None:
                             setattr(value, field.name, "")  # Set to empty string if None
+
+                # Retrieve all FykeStomachData related to the selected FishDetails object
+                stomach_data = FykeStomachData.objects.filter(fishdetails__in=fishdetailobject)
+                
+                # Check if any field is None and set it to an empty string
+                for value in stomach_data:
+                    for field in value.__class__._meta.fields:
+                        if getattr(value, field.name) is None:
+                            setattr(value, field.name, "")  # Set to empty string if None
+                
 
             except (ValueError, FishDetails.DoesNotExist):
                 fishdetailobject = None
@@ -369,6 +378,67 @@ def fishdetails(request):
 
         # Save the updated fish object
         fish.save()
+        
+        # Save the stomach data separately
+        stomach_inputs = request.POST.get('stomach_input', '').split(';')
+        stomach_lengths = request.POST.get('stomach_length', '').split(';')
+        stomach_numbers = request.POST.get('stomach_number', '').split(';')
+        stomach_deletes = request.POST.get('stomach_delete', '').split(';')
+        stomach_ids = request.POST.get('stomach_id', '').split(';')
+        
+        print(stomach_deletes)
+        print(stomach_ids)
+        
+        for input_value, length_value, number_value, delete_value, data_id in zip(stomach_inputs, stomach_lengths, stomach_numbers, stomach_deletes, stomach_ids):
+            if delete_value == '1' and data_id:
+                # Delete the existing record
+                try:
+                    stomach_data = FykeStomachData.objects.get(id=data_id)
+                    stomach_data.delete()
+                    print(f"Deleted stomach_data with id {data_id}")
+                except FykeStomachData.DoesNotExist:
+                    print(f"Stomach data with id {data_id} does not exist, cannot delete")
+                continue
+            
+            if input_value or length_value or number_value:
+                try:
+                    species_instance = MaintenanceSpeciesList.objects.get(species_id=input_value)
+                    if data_id:
+                        # Update the existing record
+                        try:
+                            stomach_data = FykeStomachData.objects.get(id=data_id)
+                            stomach_data.length = length_value if length_value else None
+                            stomach_data.number = number_value if number_value else None
+                            stomach_data.species = species_instance
+                            stomach_data.save()
+                            print(f"Updated stomach_data with id {data_id}")
+                        except FykeStomachData.DoesNotExist:
+                            print(f"Stomach data with id {data_id} does not exist, creating new record")
+                            stomach_data = FykeStomachData.objects.create(
+                                fishdetails=fish,
+                                species=species_instance,
+                                length=length_value if length_value else None,
+                                number=number_value if number_value else None
+                            )
+                    else:
+                        # Create a new record
+                        stomach_data, created = FykeStomachData.objects.update_or_create(
+                            fishdetails=fish,
+                            species=species_instance,
+                            defaults={
+                                'length': length_value if length_value else None,
+                                'number': number_value if number_value else None
+                            }
+                        )
+                        if created:
+                            print(f"Created new stomach_data with species_id {input_value}")
+                        else:
+                            print(f"Updated existing stomach_data with species_id {input_value}")
+                except MaintenanceSpeciesList.DoesNotExist:
+                    # Skip creating the record if the species_id does not exist
+                    print(f"Species with id {input_value} does not exist")
+                    continue
+        
 
         # Build the redirect URL with existing query parameters
         current_url = request.path
@@ -391,7 +461,8 @@ def fishdetails(request):
         'selected_week': selected_week,
         'selected_range': selected_range,
         'selected_collectno' : selected_collectno, 
-        'fishdetailobject': fishdetailobject,                                      
+        'fishdetailobject': fishdetailobject,
+        'stomach_data' : stomach_data,
     })
 
 def species_search(request):

@@ -38,6 +38,12 @@
   display: flex;
 }
 
+.fyke input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
 .fyke-form table {
   background-color: #eee;
 }
@@ -104,6 +110,20 @@
   text-align: center;
 }
 
+#add-stomach-data {
+  display: inline-block;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+
+  margin-left: 10px !important;
+}
+
+#add-stomach-data img {
+  width: 24px;
+}
+
 .fishdetails table {
   border: 1px solid black;
   padding: 0;
@@ -128,7 +148,7 @@
   margin-top: 1px;
 }
 
-.fishdetails .form-table input {
+.fishdetails .form-table input[type="text"] {
   width: 100px;
 }
 

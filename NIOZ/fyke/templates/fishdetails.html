@@ -1,6 +1,7 @@
 {% extends 'index.html' %} {% block content %}
+{% load static %}
 
-<div class="fyke-wrapper fishdetails">
+<div class="fyke fyke-wrapper fishdetails">
   <span>Fish details</span>
   <div class="fyke-wrapper-inner">
 
@@ -117,7 +118,7 @@
               <div class="tooltip">
                 <span class="info-icon">i</span>
                 <span class="tooltiptext">
-                  Je kan hier species zoeken met de Nederlandse en latijnse naam en ook op speciesID
+                  You can search for species here using the Dutch, English, and Latin names, as well as by speciesID
                 </span>
               </div>
 
@@ -164,7 +165,56 @@
           </tr>
           <tr>
             <td>Stomach content:</td>
-            <td><input type="text" name="stomach_content" value="{{ fish.stomach_content }}"> g </td>
+            <td>
+              <input type="text" name="stomach_content" value="{{ fish.stomach_content }}">&nbsp;g
+              
+              <a id="add-stomach-data">
+                <img src="{% static 'img\plus-icon-256x256.png' %}">
+              </a>
+
+              <div id="stomach-data-content" style=" {% if not stomach_data %}display:none;{% endif %} margin-top: 5px;">
+                <input type="hidden" name="stomach_input" value="">
+                <input type="hidden" name="stomach_number" value="">
+                <input type="hidden" name="stomach_length" value="">
+                <input type="hidden" name="stomach_delete" value="">
+                <input type="hidden" name="stomach_id" value="">
+
+                <table>
+                  <tbody id="stomach-data-tbody">
+                    <tr>
+                      <th>Input</th>
+                      <th>Name</th>
+                      <th>Number</th>
+                      <th>Length</th>
+                      <th>DEL</th>
+                    </tr>
+                    {% for stomach in stomach_data %}
+                    
+                    <tr>
+                      <td>
+                        <input type="text" id="stomach_search_{{ forloop.counter0 }}" placeholder="Search species..." autocomplete="off">
+                      </td>
+                      <td>
+                        <span id="stomach_display_{{ forloop.counter0 }}">{{ stomach.species.species_id }}-{{ stomach.species.nl_name }}</span>
+                        <input type="hidden" id="stomach_input_{{ forloop.counter0 }}" value="{{ stomach.species.species_id }}">
+                        <div id="stomach_results_{{ forloop.counter0 }}" style="position: absolute; background: white; border: 1px solid rgb(221, 221, 221); display: none;"></div>
+                      </td>
+                      <td>
+                        <input type="text" id="stomach_number_{{ forloop.counter0 }}" value="{{ stomach.number }}">
+                      </td>
+                      <td>
+                        <input type="text" id="stomach_length_{{ forloop.counter0 }}" value="{{ stomach.length }}">
+                      </td>
+                      <td>
+                        <input type="checkbox" id="stomach_delete_{{ forloop.counter0 }}" value="0" onchange="document.getElementById('stomach_delete_{{ forloop.counter0 }}').value = this.checked ? '1' : '0'">
+                        <input type="hidden" id="stomach_id_{{ forloop.counter0 }}" value="{{ stomach.id }}">
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </td>
           </tr>
           <tr>
             <td>Gonad mass:</td>
@@ -257,6 +307,7 @@
   </div>
 </div>
 
+<!-- Dynamic styling-->
 <style>
   a[data-range="{{ selected_range }}"] {
     background-color: var(--secondary-color);
@@ -267,110 +318,8 @@
 </style>
 
 <script>
-  function decodeHtml(html) {
-    const textarea = document.createElement('textarea');
-    textarea.innerHTML = html;
-    return textarea.value;
-  }
-
-  try {
-    document.getElementById('speciesSearch').addEventListener('input', function () {
-      const query = this.value;
-      if (query.length > 1) {  // Start search after 2 characters
-        fetch(`/fyke/fishdetails/live-species-search/?q=${query}`)
-          .then(response => response.json())
-          .then(data => {
-            const resultsDiv = document.getElementById('searchResults');
-            resultsDiv.innerHTML = '';
-            if (data.results.length) {
-              resultsDiv.style.display = 'block';
-              data.results.forEach(item => {
-                const div = document.createElement("div");
-                // Decode HTML entities before displaying
-                const nlName = decodeHtml(item.nl_name);
-                const latinName = decodeHtml(item.latin_name);
-                const enName = decodeHtml(item.en_name);
-
-                div.innerHTML = `${item.species_id} - ${nlName} - <i>${enName}</i> - (${latinName})`;
-                div.style.cursor = 'pointer';
-                div.onclick = function() {
-                  // Use species_id directly
-                  const speciesid = item.species_id;  // Ensure this is set correctly
-
-                  // Set the search input to the format: "species_id-speciesname"
-                  document.getElementById('speciesSearch').value = ``;
-
-                  // Set the hidden input's value to the selected species_id
-                  document.querySelector('input[name="species"]').value = speciesid;
-
-                  // Update the species display text dynamically
-                  document.getElementById('speciesDisplay').innerText = `${speciesid}-${nlName}`;
-
-                  resultsDiv.style.display = 'none';  // Hide the search results
-                };
-                resultsDiv.appendChild(div);
-              });
-            } else {
-              resultsDiv.style.display = 'none';
-            }
-          });
-      } else {
-        document.getElementById('searchResults').style.display = 'none';
-      }
-    });
-
-    // Hide the search results when clicking outside
-    document.addEventListener('click', function (e) {
-      const resultsDiv = document.getElementById('searchResults');
-      if (!resultsDiv.contains(e.target) && e.target.id !== 'speciesSearch') {
-        resultsDiv.style.display = 'none';
-      }
-    });
-  } catch {}
+  var stomachDataLength = {{ stomach_data|length }};
 </script>
-
-<script>
-  document.getElementById('fishdetails-form').addEventListener('submit', function(event) {
-    // Get all input fields for validation
-    var fields = document.querySelectorAll('input[type="text"]');
-    var isValid = true; // Assume inputs are valid initially
-
-    // Regular expression to allow both decimal separators (either . or ,)
-    var numberRegex = /^[0-9]+([.,][0-9]+)?$/;
-
-    // Hide the global error message initially
-    var globalErrorMessage = document.getElementById('global-error-message');
-    globalErrorMessage.style.display = 'none';
-
-    // Loop through all fields and validate
-    fields.forEach(function(field) {
-        var value = field.value.trim();
-
-        // Skip validation for 'vial', 'otolith', 'search', or 'NA' value
-        if (field.name === 'vial' || field.name === 'otolith' || field.name === 'search' || value.toUpperCase() === 'NA') {
-            return; // Skip validation for these fields
-        }
-
-        // Check if the field is valid
-        if (value !== "" && !numberRegex.test(value)) {
-            // Invalid input: apply styles
-            field.style.border = '1px red solid';
-            field.style.backgroundColor = 'pink';
-            isValid = false;
-        } else {
-            // Valid input: reset styles
-            field.style.border = '';
-            field.style.backgroundColor = '';
-        }
-    });
-
-    // If any field is invalid, show the global error message
-    if (!isValid) {
-        event.preventDefault(); // Prevent form submission
-        globalErrorMessage.style.display = 'block'; // Show the global error message
-    }
-  });
-
-</script>
+<script src="{% static 'nioz\js\fishdetails.js' %}"></script>
 
 {% endblock %}
