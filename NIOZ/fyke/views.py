@@ -262,6 +262,8 @@ def fishdetails(request):
     
     # Initialize variables for later use
     fishdetailobject = None
+    biotic_data = None
+    stomach_data = None
     range_groups = []
 
     # Start with filtering by year
