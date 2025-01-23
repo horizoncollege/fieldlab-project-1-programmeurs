@@ -229,8 +229,6 @@ document.addEventListener("DOMContentLoaded", function () {
 				}
 			});
 
-				
-
 			// If any field is invalid, show the global error message
 			if (!isValid) {
 				event.preventDefault(); // Prevent form submission
