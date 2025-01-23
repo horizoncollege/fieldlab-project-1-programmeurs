@@ -123,9 +123,9 @@
               </div>
 
               <div id="searchResults" style="position: absolute; background: white; border: 1px solid #ddd; display: none;"></div>
-              <input type="hidden" name="species" value="{{ fish.species.species_id }}">
+              <input type="hidden" name="species" value="{{ biotic_data.fishid.species_id}}">
               <div id="speciesDisplay">
-              {{ fish.species.species_id }}-{{ fish.species.nl_name}}
+              {{ biotic_data.fishid.species_id}}-{{ biotic_data.fishid.nl_name}}
             </div>
             </td>
           </tr>

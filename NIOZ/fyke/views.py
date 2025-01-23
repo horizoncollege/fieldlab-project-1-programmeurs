@@ -317,24 +317,24 @@ def fishdetails(request):
                 # Filter the data based on collectno
                 fishdetailobject = data.filter(collectno=selected_collectno)
                 
-                # Check if any field is None and set it to an empty string
-                for value in fishdetailobject:
-                    for field in value.__class__._meta.fields:
-                        if getattr(value, field.name) is None:
-                            setattr(value, field.name, "")  # Set to empty string if None
-
                 # Retrieve all FykeStomachData related to the selected FishDetails object
                 stomach_data = FykeStomachData.objects.filter(fishdetails__in=fishdetailobject)
                 
+                # Retrieve the BioticData related to the selected FishDetails object
+                biotic_data = bioticData.objects.filter(id=fishdetailobject[0].biotic.id)[0]
+                
                 # Check if any field is None and set it to an empty string
-                for value in stomach_data:
-                    for field in value.__class__._meta.fields:
-                        if getattr(value, field.name) is None:
-                            setattr(value, field.name, "")  # Set to empty string if None
+                for dataset in [fishdetailobject, stomach_data]:
+                    for value in dataset:
+                        for field in value.__class__._meta.fields:
+                            if getattr(value, field.name) is None:
+                                setattr(value, field.name, "")  # Set to empty string if None
                 
 
             except (ValueError, FishDetails.DoesNotExist):
                 fishdetailobject = None
+                stomach_data = None
+                biotic_data = None
                 data = None
 
     # Handle the form submission
@@ -365,17 +365,22 @@ def fishdetails(request):
         fish.dna_sample = 'dna_sample' in request.POST
         fish.micro_plastic = 'micro_plastic' in request.POST
 
+
         # Special handling for the species field
         species_id = request.POST.get('species')
         if species_id:
             try:
                 # Retrieve the species object based on the species_id
                 species_instance = MaintenanceSpeciesList.objects.get(species_id=species_id)
+                fish.biotic.fishid = species_instance
+                fish.biotic.save()  # Save the bioticData instance
                 fish.species = species_instance
             except MaintenanceSpeciesList.DoesNotExist:
                 # Handle the case where the species_id does not exist
-                fish.species = None
-
+                fish.biotic.fishid = None
+                fish.biotic.save()  # Save the bioticData instance
+                fish.species = species_instance
+        
         # Save the updated fish object
         fish.save()
         
@@ -434,11 +439,6 @@ def fishdetails(request):
         current_url = request.path
         query_params = request.GET.copy()  # Get the current query parameters
 
-        # Add or update the species_id in the query parameters
-        updated_species = request.POST.get('species')  # Get the new species_id value
-        if updated_species:
-            query_params['species'] = updated_species  # Add or update the species_id in the query params
-
         # Redirect to the current URL with the updated query parameters
         return redirect(f'{current_url}?{urlencode(query_params)}')
     
@@ -450,8 +450,9 @@ def fishdetails(request):
         'selected_year': selected_year,
         'selected_week': selected_week,
         'selected_range': selected_range,
-        'selected_collectno' : selected_collectno, 
+        'selected_collectno' : selected_collectno,
         'fishdetailobject': fishdetailobject,
+        'biotic_data' : biotic_data,
         'stomach_data' : stomach_data,
     })
 
