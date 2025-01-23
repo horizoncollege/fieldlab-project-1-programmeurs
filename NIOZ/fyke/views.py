@@ -386,16 +386,12 @@ def fishdetails(request):
         stomach_deletes = request.POST.get('stomach_delete', '').split(';')
         stomach_ids = request.POST.get('stomach_id', '').split(';')
         
-        print(stomach_deletes)
-        print(stomach_ids)
-        
         for input_value, length_value, number_value, delete_value, data_id in zip(stomach_inputs, stomach_lengths, stomach_numbers, stomach_deletes, stomach_ids):
             if delete_value == '1' and data_id:
                 # Delete the existing record
                 try:
                     stomach_data = FykeStomachData.objects.get(id=data_id)
                     stomach_data.delete()
-                    print(f"Deleted stomach_data with id {data_id}")
                 except FykeStomachData.DoesNotExist:
                     print(f"Stomach data with id {data_id} does not exist, cannot delete")
                 continue
@@ -411,9 +407,7 @@ def fishdetails(request):
                             stomach_data.number = number_value if number_value else None
                             stomach_data.species = species_instance
                             stomach_data.save()
-                            print(f"Updated stomach_data with id {data_id}")
                         except FykeStomachData.DoesNotExist:
-                            print(f"Stomach data with id {data_id} does not exist, creating new record")
                             stomach_data = FykeStomachData.objects.create(
                                 fishdetails=fish,
                                 species=species_instance,
@@ -430,10 +424,6 @@ def fishdetails(request):
                                 'number': number_value if number_value else None
                             }
                         )
-                        if created:
-                            print(f"Created new stomach_data with species_id {input_value}")
-                        else:
-                            print(f"Updated existing stomach_data with species_id {input_value}")
                 except MaintenanceSpeciesList.DoesNotExist:
                     # Skip creating the record if the species_id does not exist
                     print(f"Species with id {input_value} does not exist")
