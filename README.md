@@ -49,7 +49,7 @@ python get-pip.py
 
 3. **Installeer de vereiste packages**:
     ```bash
-    pip install -r requirements.txt
+    pip install -r NIOZ/requirements.txt
     ```
 
 ### Configuratie
