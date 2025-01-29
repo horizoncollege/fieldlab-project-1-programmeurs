@@ -154,11 +154,22 @@ def biotic(request, pk):
     
     biotic_id = request.GET.get('biotic')
     
+    biotic_delete = request.POST.get('delete')
+    
     # Prepare variables for later use
     biotic_record = None
        
     # Handle the form submission
     if request.method == 'POST':
+        # if the user wants to delete:
+        if biotic_delete != '0':
+            try:
+                biotic_record = bioticData.objects.get(id=biotic_id)  # Retrieve the record
+                biotic_record.delete()  # Delete the record
+                return redirect(request.path)
+            except bioticData.DoesNotExist:
+                print('failed to delete. unknown record.')
+        
         # Check if the biotic_id is provided in the URL
         if biotic_id:
             try:

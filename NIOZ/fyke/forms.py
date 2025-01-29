@@ -44,12 +44,12 @@ class CatchLocationsForm(ModelForm):
         fields = ['name', 'type', 'latitude', 'longitude', 'remarks', 'collect_group', 'print_label']
         
 class BioticDataForm(forms.ModelForm):
-    fishid = forms.IntegerField(label='Species ID')
+    species = forms.IntegerField(label='Species ID')
 
     class Meta:
         model = bioticData
         fields = [
-            'fishid', 'subsample', 'nspecies', 'totallength', 'lengthestimate', 'freshweigth', 'collectno', 'remarks'
+            'species', 'subsample', 'nspecies', 'totallength', 'lengthestimate', 'freshweight', 'collectno', 'remarks'
         ]
         
         widgets = {
@@ -58,8 +58,8 @@ class BioticDataForm(forms.ModelForm):
             'lengthestimate': forms.CheckboxInput(),
         }
 
-    def clean_fishid(self):
-        species_id = self.cleaned_data['fishid']
+    def clean_species(self):
+        species_id = self.cleaned_data['species']
         try:
             species = MaintenanceSpeciesList.objects.get(species_id=species_id)
             return species  # Return the species instance instead of species.id

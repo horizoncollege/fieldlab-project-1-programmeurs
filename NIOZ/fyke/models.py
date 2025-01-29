@@ -209,7 +209,7 @@ class CatchLocations(models.Model):
 class bioticData(models.Model):
     id = models.AutoField(primary_key=True)
     fdatex = models.CharField(max_length=50, blank=True,null=True)
-    fishid = models.ForeignKey(
+    species = models.ForeignKey(
         'maintenance.MaintenanceSpeciesList',
         on_delete=models.CASCADE,
     )
@@ -218,7 +218,7 @@ class bioticData(models.Model):
     fdetailx = models.CharField(max_length=50, default=0)
     regtime = models.DateTimeField(auto_now=True)
     subsample = models.CharField(max_length=50, default=1)
-    date = models.ForeignKey(
+    datacollection = models.ForeignKey(
         DataCollection,
         on_delete=models.CASCADE,
         # related_name='biotic_data'
@@ -226,7 +226,7 @@ class bioticData(models.Model):
     nspecies = models.CharField(max_length=50, default=1)
     collectno = models.IntegerField(default=0)
     origin = models.CharField(max_length=50, default=1)
-    freshweigth = models.CharField(max_length=50, blank=True, null=True)
+    freshweight = models.CharField(max_length=50, blank=True, null=True)
     collectlocation = models.CharField(max_length=50, default=1)
     lengthestimate = models.BooleanField(default=False)
     remarks = models.TextField(blank=True, null=True)
@@ -256,7 +256,7 @@ class bioticData(models.Model):
 
         super().save(*args, **kwargs)
         
-class FykeStomachData(models.Model):
+class StomachData(models.Model):
     fishdetails = models.ForeignKey(
         'FishDetails',
         on_delete=models.CASCADE,
