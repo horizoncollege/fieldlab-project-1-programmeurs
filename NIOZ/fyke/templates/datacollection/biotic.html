@@ -1,6 +1,7 @@
 {% extends 'index.html' %} {% block content %} {% load static %}
 
 <div class="fyke-wrapper biotic">
+  <!-- View total for week # button-->
   <a
     href="#"
     class="btn btn-primary"
@@ -9,6 +10,8 @@
   >
     view total for week {{ record.week }}
   </a>
+
+  <!-- Weekdata table-->
   <table
     border="1"
     cellpadding="4"
@@ -37,6 +40,8 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <!-- DataCollection table -->
   <table border="1" cellpadding="4" class="fyke-table">
     <tbody>
       <tr>
@@ -66,6 +71,8 @@
       </tr>
     </tbody>
   </table>
+
+  <!-- Form table-->
   <form class="fyke-form" method="post" id="biotic-form">
     {% csrf_token %}
     <table
@@ -161,6 +168,8 @@
       </tbody>
     </table>
   </form>
+
+  <!-- BioticData Table -->
   <table border="1" cellpadding="4" class="fyke-table">
     <tbody>
       <tr>
@@ -184,7 +193,6 @@
           {% if biotic.lengthestimate %}
           <img
             src="{% static 'img\checkmark.webp' %}"
-            alt="Checked"
             style="width: 20px; height: 20px"
           />
           {% endif %}
@@ -214,6 +222,7 @@
 
 <!-- button specific scripts -->
 <script>
+  // button to toggle the 'bioticWeekTable' table
   document
     .getElementById("toggleTableBtn")
     .addEventListener("click", function (event) {
@@ -226,12 +235,11 @@
       }
   });
 
-  document
-    .getElementById("toggleEntryBtn")
-    .addEventListener("click", toggleEntryTable);
-  document
-    .getElementById("formCancel")
-    .addEventListener("click", toggleEntryTable);
+  // Buttons to toggle the 'toggleEntryTable' function
+  document.getElementById("toggleEntryBtn").addEventListener("click", toggleEntryTable);
+  document.getElementById("formCancel").addEventListener("click", toggleEntryTable);
+
+  // Function to toggle the Form for entering new biotic data
   function toggleEntryTable(event) {
     event.preventDefault();
     var table = document.getElementById("bioticEntryTable");
@@ -242,6 +250,7 @@
     }
   }
 
+  // Collect button function
   document
     .getElementById("collect")
     .addEventListener("click", function (event) {
@@ -258,14 +267,26 @@
         collectButton.innerHTML = "collect";
         collectInput.value = "0";
       }
-    });
+  });
 
+  // Supress button
   document
     .getElementById("supress")
     .addEventListener("click", function (event) {
       event.preventDefault();
       // no function yet
-    });
+  });
+
+  // 'enter' key as submit fix
+  document.querySelector('form').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      const submitBtn = this.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        e.preventDefault(); // Prevent triggering other buttons
+          submitBtn.click(); // Trigger form submission
+        }
+      }
+  });
 </script>
 
 <!-- search script -->
