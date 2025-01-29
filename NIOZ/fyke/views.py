@@ -24,6 +24,11 @@ def datacollection_view(request):
         year=ExtractYear('date'),  # Extract year from the date
         week=ExtractWeek('date')    # Extract week from the date
     )
+    
+    for obj in data:
+        for field in obj._meta.fields:
+            if getattr(obj, field.name) is None:
+                setattr(obj, field.name, "")
 
     # Get distinct years based on the 'date' field
     years = data.values_list('year', flat=True).distinct().order_by('year')
@@ -112,6 +117,10 @@ def new_record_view(request):
 def edit_record_view(request, pk):
     # Retrieve the record from the database or return 404 if it doesn't exist
     record = get_object_or_404(DataCollection, pk=pk)
+    
+    for field in record._meta.fields:
+        if getattr(record, field.name) is None:
+            setattr(record, field.name, "")
     
     if request.method == 'POST':
         form = DataCollectionForm(request.POST, instance=record)  # Bind the form with the existing record
@@ -329,10 +338,6 @@ def fishdetails(request):
                                 setattr(obj, field.name, "")
             except (ValueError, FishDetails.DoesNotExist, bioticData.DoesNotExist, FykeStomachData.DoesNotExist, IndexError):
                 fishdetailobject = biotic_data = stomach_data = None
-
-                
-
-            
 
     # Handle the form submission
     if request.method == 'POST':
