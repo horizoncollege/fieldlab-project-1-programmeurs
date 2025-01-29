@@ -81,7 +81,7 @@ class DataCollection(models.Model):
                     
         # Automatically set the changed_by and last_change fields
         if not self.changed_by and hasattr(self, 'user') and self.user:
-            self.changed_by = self.user  # This assumes you're passing the user as part of the save
+            self.changed_by = self.user
 
         super().save(*args, **kwargs)
 

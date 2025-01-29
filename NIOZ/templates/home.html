@@ -34,8 +34,7 @@
         <strong>Fyke Research - NIOZ</strong>
       </div>
 
-      <!-- Deze 'tag' laat de navbar alleen zien als je ingelogd bent -->
-      {% if user.is_authenticated %} 
+      {% if user.is_authenticated %}
       <div class="navbar-menu">
         <ul>
           <li><a href="/admin/adminMenu/person/">Administrator</a></li>

@@ -24,21 +24,6 @@ class DataCollectionForm(forms.ModelForm):
             'observer',
         ]
 
-        # widgets = {
-        #     'date': forms.DateInput(
-        #         attrs={
-        #             'type': 'date',
-        #         },
-        #         format='%d/%m/%Y'
-        #     ),
-            
-        #     'time': forms.TimeInput(
-        #         attrs={
-        #             'type': 'time',
-        #         },
-        #     )
-        # }
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

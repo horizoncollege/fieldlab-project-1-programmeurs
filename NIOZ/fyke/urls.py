@@ -3,10 +3,9 @@ from . import views
 
 
 urlpatterns = [
-    # Standaard URL's
+    # Standard URL's
     path('', views.index, name='index'),
     path('exportdata/', views.exportdata, name='exportdata'),
-    
     
     # Datacollection URL's
     path('datacollection/', views.datacollection_view, name='datacollection'),  # Data list page
@@ -23,6 +22,7 @@ urlpatterns = [
     path('fishdetails/', views.fishdetails, name='fishdetails'),
     path('fishdetails/live-species-search/', views.species_search, name='species_search'),
 
+    # Exportdata URL's
     path('abiotic_csv/<int:year>', views.abiotic_csv, name='fyke_abiotic'),
     path('biotic_csv/<int:year>', views.biotic_csv, name='fyke_biotic'),
     path('cutting_csv/<int:year>', views.cutting_csv, name='fyke_cutting'),
