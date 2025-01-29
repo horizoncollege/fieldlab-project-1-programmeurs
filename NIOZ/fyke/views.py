@@ -316,28 +316,23 @@ def fishdetails(request):
 
         if selected_collectno:
             try:
-                # Filter the data based on collectno
+                # Filter data based on collectno
                 fishdetailobject = data.filter(collectno=selected_collectno)
-                
-                # Retrieve all FykeStomachData related to the selected FishDetails object
+                biotic_data = bioticData.objects.filter(id=fishdetailobject[0].biotic.id).first()
                 stomach_data = FykeStomachData.objects.filter(fishdetails__in=fishdetailobject)
-                
-                # Retrieve the BioticData related to the selected FishDetails object
-                biotic_data = bioticData.objects.filter(id=fishdetailobject[0].biotic.id)[0]
-                
-                # Check if any field is None and set it to an empty string
-                for dataset in [fishdetailobject, stomach_data]:
-                    for value in dataset:
-                        for field in value.__class__._meta.fields:
-                            if getattr(value, field.name) is None:
-                                setattr(value, field.name, "")  # Set to empty string if None
+        
+                # Set None values to empty strings
+                for dataset in [fishdetailobject, [biotic_data] if biotic_data else [], stomach_data]:
+                    for obj in dataset:
+                        for field in obj._meta.fields:
+                            if getattr(obj, field.name) is None:
+                                setattr(obj, field.name, "")
+            except (ValueError, FishDetails.DoesNotExist, bioticData.DoesNotExist, FykeStomachData.DoesNotExist, IndexError):
+                fishdetailobject = biotic_data = stomach_data = None
+
                 
 
-            except (ValueError, FishDetails.DoesNotExist):
-                fishdetailobject = None
-                stomach_data = None
-                biotic_data = None
-                data = None
+            
 
     # Handle the form submission
     if request.method == 'POST':
