@@ -1,6 +1,7 @@
 {% extends 'index.html' %} {% block content %} {% load static %}
 
 <div class="fyke-wrapper biotic">
+  <!-- View total for week # button-->
   <a
     href="#"
     class="btn btn-primary"
@@ -9,6 +10,8 @@
   >
     view total for week {{ record.week }}
   </a>
+
+  <!-- Weekdata table-->
   <table
     border="1"
     cellpadding="4"
@@ -37,6 +40,8 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <!-- DataCollection table -->
   <table border="1" cellpadding="4" class="fyke-table">
     <tbody>
       <tr>
@@ -66,6 +71,8 @@
       </tr>
     </tbody>
   </table>
+
+  <!-- Form table-->
   <form class="fyke-form" method="post" id="biotic-form">
     {% csrf_token %}
     <table
@@ -107,9 +114,9 @@
                 display: none;
               "
             ></div>
-            <input type="hidden" name="fishid" value="{% if form.initial %} {{ biotic_record.fishid.species_id }}{% endif %}" required />
+            <input type="hidden" name="species" value="{% if form.initial %} {{ biotic_record.species.species_id }}{% endif %}" required />
             <div id="speciesDisplay">
-                {% if form.initial %} {{ biotic_record.fishid.species_id }} - {{ biotic_record.fishid.nl_name }}{% endif %}
+                {% if form.initial %} {{ biotic_record.species.species_id }} - {{ biotic_record.species.nl_name }}{% endif %}
             </div>
           </td>
           <td>
@@ -125,7 +132,7 @@
             {{ form.lengthestimate }}
           </td>
           <td>
-            {{ form.freshweigth }}
+            {{ form.freshweight }}
           </td>
           <td>
             <input type="hidden" name="collectno"
@@ -137,7 +144,7 @@
               {% endif %}
               "/>
             <span id="collectDisplay"{% if not form.initial or biotic_record.collectno == 0 %}style="display: none"{% endif %}>
-              {{ record.week }} - {% if form.initial %}{{ biotic_record.collectno }}{% else %}{{ nth_record }}{% endif %}
+              {{ record.week }} - {% if form.initial and biotic_record.collectno != 0 %}{{ biotic_record.collectno }}{% else %}{{ nth_record }}{% endif %}
             </span>
           </td>
           <td>
@@ -153,6 +160,11 @@
             <button class="btn btn-secondary" type="submit">Store</button>
             <button class="btn btn-primary" id="formCancel" type="reset">Cancel</button>
 
+            {% if biotic_record %}
+              <button class="btn btn-primary" id="deleteButton" type="button" onclick="confirmDelete()">Delete</button>
+              <input type='hidden' name='delete' value="0">
+            {% endif %}
+
             <div id="global-error-message" style="color: red; display: none">
               One or more inputs are invalid.
             </div>
@@ -161,6 +173,8 @@
       </tbody>
     </table>
   </form>
+
+  <!-- BioticData Table -->
   <table border="1" cellpadding="4" class="fyke-table">
     <tbody>
       <tr>
@@ -176,7 +190,7 @@
       </tr>
       {% for biotic in data %}
       <tr>
-        <td>{{ biotic.fishid.species_id }} - {{ biotic.fishid }}</td>
+        <td>{{ biotic.species.species_id }}-{{ biotic.species }}</td>
         <td>{{ biotic.subsample }}</td>
         <td>{{ biotic.nspecies }}</td>
         <td>{{ biotic.totallength }}</td>
@@ -184,12 +198,11 @@
           {% if biotic.lengthestimate %}
           <img
             src="{% static 'img\checkmark.webp' %}"
-            alt="Checked"
             style="width: 20px; height: 20px"
           />
           {% endif %}
         </td>
-        <td>{{ biotic.freshweigth }}</td>
+        <td>{{ biotic.freshweight }}</td>
         <td>
           {% if biotic.collectno %}
             <a href="{% url 'fishdetails' %}?year={{ biotic.year}}&week={{ biotic.week }}&range=all&collectno={{ biotic.collectno }}" class="btn btn-secondary">
@@ -212,201 +225,17 @@
   </table>
 </div>
 
-<!-- button specific scripts -->
+<!-- template scripts -->
 <script>
-  document
-    .getElementById("toggleTableBtn")
-    .addEventListener("click", function (event) {
-      event.preventDefault();
-      var table = document.getElementById("bioticWeekTable");
-      if (table.style.display === "none") {
-        table.style.display = "table";
-      } else {
-        table.style.display = "none";
-      }
-  });
+  var nth_record = {{ nth_record }}
+  var record = '{{ biotic_record.id }}'
 
-  document
-    .getElementById("toggleEntryBtn")
-    .addEventListener("click", toggleEntryTable);
-  document
-    .getElementById("formCancel")
-    .addEventListener("click", toggleEntryTable);
-  function toggleEntryTable(event) {
-    event.preventDefault();
-    var table = document.getElementById("bioticEntryTable");
-    if (table.style.display === "none") {
-      table.style.display = "table";
-    } else {
-      table.style.display = "none";
+  function confirmDelete() {
+    if (confirm("Are you sure you want to delete this record?")) {
+        document.querySelector('input[name="delete"]').value = '1';
+        document.getElementById("biotic-form").submit();
     }
-  }
-
-  document
-    .getElementById("collect")
-    .addEventListener("click", function (event) {
-      event.preventDefault();
-      var collectDisplay = document.getElementById("collectDisplay");
-      var collectButton = document.getElementById("collect");
-      var collectInput = document.querySelector('input[name="collectno"]');
-      if (collectDisplay.style.display === "none") {
-        collectDisplay.style.display = "inline";
-        collectButton.innerHTML = "uncollect";
-        collectInput.value = `{{ nth_record}}`;
-      } else {
-        collectDisplay.style.display = "none";
-        collectButton.innerHTML = "collect";
-        collectInput.value = "0";
-      }
-    });
-
-  document
-    .getElementById("supress")
-    .addEventListener("click", function (event) {
-      event.preventDefault();
-      // no function yet
-    });
+}
 </script>
-
-<!-- search script -->
-<script>
-  function decodeHtml(html) {
-    const textarea = document.createElement("textarea");
-    textarea.innerHTML = html;
-    return textarea.value;
-  }
-
-  const speciesSearch  = document.getElementById('speciesSearch')
-  speciesSearch
-    .addEventListener("input", function () {
-      const query = this.value;
-      if (query.length > 1) {
-        fetch(`/fyke/fishdetails/live-species-search/?q=${query}`)
-          .then((response) => response.json())
-          .then((data) => {
-            const resultsDiv = document.getElementById("searchResults");
-            resultsDiv.innerHTML = "";
-            if (data.results.length) {
-              resultsDiv.style.display = "block";
-              data.results.forEach((item) => {
-                const div = document.createElement("div");
-                // Decode HTML entities before displaying
-                const nlName = decodeHtml(item.nl_name);
-                const latinName = decodeHtml(item.latin_name);
-                const enName = decodeHtml(item.en_name);
-
-                div.innerHTML = `${item.species_id} - ${nlName} - <i>${enName}</i> - (${latinName})`;
-                div.style.cursor = "pointer";
-                div.onclick = function () {
-                  // Use species_id directly
-                  const speciesid = item.species_id; // Ensure this is set correctly
-
-                  // Set the search input to the format: "species_id-speciesname"
-                  speciesSearch.value = ``;
-                  speciesSearch.style.border = "";
-                  speciesSearch.style.backgroundColor = "";
-
-                  // Set the hidden input's value to the selected species_id
-                  document.querySelector('input[name="fishid"]').value =
-                    speciesid;
-
-                  // Update the species display text dynamically
-                  document.getElementById(
-                    "speciesDisplay"
-                  ).innerText = `${speciesid}-${nlName}`;
-
-                  resultsDiv.style.display = "none"; // Hide the search results
-                };
-                resultsDiv.appendChild(div);
-              });
-            } else {
-              resultsDiv.style.display = "none";
-            }
-          });
-      } else {
-        document.getElementById("searchResults").style.display = "none";
-      }
-    });
-
-  // Hide the search results when clicking outside
-  document.addEventListener("click", function (e) {
-    const resultsDiv = document.getElementById("searchResults");
-    if (!resultsDiv.contains(e.target) && e.target.id !== "speciesSearch") {
-      resultsDiv.style.display = "none";
-    }
-  });
-</script>
-
-<!-- form validation script -->
-<script>
-  document
-    .getElementById("biotic-form")
-    .addEventListener("submit", function (event) {
-      // Get all input fields for validation
-      var fields = document.querySelectorAll('input[type="text"], input[name="fishid"]');
-      var isValid = true; // Assume inputs are valid initially
-
-      // Regular expression to allow both decimal separators (either . or ,)
-      var numberRegex = /^[0-9]+([.,][0-9]+)?$/;
-
-      // Hide the global error message initially
-      var globalErrorMessage = document.getElementById("global-error-message");
-      globalErrorMessage.style.display = "none";
-
-      // Loop through all fields and validate
-      fields.forEach(function (field) {
-        var value = field.value.trim();
-
-        if (value.toUpperCase() === "NA") {
-          return; // Skip validation for these fields
-        }
-
-        // Check if the fishid field is empty
-        if (field.name === "fishid" && value === "") {
-          var searchField = document.querySelector('input[name="search"]');
-          if (searchField) {
-            searchField.style.border = "1px red solid";
-            searchField.style.backgroundColor = "pink";
-          }
-          isValid = false;
-          return;
-        }
-
-        // Check if the field is valid
-        if (value !== "" && !numberRegex.test(value)) {
-          // Invalid input: apply styles
-          field.style.border = "1px red solid";
-          field.style.backgroundColor = "pink";
-          isValid = false;
-        } else {
-          // Valid input: reset styles
-          field.style.border = "";
-          field.style.backgroundColor = "";
-        }
-      });
-
-      if (document.querySelector('input[name="fishid"]').value === "") {
-        isValid = false;
-      }
-
-      // If any field is invalid, show the global error message
-      if (!isValid) {
-        event.preventDefault(); // Prevent form submission
-        globalErrorMessage.style.display = "block"; // Show the global error message
-      }
-    });
-</script>
-
-<!-- styling script -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-      const cells = document.querySelectorAll('.fyke-table:not(#bioticEntryTable) td');
-      cells.forEach(function(cell) {
-          // Check if the cell's text content is 'NA'
-          if (cell.textContent.trim() === 'NA') {
-              cell.style.backgroundColor = 'yellow';
-          }
-      });
-  });
-</script>
+<script src="{% static 'js\biotic.js' %}"></script>
 {% endblock %}

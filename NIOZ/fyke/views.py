@@ -3,7 +3,7 @@ from django.db.models.functions import ExtractYear, ExtractWeek
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.db import transaction
-from .models import DataCollection, CatchLocations, FishDetails, bioticData, FykeStomachData
+from .models import DataCollection, CatchLocations, FishDetails, bioticData, StomachData
 from .forms import DataCollectionForm, CatchLocationsForm, BioticDataForm
 from maintenance.models import MaintenanceSpeciesList
 from datetime import datetime, date
@@ -24,6 +24,11 @@ def datacollection_view(request):
         year=ExtractYear('date'),  # Extract year from the date
         week=ExtractWeek('date')    # Extract week from the date
     )
+    
+    for obj in data:
+        for field in obj._meta.fields:
+            if getattr(obj, field.name) is None:
+                setattr(obj, field.name, "")
 
     # Get distinct years based on the 'date' field
     years = data.values_list('year', flat=True).distinct().order_by('year')
@@ -113,6 +118,10 @@ def edit_record_view(request, pk):
     # Retrieve the record from the database or return 404 if it doesn't exist
     record = get_object_or_404(DataCollection, pk=pk)
     
+    for field in record._meta.fields:
+        if getattr(record, field.name) is None:
+            setattr(record, field.name, "")
+    
     if request.method == 'POST':
         form = DataCollectionForm(request.POST, instance=record)  # Bind the form with the existing record
         if form.is_valid():
@@ -145,11 +154,22 @@ def biotic(request, pk):
     
     biotic_id = request.GET.get('biotic')
     
+    biotic_delete = request.POST.get('delete')
+    
     # Prepare variables for later use
     biotic_record = None
        
     # Handle the form submission
     if request.method == 'POST':
+        # if the user wants to delete:
+        if biotic_delete != '0':
+            try:
+                biotic_record = bioticData.objects.get(id=biotic_id)  # Retrieve the record
+                biotic_record.delete()  # Delete the record
+                return redirect(request.path)
+            except bioticData.DoesNotExist:
+                print('failed to delete. unknown record.')
+        
         # Check if the biotic_id is provided in the URL
         if biotic_id:
             try:
@@ -159,12 +179,11 @@ def biotic(request, pk):
                 form = BioticDataForm(request.POST)
         else:
             form = BioticDataForm(request.POST)
-        
         # Validate the form and save the data
         if form.is_valid():
             record = form.save(commit=False)
-            record.date = datacollectionobject
-            record.fishid = form.cleaned_data['fishid']
+            record.datacollection = datacollectionobject
+            record.species = form.cleaned_data['species']
             record.save()  # Save the bioticData instance first
             
             # Update or create the FishDetails record based on the bioticData record
@@ -178,7 +197,7 @@ def biotic(request, pk):
                     collectdate=datacollectionobject.date,
                     collectno=record.collectno,
                     defaults={
-                        'species_id': record.fishid.id,
+                        'species_id': record.species.id,
                         'biotic': record,
                     },
                 )
@@ -187,7 +206,6 @@ def biotic(request, pk):
         else:
             print(form.errors)
     
-    # if the request method is not POST ()
     else:
         if biotic_id:
             try:
@@ -199,16 +217,16 @@ def biotic(request, pk):
             form = BioticDataForm()
     
     # Filter bioticData records where the date matches the date of the DataCollection record
-    data = bioticData.objects.filter(date=datacollectionobject).annotate(
-        year=ExtractYear('date__date'),
-        week=ExtractWeek('date__date'),
+    data = bioticData.objects.filter(datacollection=datacollectionobject).annotate(
+        year=ExtractYear('datacollection__date'),
+        week=ExtractWeek('datacollection__date'),
     )
     
     # Aggregate data by species
     species_aggregation = defaultdict(lambda: {'count': 0, 'lengths': defaultdict(int)})
     for item in data:
-        species_aggregation[item.fishid]['count'] += 1
-        species_aggregation[item.fishid]['lengths'][item.totallength] += 1
+        species_aggregation[item.species]['count'] += 1
+        species_aggregation[item.species]['lengths'][item.totallength] += 1
     
     # Prepare the aggregated data for the template
     species_data = []
@@ -225,6 +243,7 @@ def biotic(request, pk):
         collectdate__week=datacollectionobject.week,
         collectdate__year=datacollectionobject.year
     )
+    
     nth_record = week_data.count() + 1
     
     # Check if any field is None and set it to an empty string
@@ -241,7 +260,6 @@ def biotic(request, pk):
         'form': form, # The form for adding new bioticData records
         'nth_record': nth_record, # The n'th record in the bioticData table for that week
     })
-
 
 # Fishdetails
 def fishdetails(request):
@@ -313,31 +331,25 @@ def fishdetails(request):
 
                 # Filter the data based on collectno range
                 data = data.filter(collectno__gte=range_start, collectno__lte=range_end)
+            
+            data = data.order_by('collectno')
+                
 
         if selected_collectno:
             try:
-                # Filter the data based on collectno
+                # Filter data based on collectno
                 fishdetailobject = data.filter(collectno=selected_collectno)
-                
-                # Retrieve all FykeStomachData related to the selected FishDetails object
-                stomach_data = FykeStomachData.objects.filter(fishdetails__in=fishdetailobject)
-                
-                # Retrieve the BioticData related to the selected FishDetails object
-                biotic_data = bioticData.objects.filter(id=fishdetailobject[0].biotic.id)[0]
-                
-                # Check if any field is None and set it to an empty string
-                for dataset in [fishdetailobject, stomach_data]:
-                    for value in dataset:
-                        for field in value.__class__._meta.fields:
-                            if getattr(value, field.name) is None:
-                                setattr(value, field.name, "")  # Set to empty string if None
-                
-
-            except (ValueError, FishDetails.DoesNotExist):
-                fishdetailobject = None
-                stomach_data = None
-                biotic_data = None
-                data = None
+                biotic_data = bioticData.objects.filter(id=fishdetailobject[0].biotic.id).first()
+                stomach_data = StomachData.objects.filter(fishdetails__in=fishdetailobject)
+        
+                # Set None values to empty strings
+                for dataset in [fishdetailobject, [biotic_data] if biotic_data else [], stomach_data]:
+                    for obj in dataset:
+                        for field in obj._meta.fields:
+                            if getattr(obj, field.name) is None:
+                                setattr(obj, field.name, "")
+            except (ValueError, FishDetails.DoesNotExist, bioticData.DoesNotExist, StomachData.DoesNotExist, IndexError):
+                fishdetailobject = biotic_data = stomach_data = None
 
     # Handle the form submission
     if request.method == 'POST':
@@ -374,12 +386,12 @@ def fishdetails(request):
             try:
                 # Retrieve the species object based on the species_id
                 species_instance = MaintenanceSpeciesList.objects.get(species_id=species_id)
-                fish.biotic.fishid = species_instance
+                fish.biotic.species = species_instance
                 fish.biotic.save()  # Save the bioticData instance
                 fish.species = species_instance
             except MaintenanceSpeciesList.DoesNotExist:
                 # Handle the case where the species_id does not exist
-                fish.biotic.fishid = None
+                fish.biotic.species = None
                 fish.biotic.save()  # Save the bioticData instance
                 fish.species = species_instance
         
@@ -397,9 +409,9 @@ def fishdetails(request):
             if delete_value == '1' and data_id:
                 # Delete the existing record
                 try:
-                    stomach_data = FykeStomachData.objects.get(id=data_id)
+                    stomach_data = StomachData.objects.get(id=data_id)
                     stomach_data.delete()
-                except FykeStomachData.DoesNotExist:
+                except StomachData.DoesNotExist:
                     print(f"Stomach data with id {data_id} does not exist, cannot delete")
                 continue
             
@@ -409,13 +421,13 @@ def fishdetails(request):
                     if data_id:
                         # Update the existing record
                         try:
-                            stomach_data = FykeStomachData.objects.get(id=data_id)
+                            stomach_data = StomachData.objects.get(id=data_id)
                             stomach_data.length = length_value if length_value else None
                             stomach_data.number = number_value if number_value else None
                             stomach_data.species = species_instance
                             stomach_data.save()
-                        except FykeStomachData.DoesNotExist:
-                            stomach_data = FykeStomachData.objects.create(
+                        except StomachData.DoesNotExist:
+                            stomach_data = StomachData.objects.create(
                                 fishdetails=fish,
                                 species=species_instance,
                                 length=length_value if length_value else None,
@@ -423,7 +435,7 @@ def fishdetails(request):
                             )
                     else:
                         # Create a new record
-                        stomach_data, created = FykeStomachData.objects.update_or_create(
+                        stomach_data, created = StomachData.objects.update_or_create(
                             fishdetails=fish,
                             species=species_instance,
                             defaults={
@@ -463,8 +475,8 @@ def species_search(request):
     if query:
         # If the query is a number, search by species_id
         if query.isdigit():
-            speciesid = int(query)
-            results = MaintenanceSpeciesList.objects.filter(species_id=speciesid)[:10]
+            search = int(query)
+            results = MaintenanceSpeciesList.objects.filter(species_id=search)[:10]
         else:
             # Search by 'nl_name' or 'latin_name' if it's not a number
             results = MaintenanceSpeciesList.objects.filter(

@@ -75,7 +75,6 @@
 
   <input type="hidden" name="date" value="{{ form.date.value|date:"Y-m-d" }}">
   <input type="hidden" name="fishingday" value="{{ form.fishingday.value }}">
-  <input type="hidden" name="version" value="3.0">
 
   <div style="margin-top: 5px">
     <button class="btn btn-secondary" type="submit">Store</button>
@@ -130,12 +129,17 @@
     var lastFishingDuration = fishingDurationInput.value; // initial value
     var remarksInput = document.getElementById('id_remarks');
     var remarksValue = remarksInput.value;
+    var spacing = '';
+
+    if (remarksValue !== '') {
+      spacing = '\r\n\r\n'
+    }
 
     fishingDurationInput.addEventListener('input', function () {
       var newFishingDuration = fishingDurationInput.value;
       if (newFishingDuration != lastFishingDuration) {
         var userName = "{{ user.username }}";  // Get the logged-in username
-        remarksInput.value = remarksValue + "\r\n\r\nUser '" + userName + "' changed fishing duration from '" + lastFishingDuration + "' to '" + newFishingDuration + "'";
+        remarksInput.value = remarksValue + spacing + "User '" + userName + "' changed fishing duration from '" + lastFishingDuration + "' to '" + newFishingDuration + "'";
       } else {
         remarksInput.value = "";  // Clear remarks if no change
       }
