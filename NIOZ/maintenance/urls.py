@@ -1,9 +1,10 @@
 from django.urls import path
 from . import views
 
+# url patterns
 urlpatterns = [
     path('', views.index, name='index'),
-    path('species_list/', views.species_list, name='species_list'),  # Zorg ervoor dat deze route goed is
+    path('species_list/', views.species_list, name='species_list'),  
     path('fishprogrammes/', views.fishprogrammes, name='fishprogrammes'),
     path('fishlocations/', views.fishlocations, name='fishlocations'),
     path('species/new/', views.species_create, name='species_create'),

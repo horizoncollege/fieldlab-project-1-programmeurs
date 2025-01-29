@@ -10,11 +10,11 @@ def index(request):
 
 
 def species_list(request):
-    # Standaardwaarden
+    # Default values
     default_sort = 'nl_name'
     default_order = 'asc'
 
-    # Verkrijg huidige sorteerinstellingen uit de GET-parameters
+    # Retrieve current sorting settings from GET parameters
     sort_by = request.GET.get('sort', default_sort)
     order = request.GET.get('order', default_order)
 

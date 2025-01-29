@@ -3,24 +3,24 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-# Alleen ingelogde gebruikers kunnen deze pagina zien
+# Only logged-in users can view this page
 @login_required
 def home(request):
     return render(request, 'home.html')
 
-# Verwerkt het inlogformulier
+# Processes the login form
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            user = form.get_user()  # Haalt de gebruiker op
-            login(request, user)  # Logt de gebruiker in
-            return redirect('home')  # Stuur door naar de startpagina
+            user = form.get_user()  # Retrieves the user
+            login(request, user)  # Logs the user in
+            return redirect('home')  # Redirects to the homepage
     else:
-        form = AuthenticationForm()  # Leeg formulier voor GET-verzoek
+        form = AuthenticationForm()  # Empty form for GET request
     return render(request, 'LoginSysteem/login.html', {'form': form})
 
-# Logt de gebruiker uit
+# Logs the user out
 def logout_view(request):
-    logout(request)  # Logt de gebruiker uit
-    return redirect('login')  # Stuur door naar de loginpagina
+    logout(request)  
+    return redirect('login')  # Redirects to the login page

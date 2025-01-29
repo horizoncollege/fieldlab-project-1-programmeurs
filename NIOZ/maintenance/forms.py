@@ -6,22 +6,22 @@ class MaintenanceSpeciesListForm(forms.ModelForm):
         model = MaintenanceSpeciesList
         fields = [
             'species_id',  
-            'active',  # Checkbox voor actief/inactief
-            'nl_name',  # Nederlandse naam
-            'en_name',  # Engelse naam
-            'latin_name',  # Latijnse naam
-            'WoRMS',  # WoRMS nummer
+            'active',  # Checkbox to toggle the active/inactive state
+            'nl_name',  # Dutch name
+            'en_name',  # English name
+            'latin_name',  # Latin name
+            'WoRMS',  # WoRMS number
             'pauly_trophic_level',  # Pauly Trophic Level
-            'var_x',  # Vrij tekstveld
-            'fishflag',  # Checkbox voor vissoorten
-            'collecting_per_week',  # Aantal keer verzamelen per week
-            'always_collecting'  # Checkbox voor altijd verzamelen
+            'var_x',  # Free text field
+            'fishflag',  # Checkbox for fish species
+            'collecting_per_week',  # Number of times to collect per week
+            'always_collecting'  # Checkbox for always collecting
         ]
         widgets = {
             'species_id': forms.NumberInput(), 
-            'active': forms.CheckboxInput(),  # Widget voor de checkbox
-            'fishflag': forms.CheckboxInput(),  # Widget voor fishflag checkbox
-            'always_collecting': forms.CheckboxInput(),  # Widget voor always_collecting checkbox
+            'active': forms.CheckboxInput(),  # Widget for the checkbox
+            'fishflag': forms.CheckboxInput(),  # Widget for fishflag checkbox
+            'always_collecting': forms.CheckboxInput(),  # Widget for always_collecting checkbox
             'nl_name': forms.TextInput(attrs={'placeholder': 'Voer de Nederlandse naam in'}),
             'en_name': forms.TextInput(attrs={'placeholder': 'Voer de Engelse naam in'}),
             'latin_name': forms.TextInput(attrs={'placeholder': 'Voer de Latijnse naam in'}),

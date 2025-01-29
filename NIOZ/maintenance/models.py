@@ -11,11 +11,11 @@ class MaintenanceSpeciesList(models.Model):
     fishflag = models.BooleanField(default=False)
     oldnrmee = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=True)
-    pauly_trophic_level = models.CharField(max_length=50)
+    pauly_trophic_level = models.CharField(max_length=51)
     extraction_date = models.CharField(max_length=50, null=True, blank=True)
     collecting_per_week = models.IntegerField()
     always_collecting = models.BooleanField(default=False)
-    indivweek = models.IntegerField()
+    
 
     # Meta class for table settings (optional)
     class Meta:
@@ -24,10 +24,8 @@ class MaintenanceSpeciesList(models.Model):
         verbose_name_plural = 'Maintenance Species List'
 
     def __str__(self):
-        return self.nl_name
+        return self.nl_name  # Remove the second __str__ method
 
-    def __str__(self):
-        return self.nl_name
     
 class FykeLocation(models.Model):
     no = models.AutoField(primary_key=True)  # Auto-incrementing 'no'

@@ -3,9 +3,9 @@ from datetime import datetime
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 
+# Person model
 class Person(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    
     realName = models.CharField(max_length=50)
     collectlocation = models.CharField(max_length=100, default="Texel (RW) Lauwersoog (RW)")
     yearFrom = models.CharField(max_length=10, default=str(datetime.now().year))
