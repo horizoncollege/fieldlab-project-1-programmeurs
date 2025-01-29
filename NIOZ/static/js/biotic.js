@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	speciesSearch
 		.addEventListener("input", function () {
 			const query = this.value;
-			if (query.length > 1) {
+			if (query.length) {
 				fetch(`/fyke/fishdetails/live-species-search/?q=${query}`)
 					.then((response) => response.json())
 					.then((data) => {
@@ -93,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
 								const enName = decodeHtml(item.en_name);
 
 								div.innerHTML = `${item.species_id} - ${nlName} - <i>${enName}</i> - (${latinName})`;
-								div.style.cursor = "pointer";
 								div.onclick = function () {
 									// Use species_id directly
 									const speciesid = item.species_id; // Ensure this is set correctly

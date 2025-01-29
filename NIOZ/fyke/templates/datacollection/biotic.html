@@ -144,7 +144,7 @@
               {% endif %}
               "/>
             <span id="collectDisplay"{% if not form.initial or biotic_record.collectno == 0 %}style="display: none"{% endif %}>
-              {{ record.week }} - {% if form.initial %}{{ biotic_record.collectno }}{% else %}{{ nth_record }}{% endif %}
+              {{ record.week }} - {% if form.initial and biotic_record.collectno != 0 %}{{ biotic_record.collectno }}{% else %}{{ nth_record }}{% endif %}
             </span>
           </td>
           <td>
@@ -190,7 +190,7 @@
       </tr>
       {% for biotic in data %}
       <tr>
-        <td>{{ biotic.species.species_id }} - {{ biotic.species }}</td>
+        <td>{{ biotic.species.species_id }}-{{ biotic.species }}</td>
         <td>{{ biotic.subsample }}</td>
         <td>{{ biotic.nspecies }}</td>
         <td>{{ biotic.totallength }}</td>

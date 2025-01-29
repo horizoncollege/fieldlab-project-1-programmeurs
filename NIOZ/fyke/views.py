@@ -243,6 +243,7 @@ def biotic(request, pk):
         collectdate__week=datacollectionobject.week,
         collectdate__year=datacollectionobject.year
     )
+    
     nth_record = week_data.count() + 1
     
     # Check if any field is None and set it to an empty string

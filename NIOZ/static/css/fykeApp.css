@@ -152,8 +152,13 @@
   width: 100px;
 }
 
-.fishdetails #searchResults *:hover {
+.fyke-wrapper #searchResults *:hover {
   background-color: #ccc;
+  cursor: pointer;
+}
+
+.fyke-wrapper #searchResults {
+  padding: 2.5px;
 }
 
 .tooltip {
